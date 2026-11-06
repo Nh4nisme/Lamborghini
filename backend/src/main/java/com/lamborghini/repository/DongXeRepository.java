@@ -11,4 +11,8 @@ public interface DongXeRepository extends JpaRepository<DongXe, Integer> {
 
     // tìm dòng xe có trạng thái hiển thị và nổi bật true sắp xếp theo tên dòng xe
     List<DongXe> findByNoiBatTrueAndTrangThaiOrderByTenDongXeAsc(TrangThaiDongXe trangThai, Pageable pageable);
+
+
+    // tìm tất cả dòng xe có trạng thái hiển thị sắp xếp theo tên dòng xe
+    List<DongXe> findAllByTrangThaiOrderByTenDongXeAsc(TrangThaiDongXe trangThai);
 }

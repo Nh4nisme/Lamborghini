@@ -40,4 +40,8 @@ public class DongXe {
     @OneToMany(mappedBy = "dongXe")
     @JsonIgnore
     private List<Xe> danhSachXe;
+
+    @Column(name = "hinh_anh")
+    private String hinhAnh;
+
 }
