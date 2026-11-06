@@ -8,5 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface DongXeRepository extends JpaRepository<DongXe, Integer> {
+
+    // tìm dòng xe có trạng thái hiển thị và nổi bật true sắp xếp theo tên dòng xe
     List<DongXe> findByNoiBatTrueAndTrangThaiOrderByTenDongXeAsc(TrangThaiDongXe trangThai, Pageable pageable);
 }

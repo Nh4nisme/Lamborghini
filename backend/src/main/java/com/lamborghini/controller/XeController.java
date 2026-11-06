@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class XeController {
     private final XeService xeService;
 
+    // tìm xe theo mã xe cung cấp
+
     @GetMapping("/{maXe}")
     public Xe getXeTheoId(@PathVariable("maXe") Integer maXe) {
         return xeService.getXeTheoId(maXe);
     }
+
+
 
 }
