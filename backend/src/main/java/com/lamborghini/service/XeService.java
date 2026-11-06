@@ -12,9 +12,13 @@ import org.springframework.stereotype.Service;
 public class XeService {
     private final XeRepository xeRepository;
 
+
+    //UC003: getXeTheoId
     public Xe getXeTheoId(Integer maXe) {
         return xeRepository.findById(maXe).orElseThrow(() -> new NotFoundException("Không tìm thấy xe theo id: " + maXe));
     }
+
+    //UC004:
 
 
 
