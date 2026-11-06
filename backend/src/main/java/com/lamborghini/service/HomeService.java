@@ -2,10 +2,13 @@ package com.lamborghini.service;
 
 import com.lamborghini.dto.response.HomeResponse;
 import com.lamborghini.entity.DongXe;
+import com.lamborghini.entity.Showroom;
 import com.lamborghini.entity.TinTuc;
 import com.lamborghini.enums.TrangThaiDongXe;
+import com.lamborghini.enums.TrangThaiShowroom;
 import com.lamborghini.enums.TrangThaiTinTuc;
 import com.lamborghini.repository.DongXeRepository;
+import com.lamborghini.repository.ShowroomRepository;
 import com.lamborghini.repository.TinTucRepository;
 import com.lamborghini.repository.XeRepository;
 import jakarta.transaction.Transactional;
@@ -23,6 +26,7 @@ public class HomeService {
     private final XeRepository xeRepository;
     private final DongXeRepository dongXeRepository;
     private final TinTucRepository tinTucRepository;
+    private final ShowroomRepository showroomRepository;
 
 
 
