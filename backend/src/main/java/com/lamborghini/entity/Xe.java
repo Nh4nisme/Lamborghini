@@ -59,4 +59,15 @@ public class Xe {
     @OneToMany(mappedBy = "xe")
     @JsonIgnore
     private List<PhuTungCoBan> danhSachPhuTung;
+
+    @Column(name = "gia_toc")
+    private Integer giaToc;
+
+    @Column(name = "toc_do_dong_co")
+    private Integer tocDoDongCo;
+
+    @Column(name = "phan_khoi")
+    private Integer phanKhoi;
+
+
 }
