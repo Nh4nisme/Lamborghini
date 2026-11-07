@@ -23,4 +23,18 @@ public interface TuyChonCauHinhRepository extends JpaRepository<TuyChonCauHinh, 
             @Param("maNhomTuyChon") Integer maNhomTuyChon
             );
 
+    //UC004.2: dùng để lấy các màu tùy chọn của xe theo loại màu
+    @Query(value = "SELECT t.*\n" +
+            "FROM xe_tuy_chon_cau_hinh xt\n" +
+            "LEFT JOIN tuy_chon_cau_hinh t ON xt.ma_tuy_chon = t.ma_tuy_chon\n" +
+            "LEFT JOIN xe x ON x.ma_xe = xt.ma_xe\n" +
+            "WHERE t.nhom_tuy_chon = 1\n" +
+            "AND x.ma_xe = :maXe\n" +
+            "AND t.thuoc_tinh_phu = :loaiMau\n" +
+            "ORDER BY t.ten_tuy_chon asc",nativeQuery = true)
+    List<TuyChonCauHinh> getDanhSachMauCuaXeTheoLoaiMau(
+            @Param("maXe") Integer maXe,
+            @Param("loaiMau") String loaiMau
+    );
+
 }
