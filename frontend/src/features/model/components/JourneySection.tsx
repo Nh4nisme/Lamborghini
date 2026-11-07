@@ -1,7 +1,9 @@
 import React from 'react';
 import { ArrowUpRight, Compass } from 'lucide-react';
+import type { CarModelData } from '../data';
 
 interface JourneySectionProps {
+  carData: CarModelData;
   onOpenEnquiry: () => void;
   onOpenConfigurator: () => void;
 }

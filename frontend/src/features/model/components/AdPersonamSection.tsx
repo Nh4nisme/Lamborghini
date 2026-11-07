@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import type { CarModelData } from '../data';
 
 interface AdPersonamSectionProps {
+  carData: CarModelData;
   onOpenConfigurator: () => void;
 }
 

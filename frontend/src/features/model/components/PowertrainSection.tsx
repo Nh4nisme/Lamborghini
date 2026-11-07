@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Flame } from 'lucide-react';
+import type { CarModelData } from '../data';
 
 interface PowertrainSectionProps {
+  carData: CarModelData;
   onOpenSpecsModal?: () => void;
 }
 
-export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
+export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData }) => {
   const [showArchitectureDetails, setShowArchitectureDetails] = useState(false);
 
   return (
@@ -16,8 +18,8 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
           <div className="lg:col-span-7">
             <div className="relative border border-[#2b2518] overflow-hidden group bg-[#0e0e0e]">
               <img
-                src="/images/powertrain-engine.jpg"
-                alt="Supercar Hybrid Powertrain Architecture"
+                src={carData.powertrain.image}
+                alt="Lamborghini Powertrain Engine"
                 className="w-full h-auto object-cover filter brightness-95 group-hover:scale-102 transition-transform duration-700"
                 loading="lazy"
               />
@@ -40,12 +42,12 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
               className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight leading-tight mb-5"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [POWERTRAIN HEADLINE]
+              {carData.powertrain.headline}
             </h3>
 
             {/* Story */}
             <p className="text-sm sm:text-base text-[#a3a3a3] font-normal leading-relaxed mb-8">
-              [POWERTRAIN STORY – verified architecture and output only.]
+              {carData.powertrain.story}
             </p>
 
             {/* Explore Powertrain Link / Button */}
@@ -101,10 +103,10 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
               className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [ENGINEERING HEADLINE]
+              {carData.engineering.ldvi.headline}
             </h4>
             <p className="text-xs sm:text-sm text-[#888888] leading-relaxed">
-              [ENGINEERING DESCRIPTION]
+              {carData.engineering.ldvi.description}
             </p>
           </div>
 
@@ -117,10 +119,10 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
               className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [ENGINEERING HEADLINE]
+              {carData.engineering.spaceframe.headline}
             </h4>
             <p className="text-xs sm:text-sm text-[#888888] leading-relaxed">
-              [ENGINEERING DESCRIPTION]
+              {carData.engineering.spaceframe.description}
             </p>
           </div>
         </div>

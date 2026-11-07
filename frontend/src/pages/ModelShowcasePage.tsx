@@ -1,37 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, Navigate } from 'react-router-dom';
 import HeroSection from '../features/model/components/HeroSection';
 import OverviewSection from '../features/model/components/OverviewSection';
 import PowertrainSection from '../features/model/components/PowertrainSection';
 import AerodynamicsSection from '../features/model/components/AerodynamicsSection';
 import SoundStudySection from '../features/model/components/SoundStudySection';
 import CockpitSection from '../features/model/components/CockpitSection';
+import DrivingDynamicsSection from '../features/model/components/DrivingDynamicsSection';
+import MonofuselageSection from '../features/model/components/MonofuselageSection';
 import DetailGallerySection from '../features/model/components/DetailGallerySection';
 import TechnicalSpecsSection from '../features/model/components/TechnicalSpecsSection';
 import AdPersonamSection from '../features/model/components/AdPersonamSection';
 import JourneySection from '../features/model/components/JourneySection';
-import NextChapterCTA from '../features/model/components/NextChapterCTA';
+import NextChapterCTA from '../components/NextChapterCTA.tsx';
 import { defaultSupercarData } from '../features/model/data';
+import { useModelDetail } from '../features/model/hooks';
+import { adaptModelDetailToCarData } from '../features/model/types';
 
 const ModelShowcasePage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const modelId = Number(id);
+  
+  // Fetch model detail từ API mới
+  const { data: modelDetail, isLoading, isError } = useModelDetail(modelId);
+  
+  // Merge API data với form mẫu
+  const carData = modelDetail 
+    ? adaptModelDetailToCarData(modelDetail, defaultSupercarData)
+    : defaultSupercarData;
+
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
+
+  // Invalid ID
+  if (!id || isNaN(modelId)) {
+    return <Navigate to="/models/1" replace />;
+  }
+
+  // Scroll to top khi đổi model
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#070707] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#d4af37] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#8e826b] uppercase tracking-wider text-sm">Loading model...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (isError || !modelDetail) {
+    return (
+      <div className="min-h-screen bg-[#070707] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">Failed to load model data</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-[#d4af37] text-black font-bold uppercase text-sm"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#070707] min-h-screen">
       <HeroSection
+        carData={carData}
         onOpenConfigurator={() => setIsConfiguratorOpen(true)}
         onOpenEnquiry={() => setIsEnquiryOpen(true)}
       />
       
-      <OverviewSection />
-      <PowertrainSection />
-      <AerodynamicsSection />
-      <SoundStudySection />
-      <CockpitSection />
-      <DetailGallerySection />
-      <TechnicalSpecsSection onOpenEnquiry={() => setIsEnquiryOpen(true)} />
-      <AdPersonamSection onOpenConfigurator={() => setIsConfiguratorOpen(true)} />
+      <OverviewSection carData={carData} />
+      <PowertrainSection carData={carData} />
+      <AerodynamicsSection carData={carData} />
+      <SoundStudySection carData={carData} />
+      <CockpitSection carData={carData} />
+      
+      {/* Section 5: Driving Dynamics */}
+      <DrivingDynamicsSection carData={carData} />
+      
+      {/* Section 6: Monofuselage/Spaceframe */}
+      <MonofuselageSection carData={carData} />
+      
+      {/* Section 7: Detail Gallery (In Detail) */}
+      <DetailGallerySection carData={carData} />
+      <TechnicalSpecsSection carData={carData} onOpenEnquiry={() => setIsEnquiryOpen(true)} />
+      <AdPersonamSection carData={carData} onOpenConfigurator={() => setIsConfiguratorOpen(true)} />
       <JourneySection 
+        carData={carData}
         onOpenEnquiry={() => setIsEnquiryOpen(true)}
         onOpenConfigurator={() => setIsConfiguratorOpen(true)}
       />
@@ -40,7 +105,7 @@ const ModelShowcasePage: React.FC = () => {
         onOpenEnquiry={() => setIsEnquiryOpen(true)}
       />
 
-      {/* Modals - you can add ConfiguratorModal and EnquiryModal components later */}
+      {/* Modals */}
       {isConfiguratorOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
           <div className="bg-[#0a0a0a] p-8 rounded max-w-2xl">

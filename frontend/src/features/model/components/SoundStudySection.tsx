@@ -1,12 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { soundEngine } from '../soundEngine';
-import { Volume2, Play, Square, Gauge } from 'lucide-react';
+import { Volume2, Play, Square, Pause, VolumeX, Gauge } from 'lucide-react';
+import type { CarModelData } from '../data';
 
-export const SoundStudySection: React.FC = () => {
+interface SoundStudySectionProps {
+  carData: CarModelData;
+}
+
+export const SoundStudySection: React.FC<SoundStudySectionProps> = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [rpm, setRpm] = useState(1100);
   const [isRevving, setIsRevving] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  
+  // Video player states
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(true); // Mặc định TẮT âm
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const handleRpmUpdate = (newRpm: number) => {
@@ -47,6 +57,25 @@ export const SoundStudySection: React.FC = () => {
   const handleEndRev = () => {
     soundEngine.releaseThrottle();
     setIsRevving(false);
+  };
+  
+  // Video controls
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
+
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isVideoMuted;
+      setIsVideoMuted(!isVideoMuted);
+    }
   };
 
   // Draw audio spectrum visualizer
@@ -98,53 +127,113 @@ export const SoundStudySection: React.FC = () => {
 
         {/* Central Audio / Video Panel Container */}
         <div className="relative border border-[#2b2518] overflow-hidden bg-[#0c0c0c] max-w-4xl mx-auto group">
-          {/* Engine Visual */}
+          {/* Engine Visual - Video cho Revuelto, Image cho models khác */}
           <div className="relative aspect-[16/9] sm:aspect-[21/10] overflow-hidden">
-            <img
-              src="/images/sound-engine.jpg"
-              alt="High-revving Flat Plane Crankshaft Twin Turbo Engine Sound"
-              className="w-full h-full object-cover filter brightness-90 group-hover:scale-102 transition-transform duration-700"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-
-            {/* Hexagonal Gold Play Button in Center */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <button
-                onClick={toggleSound}
-                className="relative group/btn cursor-pointer transition-transform duration-300 hover:scale-110"
-                aria-label={isPlaying ? 'Stop engine sound' : 'Start engine sound'}
-              >
-                {/* Yellow / Gold Hexagon Shape matching screenshot */}
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#d4af37] flex items-center justify-center shadow-2xl shadow-[#d4af37]/30 transition-all group-hover/btn:bg-[#ecc74a]">
-                  {isPlaying ? (
-                    <Square className="w-7 h-7 text-black fill-black" />
-                  ) : (
-                    <Play className="w-8 h-8 text-black fill-black ml-1" />
-                  )}
+            {carData.name === 'REVUELTO' ? (
+              // Video Player cho Revuelto
+              <>
+                <video
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  loop
+                  muted={isVideoMuted}
+                  playsInline
+                >
+                  <source
+                    src="https://videolamborghini-meride-tv.akamaized.net/video/folder2/1771605825Temerario_00-Mecha-H_Card-Engine_lamborghini.mp4"
+                    type="video/mp4"
+                  />
+                </video>
+                
+                {/* Play/Pause Overlay */}
+                {!isVideoPlaying && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <button
+                      onClick={handlePlayPause}
+                      className="w-20 h-20 rounded-full bg-[#d4af37] hover:bg-[#e6be43] transition-colors flex items-center justify-center"
+                    >
+                      <Play className="w-10 h-10 text-black ml-1" />
+                    </button>
+                  </div>
+                )}
+                
+                {/* Video Control Buttons */}
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                  <button
+                    onClick={handlePlayPause}
+                    className="p-2 bg-black/80 border border-[#d4af37]/50 hover:bg-[#d4af37]/20 transition-colors"
+                    aria-label={isVideoPlaying ? 'Pause video' : 'Play video'}
+                  >
+                    {isVideoPlaying ? (
+                      <Pause className="w-5 h-5 text-white" />
+                    ) : (
+                      <Play className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={handleMuteToggle}
+                    className="p-2 bg-black/80 border border-[#d4af37]/50 hover:bg-[#d4af37]/20 transition-colors"
+                    aria-label={isVideoMuted ? 'Unmute video' : 'Mute video'}
+                  >
+                    {isVideoMuted ? (
+                      <VolumeX className="w-5 h-5 text-white" />
+                    ) : (
+                      <Volume2 className="w-5 h-5 text-[#d4af37]" />
+                    )}
+                  </button>
                 </div>
-              </button>
-            </div>
-
-            {/* Live Audio Visualizer Overlay when playing */}
-            {isPlaying && (
-              <div className="absolute bottom-4 left-4 right-4 sm:left-8 sm:right-8 flex flex-col gap-2">
-                <canvas
-                  ref={canvasRef}
-                  width={600}
-                  height={50}
-                  className="w-full h-10 opacity-90"
+              </>
+            ) : (
+              // Fallback image cho models khác với audio controls
+              <>
+                <img
+                  src={carData.soundStudy.image}
+                  alt="High-revving Flat Plane Crankshaft Twin Turbo Engine Sound"
+                  className="w-full h-full object-cover filter brightness-90 group-hover:scale-102 transition-transform duration-700"
+                  loading="lazy"
                 />
-                <div className="flex items-center justify-between text-xs text-[#d4af37] font-mono tracking-wider">
-                  <div className="flex items-center gap-2">
-                    <Gauge className="w-4 h-4" />
-                    <span>{rpm.toLocaleString()} RPM</span>
-                  </div>
-                  <div className="text-[10px] uppercase text-[#a09176]">
-                    Flat-Plane V8 Acoustic Frequencies Active
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
+                {/* Hexagonal Gold Play Button in Center */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <button
+                    onClick={toggleSound}
+                    className="relative group/btn cursor-pointer transition-transform duration-300 hover:scale-110"
+                    aria-label={isPlaying ? 'Stop engine sound' : 'Start engine sound'}
+                  >
+                    {/* Yellow / Gold Hexagon Shape matching screenshot */}
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#d4af37] flex items-center justify-center shadow-2xl shadow-[#d4af37]/30 transition-all group-hover/btn:bg-[#ecc74a]">
+                      {isPlaying ? (
+                        <Square className="w-7 h-7 text-black fill-black" />
+                      ) : (
+                        <Play className="w-8 h-8 text-black fill-black ml-1" />
+                      )}
+                    </div>
+                  </button>
                 </div>
-              </div>
+
+                {/* Live Audio Visualizer Overlay when playing */}
+                {isPlaying && (
+                  <div className="absolute bottom-4 left-4 right-4 sm:left-8 sm:right-8 flex flex-col gap-2">
+                    <canvas
+                      ref={canvasRef}
+                      width={600}
+                      height={50}
+                      className="w-full h-10 opacity-90"
+                    />
+                    <div className="flex items-center justify-between text-xs text-[#d4af37] font-mono tracking-wider">
+                      <div className="flex items-center gap-2">
+                        <Gauge className="w-4 h-4" />
+                        <span>{rpm.toLocaleString()} RPM</span>
+                      </div>
+                      <div className="text-[10px] uppercase text-[#a09176]">
+                        Flat-Plane V8 Acoustic Frequencies Active
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -183,13 +272,13 @@ export const SoundStudySection: React.FC = () => {
         <div className="max-w-4xl mx-auto mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
           <div>
             <h3
-              className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-1"
+              className="text-2xl sm:text-3xl md:text-4xl font-black uppercase text-white tracking-wide mb-4"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [SOUND PANEL TITLE]
+              {carData.soundStudy.title}
             </h3>
-            <p className="text-xs text-[#787878] leading-relaxed">
-              Static listening experience. Audio and video playback are not connected.
+            <p className="text-xs sm:text-sm text-[#777777] mb-6">
+              {carData.soundStudy.description}
             </p>
           </div>
 

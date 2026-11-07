@@ -1,10 +1,40 @@
 import React, { useState } from 'react';
-import { defaultSupercarData } from '../data';
+import type { CarModelData } from '../data';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const DetailGallerySection: React.FC = () => {
+interface DetailGallerySectionProps {
+  carData: CarModelData;
+}
+
+export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carData }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const items = defaultSupercarData.gallery;
+  
+  // Hardcode gallery items cho Revuelto (vì không có API list files)
+  const revueltoGallery = [
+    {
+      id: 'powertrain',
+      title: 'POWERTRAIN',
+      subtitle: 'V12 Hybrid Engine',
+      image: '/Images/model-detail/revuelto/powertrain.webp',
+      badge: '01 / 03'
+    },
+    {
+      id: 'exterior',
+      title: 'EXTERIOR',
+      subtitle: 'Aerodynamic Design',
+      image: '/Images/model-detail/revuelto/Exterior.jpg',
+      badge: '02 / 03'
+    },
+    {
+      id: 'interior',
+      title: 'INTERIOR',
+      subtitle: 'Driver Focused Cockpit',
+      image: '/Images/model-detail/revuelto/Interior.jpg',
+      badge: '03 / 03'
+    }
+  ];
+  
+  const items = carData.name === 'REVUELTO' ? revueltoGallery : carData.gallery;
 
   const nextSlide = () => {
     setActiveIndex((prev) => (prev + 1) % items.length);
