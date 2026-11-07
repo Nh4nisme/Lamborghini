@@ -4,6 +4,7 @@ import { Footer } from './components/Footer'
 import HomePage from './pages/HomePage'
 import ShowroomPage from './pages/ShowroomPage'
 import ModelShowcasePage from './pages/ModelShowcasePage'
+import ConfiguratorPage from './pages/ConfiguratorPage'
 
 function App() {
   return (

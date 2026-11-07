@@ -1,14 +1,31 @@
+import type { FC } from 'react'
 import { STEPS } from '../constants'
 
-export function StepTabs({ index, onChange }: { index: number; onChange: (i: number) => void }) {
+interface StepTabsProps {
+    currentIndex: number
+    onSelectStep: (index: number) => void
+}
+
+export const StepTabs: FC<StepTabsProps> = ({ currentIndex, onSelectStep }) => {
     return (
-        <nav className="flex gap-6 text-xs tracking-widest">
-            {STEPS.map((s, i) => (
-                <button key={s.key} onClick={() => onChange(i)}
-                        className={i === index ? 'border-b-2 border-yellow-400 pb-1 text-white' : 'pb-1 text-neutral-400 hover:text-white'}>
-                    {s.label.toUpperCase()}
-                </button>
-            ))}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-bold tracking-[0.18em]">
+            {STEPS.map((step, index) => {
+                const isActive = currentIndex === index
+                return (
+                    <button
+                        key={step.key}
+                        type="button"
+                        onClick={() => onSelectStep(index)}
+                        className={`relative py-1 uppercase transition-colors cursor-pointer ${
+                            isActive
+                                ? 'text-neutral-900 font-extrabold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#eab308]'
+                                : 'text-neutral-400 hover:text-neutral-700'
+                        }`}
+                    >
+                        {step.label}
+                    </button>
+                )
+            })}
         </nav>
     )
 }

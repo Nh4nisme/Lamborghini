@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import HeroSection from '../features/model/components/HeroSection';
 import OverviewSection from '../features/model/components/OverviewSection';
 import PowertrainSection from '../features/model/components/PowertrainSection';
@@ -28,6 +28,7 @@ const ModelShowcasePage: React.FC = () => {
     ? adaptModelDetailToCarData(modelDetail, defaultSupercarData)
     : defaultSupercarData;
 
+  const navigate = useNavigate();
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
@@ -74,7 +75,7 @@ const ModelShowcasePage: React.FC = () => {
     <div className="bg-[#070707] min-h-screen">
       <HeroSection
         carData={carData}
-        onOpenConfigurator={() => setIsConfiguratorOpen(true)}
+        onOpenConfigurator={() => navigate(`/configurator/${modelId}`)}
         onOpenEnquiry={() => setIsEnquiryOpen(true)}
       />
       
@@ -87,14 +88,14 @@ const ModelShowcasePage: React.FC = () => {
       {/* Detail Gallery (In Detail) */}
       <DetailGallerySection carData={carData} />
       <TechnicalSpecsSection carData={carData} onOpenEnquiry={() => setIsEnquiryOpen(true)} />
-      <AdPersonamSection carData={carData} onOpenConfigurator={() => setIsConfiguratorOpen(true)} />
+      <AdPersonamSection carData={carData} onOpenConfigurator={() => navigate(`/configurator/${modelId}`)} />
       <JourneySection 
         carData={carData}
         onOpenEnquiry={() => setIsEnquiryOpen(true)}
-        onOpenConfigurator={() => setIsConfiguratorOpen(true)}
+        onOpenConfigurator={() => navigate(`/configurator/${modelId}`)}
       />
       <NextChapterCTA 
-        onOpenConfigurator={() => setIsConfiguratorOpen(true)}
+        onOpenConfigurator={() => navigate(`/configurator/${modelId}`)}
         onOpenEnquiry={() => setIsEnquiryOpen(true)}
       />
 

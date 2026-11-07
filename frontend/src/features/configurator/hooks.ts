@@ -1,41 +1,64 @@
-import { useMemo, useState, useEffect } from 'react'
-import { getTuyChonTheoXe } from './api'
-import type { Selected, TuyChon } from './types'
+import { useQuery } from '@tanstack/react-query'
+import {
+    getDanhSachMauCuaXeTheoLoaiMau,
+    getDanhSachTuyChonCuaXeTheoMaNhom,
+    getXeTheoId,
+} from './api'
+import { FALLBACK_COLORS, FALLBACK_WHEELS, FALLBACK_TIRES } from './constants'
 
-
-export function useConfigurator(options: TuyChon[]) {
-    const [choices, setChoices] = useState<Selected>({})
-    const [stepIndex, setStepIndex] = useState(0)
-
-    const byNhom = useMemo(() => {
-        const m: Record<number, TuyChon[]> = {}
-        for (const o of options) (m[o.maNhomTuyChon] ??= []).push(o)
-        return m
-    }, [options])
-
-    const selected = useMemo<Selected>(() => {
-        const d: Selected = {}
-        for (const [nhom, list] of Object.entries(byNhom)) d[Number(nhom)] = list[0]
-        return { ...d, ...choices }
-    }, [byNhom, choices])
-
-    // const tongGia = giaXe + Object.values(selected).reduce((s, o) => s + o.giaCongThem, 0)
-    const choose = (o: TuyChon) => setChoices((c) => ({ ...c, [o.maNhomTuyChon]: o }))
-    const reset = () => { setChoices({}); setStepIndex(0) }
-
-    return { byNhom, selected, choose, reset, stepIndex, setStepIndex }
+// Hook lấy thông tin xe
+export function useXeConfigurator(maXe: number) {
+    return useQuery({
+        queryKey: ['configurator-car', maXe],
+        queryFn: () => getXeTheoId(maXe),
+        enabled: !!maXe && maXe > 0,
+        placeholderData: {
+            maXe,
+            tenPhienBan: 'Revuelto',
+            giaKhoiDiem: 60000000000,
+            dongCo: 'V12 HPEV',
+            congSuat: 1015,
+            tocDoToiDa: 350,
+            hinhAnh: '/Images/homepage/Revuelto.png',
+        },
+    })
 }
-export function useTuyChon(maXe: number) {
-    const [state, setState] = useState<{ data: TuyChon[]; loading: boolean; error: string | null }>(
-        { data: [], loading: true, error: null })
 
-    useEffect(() => {
-        let alive = true
-        getTuyChonTheoXe(maXe)
-            .then((data) => { if (alive) setState({ data, loading: false, error: null }) })
-            .catch((e) => { if (alive) setState({ data: [], loading: false, error: String(e?.message ?? e) }) })
-        return () => { alive = false }
-    }, [maXe])
+// Hook lấy danh sách màu của xe theo loại màu (Metallic, Solid, Matt)
+export function useMauCuaXeTheoLoai(maXe: number, loaiMau: string) {
+    return useQuery({
+        queryKey: ['configurator-colors', maXe, loaiMau],
+        queryFn: async () => {
+            try {
+                const data = await getDanhSachMauCuaXeTheoLoaiMau(maXe, loaiMau)
+                return data && data.length > 0 ? data : (FALLBACK_COLORS[loaiMau] ?? [])
+            } catch {
+                return FALLBACK_COLORS[loaiMau] ?? []
+            }
+        },
+        enabled: !!maXe && maXe > 0 && !!loaiMau,
+        placeholderData: FALLBACK_COLORS[loaiMau] ?? [],
+    })
+}
 
-    return state
+// Hook lấy danh sách tùy chọn của xe theo mã nhóm tùy chọn (2 = Mâm xe, 6 = Lốp xe)
+export function useTuyChonTheoNhom(maXe: number, maNhomTuyChon: number) {
+    return useQuery({
+        queryKey: ['configurator-options', maXe, maNhomTuyChon],
+        queryFn: async () => {
+            try {
+                const data = await getDanhSachTuyChonCuaXeTheoMaNhom(maXe, maNhomTuyChon)
+                if (data && data.length > 0) return data
+                if (maNhomTuyChon === 2) return FALLBACK_WHEELS
+                if (maNhomTuyChon === 6) return FALLBACK_TIRES
+                return []
+            } catch {
+                if (maNhomTuyChon === 2) return FALLBACK_WHEELS
+                if (maNhomTuyChon === 6) return FALLBACK_TIRES
+                return []
+            }
+        },
+        enabled: !!maXe && maXe > 0 && !!maNhomTuyChon,
+        placeholderData: maNhomTuyChon === 2 ? FALLBACK_WHEELS : (maNhomTuyChon === 6 ? FALLBACK_TIRES : []),
+    })
 }

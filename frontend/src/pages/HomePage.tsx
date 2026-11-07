@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { useHome } from '../features/home/hooks'
 import { HeroSection } from '../features/home/components/HeroSection'
 import { FeaturedModelsCarousel } from '../components/FeaturedModelsCarousel'
@@ -11,6 +12,7 @@ import { ShowroomCTA } from '../features/home/components/ShowroomCTA'
 import NextChapterCTA from '../components/NextChapterCTA'
 
 export default function HomePage() {
+    const navigate = useNavigate()
     const { data, isLoading, isError, error, refetch } = useHome()
 
     if (isLoading) {
@@ -56,7 +58,10 @@ export default function HomePage() {
             <NewsGrid items={data!.tinTuc} />
             <PersonalSection />
             <ShowroomCTA />
-            <NextChapterCTA />
+            <NextChapterCTA
+                onOpenConfigurator={() => navigate('/configurator/1')}
+                onOpenEnquiry={() => navigate('/showroom')}
+            />
         </div>
     )
 }
