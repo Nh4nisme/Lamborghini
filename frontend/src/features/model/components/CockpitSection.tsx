@@ -32,12 +32,19 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
   return (
     <section id="cockpit" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        {/* Section Number - Top Right */}
+        <div className="flex justify-end mb-8">
+          <span className="text-[11px] font-mono tracking-[0.3em] text-[#8e826b] uppercase">
+            05
+          </span>
+        </div>
+        
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Heading, Story, and Actions */}
           <div className="lg:col-span-5 flex flex-col justify-center">
             {/* Tag */}
             <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-4">
-              04 / INTERIOR & TECHNOLOGY
+              05 / INTERIOR & TECHNOLOGY
             </div>
 
             {/* Headline */}
