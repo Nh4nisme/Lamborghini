@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useHome } from '../features/home/hooks'
 import { HeroSection } from '../features/home/components/HeroSection'
-import { FeaturedModels } from '../features/home/components/FeaturedModels'
+import { FeaturedModelsCarousel } from '../components/FeaturedModelsCarousel'
 import { CustomizationSection } from '../features/home/components/CustomizationSection'
 import { VisionSection } from '../features/home/components/VisionSection'
 import { ExperienceSection } from '../features/home/components/ExperienceSection'
@@ -9,7 +9,7 @@ import { HeritageSection } from '../features/home/components/HeritageSection'
 import { NewsGrid } from '../features/home/components/NewsGrid'
 import { PersonalSection } from '../features/home/components/PersonalSection'
 import { ShowroomCTA } from '../features/home/components/ShowroomCTA'
-import NextChapterCTA from "../components/NextChapterCTA.tsx";
+import NextChapterCTA from '../components/NextChapterCTA'
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -50,7 +50,7 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-lambo-bold-black">
             <HeroSection />
-            <FeaturedModels items={data!.dongXe} />
+            <FeaturedModelsCarousel items={data!.dongXe} showHeader={false} />
             <CustomizationSection />
             <VisionSection />
             <ExperienceSection />

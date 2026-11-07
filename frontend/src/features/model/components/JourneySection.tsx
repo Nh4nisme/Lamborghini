@@ -15,6 +15,13 @@ export const JourneySection: React.FC<JourneySectionProps> = ({
   return (
     <section id="journey" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        {/* Section Number - Top Right */}
+        <div className="flex justify-end mb-8">
+          <span className="text-[11px] font-mono tracking-[0.3em] text-[#8e826b] uppercase">
+            11
+          </span>
+        </div>
+        
         {/* Section Title */}
         <h2
           className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight mb-10"

@@ -19,6 +19,7 @@ import {
 import { ShowroomBoxMap } from '../features/showroom/components/ShowroomBoxMap';
 import { useShowroom } from '../features/showroom/hooks';
 import { adaptShowroomToUI } from '../features/showroom/types';
+import ScrollToTop from '../components/ScrollToTop';
 
 export default function ShowroomPage() {
   // API hook
@@ -834,6 +835,9 @@ export default function ShowroomPage() {
           </div>
         </div>
       )}
+
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 }
