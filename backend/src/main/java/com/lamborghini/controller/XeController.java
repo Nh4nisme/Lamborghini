@@ -1,5 +1,6 @@
 package com.lamborghini.controller;
 
+import com.lamborghini.dto.response.ModelDetailResponse;
 import com.lamborghini.entity.TuyChonCauHinh;
 import com.lamborghini.entity.Xe;
 import com.lamborghini.service.XeService;
@@ -28,6 +29,13 @@ public class XeController {
             @RequestParam("maNhomTuyChon") Integer maNhomTuyChon
     ) {
         return xeService.getDanhSachTuyChonCuaXeTheoMaNhomTuyChon(maXe, maNhomTuyChon);
+    }
+
+
+    //api cho trang model detail của một xe cụ thể
+    @GetMapping("/{maXe}/modeldetail")
+    public ModelDetailResponse getModelDetailTheoMaXe(@PathVariable("maXe") Integer maXe) {
+        return xeService.getModelDetailTheoMaXe(maXe);
     }
 
 
