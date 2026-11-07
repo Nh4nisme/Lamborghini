@@ -120,7 +120,7 @@ export function Navbar() {
                     onClick={() => setAboutDropdownOpen(false)}
                     className="block px-4 py-3 text-sm text-white hover:bg-lambo-primary/10 hover:text-lambo-primary transition-colors uppercase tracking-wide"
                   >
-                    Design
+                    Developer
                   </a>
                   <a
                     href="#history"

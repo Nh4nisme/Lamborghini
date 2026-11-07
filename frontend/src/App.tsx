@@ -1,7 +1,8 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Footer } from './components/Footer'
 import HomePage from './pages/HomePage'
+import ModelsPage from './pages/ModelsPage'
 import ShowroomPage from './pages/ShowroomPage'
 import ModelShowcasePage from './pages/ModelShowcasePage'
 
@@ -19,7 +20,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
           </Routes>
         ) : (
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className={location.pathname === '/models' ? '' : 'max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10'}>
             <Routes>
                 <Route path="/models/:id" element={<ModelShowcasePage />} />
                 <Route path="/models" element={<Navigate to="/models/1" replace />} />
