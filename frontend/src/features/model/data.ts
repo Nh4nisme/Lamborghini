@@ -315,3 +315,13 @@ export function filterSpecsByCategory(specs: ModelSpec[], category: string): Mod
   if (category === 'all') return specs;
   return specs.filter((s) => s.category === category);
 }
+
+export function getModelFolder(name: string): string {
+  const n = (name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (n.includes('revuelto')) return 'revuelto';
+  if (n.includes('temerario')) return 'temerario';
+  if (n.includes('urus')) return 'urus';
+  if (n.includes('huracan')) return 'huracan';
+  return 'revuelto';
+}
+

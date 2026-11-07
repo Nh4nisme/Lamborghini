@@ -1,4 +1,5 @@
 import type { CarModelData } from './data'
+import { getModelFolder } from './data'
 
 // Response từ API /model/getAllDongXe (for navbar listing)
 export interface DongXe {
@@ -57,6 +58,8 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
     const ldvi = findPhuTung(['LDVI', 'Driving Dynamics', 'Động lực học'])
     const spaceframe = findPhuTung(['Spaceframe', 'Monofuselage', 'Khung'])
     
+    const folder = getModelFolder(xe.tenPhienBan)
+
     return {
         ...defaultData, // Giữ nguyên form mẫu
         
@@ -67,7 +70,7 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
         proposition: xe.dongCo,
         introduction: xe.moTa,
         heroHeadline: xe.tenPhienBan.toUpperCase(),
-        heroImage: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/hero-car.jpg`,
+        heroImage: `/Images/model-detail/${folder}/exterior.webp`,
         
         // Stats từ API
         stats: {
@@ -97,7 +100,7 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
         powertrain: {
             headline: powertrain?.tenPhuTung || 'PURE PERFORMANCE',
             story: powertrain?.moTa || defaultData.powertrain.story,
-            image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/powertrain.webp`,
+            image: `/Images/model-detail/${folder}/exterior.webp`,
             displacement: xe.phanKhoi.toLocaleString() + ' cm³',
             turbos: xe.dongCo.includes('twin-turbo') ? 'Twin-Turbo' : 'Naturally Aspirated',
             electricMotors: xe.dongCo.includes('mô-tơ điện') || xe.dongCo.includes('PHEV') ? '3 Electric Motors' : '-',
@@ -123,7 +126,7 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
             ...defaultData.aerodynamics,
             headline: exterior?.tenPhuTung || 'AERODYNAMIC EXCELLENCE',
             story: exterior?.moTa || defaultData.aerodynamics.story,
-            image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/Exterior.jpg`
+            image: `/Images/model-detail/${folder}/exterior.webp`
         },
         
         // Sound Study section
@@ -131,7 +134,7 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
             ...defaultData.soundStudy,
             title: engineSound?.tenPhuTung || 'ENGINE SOUND',
             description: engineSound?.moTa || defaultData.soundStudy.description,
-            image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/sound-engine.jpg`
+            image: `/Images/model-detail/${folder}/exterior.webp`
         },
         
         // Interior section
@@ -139,7 +142,7 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
             ...defaultData.interior,
             headline: interior?.tenPhuTung || 'THE DRIVER. AT THE CENTER.',
             story: interior?.moTa || defaultData.interior.story,
-            image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/Interior.jpg`
+            image: `/Images/model-detail/${folder}/interior.webp`
         },
         
         // Gallery - update images
@@ -148,20 +151,20 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
                 ...defaultData.gallery[0],
                 title: xe.tenPhienBan.toUpperCase(),
                 subtitle: xe.dongCo,
-                image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/gallery-car.jpg`
+                image: `/Images/model-detail/${folder}/exterior.webp`
             },
             {
                 ...defaultData.gallery[1],
-                image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/rear-view.jpg`
+                image: `/Images/model-detail/${folder}/interior.webp`
             },
             {
                 ...defaultData.gallery[2],
-                image: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/interior-cockpit.jpg`
+                image: `/Images/model-detail/${folder}/powertrain.mp4`
             },
             ...(defaultData.gallery.slice(3) || [])
         ],
         
-        rearImage: `/Images/model-detail/${xe.tenPhienBan.toLowerCase()}/rear-view.jpg`,
+        rearImage: `/Images/model-detail/${folder}/exterior.webp`,
         
         // Technical Specifications - CÓ GÌ LẤY NẤY
         specifications: [

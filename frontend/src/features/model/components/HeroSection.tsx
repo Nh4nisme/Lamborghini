@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight, ChevronDown, Volume2, VolumeX } from 'lucide-react';
-import type { CarModelData } from '../data';
+import { type CarModelData, getModelFolder } from '../data';
 
 // Lamborghini Shield Logo SVG Component
 const LamborghiniLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
@@ -56,15 +56,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
+  const modelFolder = getModelFolder(carData.name);
 
   useEffect(() => {
-    // Auto-play video on mount
+    // Auto-play video on mount or when car changes
     if (videoRef.current) {
+      videoRef.current.load();
       videoRef.current.play().catch(err => {
         console.log('Video autoplay prevented:', err);
       });
     }
-  }, []);
+  }, [carData.name]);
 
   const handleMuteToggle = () => {
     if (videoRef.current) {
@@ -82,59 +84,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section className="relative h-screen w-full overflow-hidden -mt-14 flex items-center">
-      {/* Hero Background - Video hoặc Image thuần nền giống HomePage */}
+      {/* Hero Background - Video background full width for all models */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {carData.name === 'REVUELTO' ? (
-          // Video background cho Revuelto (chạy tự động, tắt tiếng, lặp vô tận)
-          <>
-            <video
-              ref={videoRef}
-              autoPlay
-              muted={isMuted}
-              loop
-              playsInline
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover scale-105"
-            >
-              <source src="/Images/model-detail/revuelto/hero-video.mp4" type="video/mp4" />
-            </video>
-            
-            {/* Mute/Unmute Button */}
-            <button
-              onClick={handleMuteToggle}
-              className="absolute bottom-20 right-6 sm:right-10 z-20 p-3 bg-black/80 border border-[#d4af37]/50 hover:bg-[#d4af37]/20 transition-colors backdrop-blur-sm cursor-pointer"
-              aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-            >
-              {isMuted ? (
-                <VolumeX className="w-5 h-5 text-white" />
-              ) : (
-                <Volume2 className="w-5 h-5 text-[#d4af37]" />
-              )}
-            </button>
-          </>
-        ) : (
-          // Fallback: Image cho các model khác
-          <div className="relative w-full h-full flex justify-end">
-            <div className="relative w-full lg:w-3/5 h-full">
-              <img
-                src={carData.heroImage}
-                alt={`${carData.name} Supercar Model Showcase`}
-                className="w-full h-full object-cover object-left filter brightness-95"
-                loading="eager"
-              />
-              {/* Smooth gradient blend into dark left panel */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60" />
-            </div>
-          </div>
-        )}
-        
+        <video
+          key={modelFolder}
+          ref={videoRef}
+          autoPlay
+          muted={isMuted}
+          loop
+          playsInline
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover scale-105"
+        >
+          <source src={`/Images/model-detail/${modelFolder}/hero-video.mp4`} type="video/mp4" />
+        </video>
+
+        {/* Mute/Unmute Button */}
+        <button
+          onClick={handleMuteToggle}
+          className="absolute bottom-20 right-6 sm:right-10 z-20 p-3 bg-black/80 border border-[#d4af37]/50 hover:bg-[#d4af37]/20 transition-colors backdrop-blur-sm cursor-pointer"
+          aria-label={isMuted ? 'Unmute video' : 'Mute video'}
+        >
+          {isMuted ? (
+            <VolumeX className="w-5 h-5 text-white" />
+          ) : (
+            <Volume2 className="w-5 h-5 text-[#d4af37]" />
+          )}
+        </button>
+
         {/* Dark overlay for video */}
-        {carData.name === 'REVUELTO' && (
-          <>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60 pointer-events-none" />
-          </>
-        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60 pointer-events-none" />
       </div>
 
       {/* Content Container - Bottom Aligned like Image 2 */}

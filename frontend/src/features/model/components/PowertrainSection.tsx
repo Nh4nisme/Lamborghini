@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Flame } from 'lucide-react';
-import type { CarModelData } from '../data';
+import { type CarModelData, getModelFolder } from '../data';
 
 interface PowertrainSectionProps {
   carData: CarModelData;
@@ -9,6 +9,7 @@ interface PowertrainSectionProps {
 
 export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData }) => {
   const [showArchitectureDetails, setShowArchitectureDetails] = useState(false);
+  const modelFolder = getModelFolder(carData.name);
 
   return (
     <section id="powertrain" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
@@ -21,18 +22,22 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Powertrain Engine Image with Gold Accent Frame */}
+          {/* Left Column: Powertrain Engine Video with Gold Accent Frame */}
           <div className="lg:col-span-7">
             <div className="relative border border-[#2b2518] overflow-hidden group bg-[#0e0e0e]">
-              <img
-                src={carData.powertrain.image}
-                alt="Lamborghini Powertrain Engine"
-                className="w-full h-auto object-cover filter brightness-95 group-hover:scale-102 transition-transform duration-700"
-                loading="lazy"
-              />
+              <video
+                key={modelFolder}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-auto object-cover filter brightness-95"
+              >
+                <source src={`/Images/model-detail/${modelFolder}/powertrain.mp4`} type="video/mp4" />
+              </video>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-3 left-4 text-[10px] uppercase tracking-widest text-[#948972] font-mono">
-                ENGINE ARCHITECTURE / 4.0L V8 TWIN-TURBO + 3 ELECTRIC MOTORS
+                ENGINE ARCHITECTURE / {carData.name === 'REVUELTO' ? '6.5L V12 NATURALLY ASPIRATED + 3 ELECTRIC MOTORS' : '4.0L V8 TWIN-TURBO + 3 ELECTRIC MOTORS'}
               </div>
             </div>
           </div>
