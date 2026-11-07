@@ -8,10 +8,12 @@ interface SoundStudySectionProps {
 
 export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData }) => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(true); // Mặc định tắt tiếng
   const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const modelFolder = getModelFolder(carData.name);
 
+  // Khi chuyển model khác thì dừng cả video lẫn audio và reset
   useEffect(() => {
     setIsVideoPlaying(false);
     if (videoRef.current) {
@@ -19,27 +21,98 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
       videoRef.current.currentTime = 0;
       videoRef.current.load();
     }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current.load();
+    }
   }, [carData.name]);
 
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        videoRef.current.pause();
-        setIsVideoPlaying(false);
-      } else {
-        videoRef.current.play().then(() => {
-          setIsVideoPlaying(true);
-        }).catch(err => {
-          console.log('Video play error:', err);
-        });
+  // Cleanup khi unmount
+  useEffect(() => {
+    return () => {
+      if (videoRef.current) videoRef.current.pause();
+      if (audioRef.current) audioRef.current.pause();
+    };
+  }, []);
+
+  const handleVideoPlay = () => {
+    setIsVideoPlaying(true);
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (!isVideoMuted && audio && video) {
+      audio.currentTime = video.currentTime;
+      audio.play().catch(err => {
+        console.log('Audio autoplay blocked or failed:', err);
+      });
+    }
+  };
+
+  const handleVideoPause = () => {
+    setIsVideoPlaying(false);
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+  };
+
+  // Đồng bộ thời gian giữa video và file audio sound.mp3
+  const handleTimeUpdate = () => {
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (video && audio && !isVideoMuted && isVideoPlaying) {
+      const diff = Math.abs(video.currentTime - audio.currentTime);
+      // Nếu video loop lại từ đầu hoặc lệch quá 0.3s thì sync lại
+      if (diff > 0.3) {
+        audio.currentTime = video.currentTime;
       }
     }
   };
 
+  const handlePlayPause = () => {
+    const video = videoRef.current;
+    const audio = audioRef.current;
+    if (!video) return;
+
+    if (isVideoPlaying) {
+      video.pause();
+      if (audio) {
+        audio.pause();
+      }
+    } else {
+      video.play().then(() => {
+        if (!isVideoMuted && audio) {
+          audio.currentTime = video.currentTime;
+          audio.play().catch(err => console.log('Audio play error:', err));
+        }
+      }).catch(err => {
+        console.log('Video play error:', err);
+      });
+    }
+  };
+
   const handleMuteToggle = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isVideoMuted;
-      setIsVideoMuted(!isVideoMuted);
+    const nextMuted = !isVideoMuted;
+    setIsVideoMuted(nextMuted);
+
+    const video = videoRef.current;
+    const audio = audioRef.current;
+
+    if (video) {
+      video.muted = nextMuted;
+    }
+
+    if (audio) {
+      audio.muted = nextMuted;
+      if (!nextMuted) {
+        // Mở tiếng: nếu video đang phát thì đồng bộ và phát sound.mp3
+        if (isVideoPlaying && video) {
+          audio.currentTime = video.currentTime;
+          audio.play().catch(err => console.log('Audio play error:', err));
+        }
+      } else {
+        // Tắt tiếng
+        audio.pause();
+      }
     }
   };
 
@@ -60,17 +133,27 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
 
         {/* Central Audio / Video Panel Container */}
         <div className="relative border border-[#2b2518] overflow-hidden bg-[#0c0c0c] max-w-4xl mx-auto group">
+          {/* File âm thanh sound.mp3 đi kèm với video sound-engine.mp4 */}
+          <audio
+            key={`audio-${modelFolder}`}
+            ref={audioRef}
+            src={`/Images/model-detail/${modelFolder}/sound.mp3`}
+            loop
+            preload="auto"
+          />
+
           {/* Engine Visual - Local sound-engine video for all models */}
           <div className="relative aspect-[16/9] sm:aspect-[21/10] overflow-hidden">
             <video
-              key={modelFolder}
+              key={`video-${modelFolder}`}
               ref={videoRef}
               className="w-full h-full object-cover"
               loop
               muted={isVideoMuted}
               playsInline
-              onPlay={() => setIsVideoPlaying(true)}
-              onPause={() => setIsVideoPlaying(false)}
+              onPlay={handleVideoPlay}
+              onPause={handleVideoPause}
+              onTimeUpdate={handleTimeUpdate}
             >
               <source
                 src={`/Images/model-detail/${modelFolder}/sound-engine.mp4`}
