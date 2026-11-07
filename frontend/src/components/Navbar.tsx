@@ -37,8 +37,8 @@ export function Navbar() {
           <nav className="hidden lg:flex items-center gap-7 text-[12px] uppercase tracking-[0.18em] font-medium text-[#c4c4c4]">
             <Link
               to="/"
-              className={`hover:text-[#d4af37] transition-colors ${
-                location.pathname === '/' ? 'text-[#d4af37]' : ''
+              className={`hover:text-lambo-primary transition-colors ${
+                location.pathname === '/' ? 'text-lambo-primary' : ''
               }`}
             >
               TRANG CHỦ
@@ -48,8 +48,8 @@ export function Navbar() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setModelsDropdownOpen(!modelsDropdownOpen)}
-                className={`hover:text-[#d4af37] transition-colors flex items-center gap-1 ${
-                  location.pathname.startsWith('/models') ? 'text-[#d4af37]' : ''
+                className={`hover:text-lambo-primary transition-colors flex items-center gap-1 ${
+                  location.pathname.startsWith('/models') ? 'text-lambo-primary' : ''
                 }`}
               >
                 <span>MODELS</span>
@@ -68,9 +68,9 @@ export function Navbar() {
                             key={dongXe.maDongXe}
                             to={`/models/${dongXe.maDongXe}`}
                             onClick={() => setModelsDropdownOpen(false)}
-                            className="block px-4 py-3 hover:bg-[#d4af37]/10 transition-colors group"
+                            className="block px-4 py-3 hover:bg-lambo-primary/10 transition-colors group"
                           >
-                            <div className="text-sm font-bold text-white group-hover:text-[#d4af37] uppercase tracking-wide">
+                            <div className="text-sm font-bold text-white group-hover:text-lambo-primary uppercase tracking-wide">
                               {dongXe.tenDongXe}
                             </div>
                             <div className="text-xs text-[#888] mt-0.5">
@@ -90,8 +90,8 @@ export function Navbar() {
             
             <Link
               to="/showroom"
-              className={`hover:text-[#d4af37] transition-colors ${
-                location.pathname === '/showroom' ? 'text-[#d4af37]' : ''
+              className={`hover:text-lambo-primary transition-colors ${
+                location.pathname === '/showroom' ? 'text-lambo-primary' : ''
               }`}
             >
               SHOWROOM
@@ -100,10 +100,10 @@ export function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <button className="p-1.5 text-[#a3a3a3] hover:text-[#d4af37] transition-colors" aria-label="Search">
+            <button className="p-1.5 text-[#a3a3a3] hover:text-lambo-primary transition-colors" aria-label="Search">
               <Search className="w-4 h-4" />
             </button>
-            <button className="p-1.5 text-[#a3a3a3] hover:text-[#d4af37] transition-colors" aria-label="Language">
+            <button className="p-1.5 text-[#a3a3a3] hover:text-lambo-primary transition-colors" aria-label="Language">
               <Globe className="w-4 h-4" />
             </button>
             <button
@@ -118,7 +118,7 @@ export function Navbar() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-[#0d0d0d] border-t border-[#2b2417] px-6 py-6 flex flex-col gap-4 text-sm uppercase tracking-[0.18em] font-medium text-[#ccc]">
-            <Link to="/" className="text-left hover:text-[#d4af37] py-1" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/" className="text-left hover:text-lambo-primary py-1" onClick={() => setMobileMenuOpen(false)}>
               Trang chủ
             </Link>
             
@@ -126,7 +126,7 @@ export function Navbar() {
             <div>
               <button
                 onClick={() => setModelsDropdownOpen(!modelsDropdownOpen)}
-                className="text-left hover:text-[#d4af37] py-1 flex items-center justify-between w-full"
+                className="text-left hover:text-lambo-primary py-1 flex items-center justify-between w-full"
               >
                 <span>Models</span>
                 <ChevronDown className={`w-4 h-4 transition-transform ${modelsDropdownOpen ? 'rotate-180' : ''}`} />
@@ -144,7 +144,7 @@ export function Navbar() {
                           setMobileMenuOpen(false)
                           setModelsDropdownOpen(false)
                         }}
-                        className="block text-sm text-[#aaa] hover:text-[#d4af37] py-1"
+                        className="block text-sm text-[#aaa] hover:text-lambo-primary py-1"
                       >
                         {dongXe.tenDongXe} <span className="text-xs text-[#666]">({dongXe.danhMuc})</span>
                       </Link>
@@ -153,7 +153,7 @@ export function Navbar() {
               )}
             </div>
             
-            <Link to="/showroom" className="text-left hover:text-[#d4af37] py-1" onClick={() => setMobileMenuOpen(false)}>
+            <Link to="/showroom" className="text-left hover:text-lambo-primary py-1" onClick={() => setMobileMenuOpen(false)}>
               Showroom
             </Link>
           </div>
