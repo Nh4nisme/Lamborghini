@@ -32,9 +32,13 @@ public interface TuyChonCauHinhRepository extends JpaRepository<TuyChonCauHinh, 
             "AND x.ma_xe = :maXe\n" +
             "AND t.thuoc_tinh_phu = :loaiMau\n" +
             "ORDER BY t.ten_tuy_chon asc",nativeQuery = true)
+
+    // dùng để lấy màu của xe theo loại màu được truền vào
     List<TuyChonCauHinh> getDanhSachMauCuaXeTheoLoaiMau(
             @Param("maXe") Integer maXe,
             @Param("loaiMau") String loaiMau
     );
+
+
 
 }

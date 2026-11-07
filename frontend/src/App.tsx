@@ -22,9 +22,10 @@ function App() {
         ) : (
           <div className={location.pathname === '/models' ? '' : 'max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10'}>
             <Routes>
-              <Route path="/models" element={<ModelsPage />} />
-              <Route path="/models/:id" element={<ModelShowcasePage />} />
-              <Route path="/showroom" element={<ShowroomPage />} />
+                <Route path="/models/:id" element={<ModelShowcasePage />} />
+                <Route path="/models" element={<Navigate to="/models/1" replace />} />
+                <Route path="/showroom" element={<ShowroomPage />} />
+                <Route path="/configurator/:maXe" element={<ModelShowcasePage />} />l
             </Routes>
           </div>
         )}
