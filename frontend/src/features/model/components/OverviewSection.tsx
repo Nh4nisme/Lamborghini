@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { defaultSupercarData } from '../data';
 import { ToggleLeft, ToggleRight, Sparkles } from 'lucide-react';
+import type { CarModelData } from '../data';
 
-export const OverviewSection: React.FC = () => {
+interface OverviewSectionProps {
+  carData: CarModelData;
+}
+
+export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => {
   const [showVerifiedSpecs, setShowVerifiedSpecs] = useState(false);
 
-  const stats = defaultSupercarData.stats;
+  const stats = carData.stats;
 
   const powerDisplay = showVerifiedSpecs
     ? `${stats.combinedPower.value} ${stats.combinedPower.unit}`
@@ -57,13 +61,12 @@ export const OverviewSection: React.FC = () => {
           className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight mb-5"
           style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
         >
-          [MODEL PROPOSITION]
+          {carData.proposition}
         </h2>
 
         {/* Introduction text */}
         <p className="text-sm sm:text-base text-[#a3a3a3] max-w-4xl font-normal leading-relaxed mb-12">
-          [INTRODUCTION – architecture, design intent and model context. Replace concept imagery and
-          all facts before publishing.]
+          {carData.introduction}
         </p>
 
         {/* 4 Key Stat Cards in a Grid */}

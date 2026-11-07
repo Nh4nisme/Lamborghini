@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { defaultSupercarData } from '../data';
+import type { CarModelData } from '../data';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-export const DetailGallerySection: React.FC = () => {
+interface DetailGallerySectionProps {
+  carData: CarModelData;
+}
+
+export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carData }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const items = defaultSupercarData.gallery;
+  const items = carData.gallery;
 
   const nextSlide = () => {
     setActiveIndex((prev) => (prev + 1) % items.length);

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import type { CarModelData } from '../data';
 
 interface AdPersonamSectionProps {
+  carData: CarModelData;
   onOpenConfigurator: () => void;
 }
 
-export const AdPersonamSection: React.FC<AdPersonamSectionProps> = ({ onOpenConfigurator }) => {
+export const AdPersonamSection: React.FC<AdPersonamSectionProps> = ({ carData, onOpenConfigurator }) => {
   const [activeStitchColor, setActiveStitchColor] = useState<'giallo' | 'rosso' | 'bianco' | 'verde'>('giallo');
 
   const stitchColors = {

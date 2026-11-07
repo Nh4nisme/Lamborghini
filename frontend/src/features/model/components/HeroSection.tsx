@@ -1,12 +1,15 @@
 import React from 'react';
 import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import type { CarModelData } from '../data';
 
 interface HeroSectionProps {
+  carData: CarModelData;
   onOpenConfigurator: () => void;
   onOpenEnquiry: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
+  carData,
   onOpenConfigurator,
   onOpenEnquiry,
 }) => {
@@ -23,8 +26,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="absolute inset-0 z-0 overflow-hidden flex justify-end">
         <div className="relative w-full lg:w-3/5 h-full">
           <img
-            src="/images/hero-car-pristine.jpg"
-            alt="Lamborghini Supercar Model Showcase"
+            src={carData.heroImage}
+            alt={`${carData.name} Supercar Model Showcase`}
             className="w-full h-full object-cover object-left filter brightness-95"
             loading="eager"
           />
@@ -48,7 +51,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase text-white tracking-tight leading-[0.95] mb-8"
             style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
           >
-            [CAMPAIGN HEADLINE]
+            {carData.heroHeadline}
           </h1>
 
           {/* Action Buttons */}

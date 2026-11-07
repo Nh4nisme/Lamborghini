@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { defaultSupercarData, type Hotspot } from '../data';
+import type { CarModelData, Hotspot } from '../data';
 import { Plus, X, Wind } from 'lucide-react';
 
-export const AerodynamicsSection: React.FC = () => {
+interface AerodynamicsSectionProps {
+  carData: CarModelData;
+}
+
+export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carData }) => {
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
-  const aeroData = defaultSupercarData.aerodynamics;
+  const aeroData = carData.aerodynamics;
 
   return (
     <section id="aerodynamics" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">

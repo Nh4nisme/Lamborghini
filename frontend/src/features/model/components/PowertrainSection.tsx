@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Flame } from 'lucide-react';
+import type { CarModelData } from '../data';
 
 interface PowertrainSectionProps {
+  carData: CarModelData;
   onOpenSpecsModal?: () => void;
 }
 
-export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
+export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData }) => {
   const [showArchitectureDetails, setShowArchitectureDetails] = useState(false);
 
   return (
@@ -16,7 +18,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = () => {
           <div className="lg:col-span-7">
             <div className="relative border border-[#2b2518] overflow-hidden group bg-[#0e0e0e]">
               <img
-                src="/images/powertrain-engine.jpg"
+                src={carData.powertrain.image}
                 alt="Supercar Hybrid Powertrain Architecture"
                 className="w-full h-auto object-cover filter brightness-95 group-hover:scale-102 transition-transform duration-700"
                 loading="lazy"

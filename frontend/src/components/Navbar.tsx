@@ -1,10 +1,25 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Globe, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { Search, Globe, Menu, X, ChevronDown } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { useDongXe } from '../features/model/hooks'
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [modelsDropdownOpen, setModelsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
+  const { data: dongXeList } = useDongXe()
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setModelsDropdownOpen(false)
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
@@ -28,14 +43,51 @@ export function Navbar() {
             >
               TRANG CHỦ
             </Link>
-            <Link
-              to="/models"
-              className={`hover:text-[#d4af37] transition-colors ${
-                location.pathname === '/models' ? 'text-[#d4af37]' : ''
-              }`}
-            >
-              MODELS
-            </Link>
+            
+            {/* Models Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setModelsDropdownOpen(!modelsDropdownOpen)}
+                className={`hover:text-[#d4af37] transition-colors flex items-center gap-1 ${
+                  location.pathname.startsWith('/models') ? 'text-[#d4af37]' : ''
+                }`}
+              >
+                <span>MODELS</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${modelsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Menu */}
+              {modelsDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-64 bg-[#0a0a0a] border border-[#383020] shadow-2xl z-50 animate-fadeIn">
+                  <div className="p-2">
+                    {dongXeList && dongXeList.length > 0 ? (
+                      dongXeList
+                        .filter(dx => dx.trangThai === 'HIEN_THI')
+                        .map((dongXe) => (
+                          <Link
+                            key={dongXe.maDongXe}
+                            to={`/models/${dongXe.maDongXe}`}
+                            onClick={() => setModelsDropdownOpen(false)}
+                            className="block px-4 py-3 hover:bg-[#d4af37]/10 transition-colors group"
+                          >
+                            <div className="text-sm font-bold text-white group-hover:text-[#d4af37] uppercase tracking-wide">
+                              {dongXe.tenDongXe}
+                            </div>
+                            <div className="text-xs text-[#888] mt-0.5">
+                              {dongXe.danhMuc}
+                            </div>
+                          </Link>
+                        ))
+                    ) : (
+                      <div className="px-4 py-3 text-xs text-[#666]">
+                        Loading models...
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            
             <Link
               to="/showroom"
               className={`hover:text-[#d4af37] transition-colors ${
@@ -69,9 +121,38 @@ export function Navbar() {
             <Link to="/" className="text-left hover:text-[#d4af37] py-1" onClick={() => setMobileMenuOpen(false)}>
               Trang chủ
             </Link>
-            <Link to="/models" className="text-left hover:text-[#d4af37] py-1" onClick={() => setMobileMenuOpen(false)}>
-              Models
-            </Link>
+            
+            {/* Mobile Menu Models Dropdown */}
+            <div>
+              <button
+                onClick={() => setModelsDropdownOpen(!modelsDropdownOpen)}
+                className="text-left hover:text-[#d4af37] py-1 flex items-center justify-between w-full"
+              >
+                <span>Models</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${modelsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {modelsDropdownOpen && dongXeList && (
+                <div className="ml-4 mt-2 space-y-2">
+                  {dongXeList
+                    .filter(dx => dx.trangThai === 'HIEN_THI')
+                    .map((dongXe) => (
+                      <Link
+                        key={dongXe.maDongXe}
+                        to={`/models/${dongXe.maDongXe}`}
+                        onClick={() => {
+                          setMobileMenuOpen(false)
+                          setModelsDropdownOpen(false)
+                        }}
+                        className="block text-sm text-[#aaa] hover:text-[#d4af37] py-1"
+                      >
+                        {dongXe.tenDongXe} <span className="text-xs text-[#666]">({dongXe.danhMuc})</span>
+                      </Link>
+                    ))}
+                </div>
+              )}
+            </div>
+            
             <Link to="/showroom" className="text-left hover:text-[#d4af37] py-1" onClick={() => setMobileMenuOpen(false)}>
               Showroom
             </Link>
