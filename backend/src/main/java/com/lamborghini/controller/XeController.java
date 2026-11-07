@@ -32,11 +32,7 @@ public class XeController {
     }
 
 
-    //api cho trang model detail của một xe cụ thể
-    @GetMapping("/{maXe}/modeldetail")
-    public ModelDetailResponse getModelDetailTheoMaXe(@PathVariable("maXe") Integer maXe) {
-        return xeService.getModelDetailTheoMaXe(maXe);
-    }
+
 
 
 

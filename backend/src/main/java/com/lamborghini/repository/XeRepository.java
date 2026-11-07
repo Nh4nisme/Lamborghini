@@ -9,4 +9,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface XeRepository extends JpaRepository<Xe, Integer> {
+    Xe findFirstByDongXe_MaDongXe(Integer maDongXe);
 }

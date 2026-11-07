@@ -33,13 +33,7 @@ public class XeService {
         return tuyChonCauHinhRepository.getDanhSachTuyChonCuaXeTheoMaNhomTuyChon(maXe, maNhomTuyChon);
     }
 
-    // api cho trang model detail của một xe cụ thể
-    @Transactional
-    public ModelDetailResponse getModelDetailTheoMaXe(Integer maXe) {
-        Xe xe = xeRepository.findById(maXe).orElseThrow(() -> new NotFoundException("Không tìm thấy xe theo id: " + maXe));
-        List<PhuTungCoBan> danhSachPhuTung = phuTungCoBanRepository.findByXe_MaXe(maXe);
-        return new ModelDetailResponse(xe, danhSachPhuTung);
-    }
+
 
 
 }

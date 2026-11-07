@@ -50,6 +50,7 @@ public class Xe {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ma_dong_xe")
+    @JsonIgnore
     private DongXe dongXe;
 
     @OneToMany(mappedBy = "xe")
