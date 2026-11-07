@@ -12,7 +12,7 @@ import DetailGallerySection from '../features/model/components/DetailGallerySect
 import TechnicalSpecsSection from '../features/model/components/TechnicalSpecsSection';
 import AdPersonamSection from '../features/model/components/AdPersonamSection';
 import JourneySection from '../features/model/components/JourneySection';
-import NextChapterCTA from '../features/model/components/NextChapterCTA';
+import NextChapterCTA from '../components/NextChapterCTA.tsx';
 import { defaultSupercarData } from '../features/model/data';
 import { useModelDetail } from '../features/model/hooks';
 import { adaptModelDetailToCarData } from '../features/model/types';

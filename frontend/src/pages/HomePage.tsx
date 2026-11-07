@@ -1,7 +1,6 @@
 import { useHome } from '../features/home/hooks'
 import { HeroSection } from '../features/home/components/HeroSection'
 import { FeaturedModels } from '../features/home/components/FeaturedModels'
-import { StatsSection } from '../features/home/components/StatsSection'
 import { CustomizationSection } from '../features/home/components/CustomizationSection'
 import { VisionSection } from '../features/home/components/VisionSection'
 import { ExperienceSection } from '../features/home/components/ExperienceSection'
@@ -9,7 +8,7 @@ import { HeritageSection } from '../features/home/components/HeritageSection'
 import { NewsGrid } from '../features/home/components/NewsGrid'
 import { PersonalSection } from '../features/home/components/PersonalSection'
 import { ShowroomCTA } from '../features/home/components/ShowroomCTA'
-import { FinalCTA } from '../features/home/components/FinalCTA'
+import NextChapterCTA from "../components/NextChapterCTA.tsx";
 
 export default function HomePage() {
     const { data, isLoading, isError, error, refetch } = useHome()
@@ -50,7 +49,6 @@ export default function HomePage() {
         <div className="min-h-screen bg-lambo-bold-black">
             <HeroSection />
             <FeaturedModels items={data!.dongXe} />
-            <StatsSection />
             <CustomizationSection />
             <VisionSection />
             <ExperienceSection />
@@ -58,7 +56,11 @@ export default function HomePage() {
             <NewsGrid items={data!.tinTuc} />
             <PersonalSection />
             <ShowroomCTA />
-            <FinalCTA />
+            <NextChapterCTA onOpenConfigurator={function(): void {
+                throw new Error("Function not implemented.")
+            } } onOpenEnquiry={function(): void {
+                throw new Error("Function not implemented.")
+            } }/>
         </div>
     )
 }
