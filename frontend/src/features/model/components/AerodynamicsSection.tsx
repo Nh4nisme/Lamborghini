@@ -29,8 +29,8 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
         {/* Panoramic Landscape Exterior Side Profile Image */}
         <div className="relative border border-[#262016] overflow-hidden bg-[#0a0a0a] group">
           <img
-            src="/images/exterior-side.jpg"
-            alt="Lamborghini Aerodynamic Exploration Exterior Study"
+            src={carData.aerodynamics.image}
+            alt="Lamborghini Aerodynamic Exploration"
             className="w-full h-auto object-cover filter brightness-95"
             loading="lazy"
           />
