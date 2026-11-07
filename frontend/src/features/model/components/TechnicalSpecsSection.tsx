@@ -1,0 +1,135 @@
+import React, { useState } from 'react';
+import { defaultSupercarData, type ModelSpec } from '../data';
+import { ArrowUpRight, Sparkles } from 'lucide-react';
+
+interface TechnicalSpecsSectionProps {
+  onOpenEnquiry: () => void;
+}
+
+export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ onOpenEnquiry }) => {
+  const [useVerifiedValues, setUseVerifiedValues] = useState(false);
+
+  const verifiedMap: Record<string, { value: string; unit: string; context: string }> = {
+    Powertrain: {
+      value: 'V8 Twin-Turbo HPEV Hybrid',
+      unit: 'Mid-Rear Transverse',
+      context: 'Combustion V8 + 3 Axial Flux E-Motors',
+    },
+    'Combined power': {
+      value: '920 (677)',
+      unit: 'CV (kW)',
+      context: 'Maximum combined system output',
+    },
+    Acceleration: {
+      value: '2.7',
+      unit: 's',
+      context: '0-100 km/h (0-62 mph) with Launch Control',
+    },
+    'Top speed': {
+      value: '> 343',
+      unit: 'km/h',
+      context: '213 mph top speed manufacturer reference',
+    },
+    Displacement: {
+      value: '3,995',
+      unit: 'cm³',
+      context: '4.0-liter hot-V twin-turbo dry sump V8',
+    },
+    'Engine speed': {
+      value: '10,000',
+      unit: 'rpm',
+      context: 'Flat-plane crankshaft record redline',
+    },
+  };
+
+  const allSpecs: ModelSpec[] = defaultSupercarData.specifications;
+  const displayedSpecs = allSpecs;
+
+  return (
+    <section id="specs" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        {/* Main Box with Gold Border matching screenshot */}
+        <div className="border border-[#383020] bg-[#0c0c0c] p-6 sm:p-10">
+          {/* Header Row: Title & Enquire Button */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#242017]">
+            <div>
+              <h3
+                className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide mb-1"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                [MODEL NAME] / TECHNICAL SPECIFICATIONS
+              </h3>
+              <p className="text-xs text-[#737373]">
+                Reusable data role / replace every cell with verified model information.
+              </p>
+            </div>
+
+            {/* Enquire Button */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setUseVerifiedValues(!useVerifiedValues)}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs text-[#d4af37] border border-[#d4af37]/30 hover:border-[#d4af37] bg-[#d4af37]/5 transition-colors cursor-pointer"
+                title="Toggle between template placeholders and real supercar specifications"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{useVerifiedValues ? 'Showing Verified' : 'Fill Real Data'}</span>
+              </button>
+
+              <button
+                onClick={onOpenEnquiry}
+                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white border border-[#4d3f23] hover:border-[#d4af37] bg-black/60 hover:bg-[#d4af37]/10 transition-colors cursor-pointer"
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              >
+                <span>ENQUIRE ABOUT THIS MODEL</span>
+                <ArrowUpRight className="w-4 h-4 text-[#d4af37]" />
+              </button>
+            </div>
+          </div>
+
+          {/* Table Container */}
+          <div className="overflow-x-auto mt-6">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-[#292215] text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#8e826b]">
+                  <th className="py-3 px-4 font-semibold">PARAMETER</th>
+                  <th className="py-3 px-4 font-semibold">VALUE</th>
+                  <th className="py-3 px-4 font-semibold">UNIT</th>
+                  <th className="py-3 px-4 font-semibold">CONTEXT</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#1c1810]">
+                {displayedSpecs.map((spec, idx) => {
+                  const verified = verifiedMap[spec.parameter];
+                  const val = useVerifiedValues && verified ? verified.value : spec.value;
+                  const unit = useVerifiedValues && verified ? verified.unit : spec.unit;
+                  const ctx = useVerifiedValues && verified ? verified.context : spec.context;
+
+                  return (
+                    <tr
+                      key={idx}
+                      className="hover:bg-[#14120e] transition-colors font-sans text-xs sm:text-[13px]"
+                    >
+                      <td className="py-3.5 px-4 font-medium text-white">{spec.parameter}</td>
+                      <td className="py-3.5 px-4 text-[#d4af37] font-mono font-medium">{val}</td>
+                      <td className="py-3.5 px-4 text-[#999999]">{unit}</td>
+                      <td className="py-3.5 px-4 text-[#737373]">{ctx}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Footnote matching screenshot */}
+          <div className="mt-8 pt-4 border-t border-[#242017]">
+            <p className="text-[11px] text-[#666666] leading-relaxed">
+              Manufacturer figures shown for reference. Confirm local specifications. No price, battery, torque or electric range claims are made.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TechnicalSpecsSection;
