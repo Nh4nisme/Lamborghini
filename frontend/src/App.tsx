@@ -22,6 +22,7 @@ function App() {
               <Route path="/models/:id" element={<ModelShowcasePage />} />
               <Route path="/models" element={<Navigate to="/models/1" replace />} />
               <Route path="/showroom" element={<ShowroomPage />} />
+              <Route path="/configurator/:maXe" element={<ModelShowcasePage />} />l
             </Routes>
           </div>
         )}
