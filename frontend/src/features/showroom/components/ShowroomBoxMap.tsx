@@ -2,11 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import {
   Compass,
-  Layers,
   ZoomIn,
   ZoomOut,
-  Maximize2,
-  ExternalLink,
   Shield,
   RotateCcw,
 } from 'lucide-react';
@@ -70,7 +67,6 @@ function createLamborghiniShieldIcon(isSelected: boolean, city: string, code?: s
 export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
   selectedShowroomId,
   onSelectShowroom,
-  onRequestAppointment,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);

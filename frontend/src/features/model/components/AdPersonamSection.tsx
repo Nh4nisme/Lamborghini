@@ -7,7 +7,7 @@ interface AdPersonamSectionProps {
   onOpenConfigurator: () => void;
 }
 
-export const AdPersonamSection: React.FC<AdPersonamSectionProps> = ({ carData, onOpenConfigurator }) => {
+export const AdPersonamSection: React.FC<AdPersonamSectionProps> = ({ onOpenConfigurator }) => {
   const [activeStitchColor, setActiveStitchColor] = useState<'giallo' | 'rosso' | 'bianco' | 'verde'>('giallo');
 
   const stitchColors = {

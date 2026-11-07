@@ -9,7 +9,6 @@ interface JourneySectionProps {
 }
 
 export const JourneySection: React.FC<JourneySectionProps> = ({
-  carData,
   onOpenEnquiry,
   onOpenConfigurator,
 }) => {
