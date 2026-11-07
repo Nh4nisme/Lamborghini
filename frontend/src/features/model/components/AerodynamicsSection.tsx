@@ -13,6 +13,13 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
   return (
     <section id="aerodynamics" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        {/* Section Number - Top Right */}
+        <div className="flex justify-end mb-8">
+          <span className="text-[11px] font-mono tracking-[0.3em] text-[#8e826b] uppercase">
+            03
+          </span>
+        </div>
+        
         {/* Tag */}
         <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
           {aeroData.tag}

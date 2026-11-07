@@ -28,9 +28,10 @@ export function Navbar() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-white tracking-[0.22em] text-lg sm:text-xl font-bold uppercase transition-opacity hover:opacity-80 font-barlow"
+            className="text-white tracking-[0.3em] text-base sm:text-lg font-bold uppercase transition-opacity hover:opacity-80"
+            style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.3em' }}
           >
-            Lamborghini
+            LAMBORGHINI
           </Link>
 
           {/* Desktop Navigation */}
@@ -49,7 +50,7 @@ export function Navbar() {
               <button
                 onClick={() => setModelsDropdownOpen(!modelsDropdownOpen)}
                 className={`hover:text-lambo-primary transition-colors flex items-center gap-1 ${
-                  location.pathname.startsWith('/models') ? 'text-lambo-primary' : ''
+                  location.pathname.startsWith('/models/') ? 'text-lambo-primary' : ''
                 }`}
               >
                 <span>MODELS</span>

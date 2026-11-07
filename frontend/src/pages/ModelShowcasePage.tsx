@@ -6,13 +6,12 @@ import PowertrainSection from '../features/model/components/PowertrainSection';
 import AerodynamicsSection from '../features/model/components/AerodynamicsSection';
 import SoundStudySection from '../features/model/components/SoundStudySection';
 import CockpitSection from '../features/model/components/CockpitSection';
-import DrivingDynamicsSection from '../features/model/components/DrivingDynamicsSection';
-import MonofuselageSection from '../features/model/components/MonofuselageSection';
 import DetailGallerySection from '../features/model/components/DetailGallerySection';
 import TechnicalSpecsSection from '../features/model/components/TechnicalSpecsSection';
 import AdPersonamSection from '../features/model/components/AdPersonamSection';
 import JourneySection from '../features/model/components/JourneySection';
-import NextChapterCTA from '../components/NextChapterCTA.tsx';
+import NextChapterCTA from '../components/NextChapterCTA';
+import ScrollToTop from '../components/ScrollToTop';
 import { defaultSupercarData } from '../features/model/data';
 import { useModelDetail } from '../features/model/hooks';
 import { adaptModelDetailToCarData } from '../features/model/types';
@@ -85,13 +84,7 @@ const ModelShowcasePage: React.FC = () => {
       <SoundStudySection carData={carData} />
       <CockpitSection carData={carData} />
       
-      {/* Section 5: Driving Dynamics */}
-      <DrivingDynamicsSection carData={carData} />
-      
-      {/* Section 6: Monofuselage/Spaceframe */}
-      <MonofuselageSection carData={carData} />
-      
-      {/* Section 7: Detail Gallery (In Detail) */}
+      {/* Detail Gallery (In Detail) */}
       <DetailGallerySection carData={carData} />
       <TechnicalSpecsSection carData={carData} onOpenEnquiry={() => setIsEnquiryOpen(true)} />
       <AdPersonamSection carData={carData} onOpenConfigurator={() => setIsConfiguratorOpen(true)} />
@@ -133,6 +126,9 @@ const ModelShowcasePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
     </div>
   );
 };

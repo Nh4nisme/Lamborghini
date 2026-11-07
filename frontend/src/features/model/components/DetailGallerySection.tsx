@@ -8,7 +8,7 @@ interface DetailGallerySectionProps {
 
 export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carData }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  
+
   // Hardcode gallery items cho Revuelto (vì không có API list files)
   const revueltoGallery = [
     {
@@ -33,7 +33,7 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
       badge: '03 / 03'
     }
   ];
-  
+
   const items = carData.name === 'REVUELTO' ? revueltoGallery : carData.gallery;
 
   const nextSlide = () => {
@@ -49,9 +49,16 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
   return (
     <section id="gallery" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+        {/* Section Number - Top Right */}
+        <div className="flex justify-end mb-8">
+          <span className="text-[11px] font-mono tracking-[0.3em] text-[#8e826b] uppercase">
+            06
+          </span>
+        </div>
+
         {/* Tag */}
         <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-4">
-          05 / IN DETAIL
+          06 / IN DETAIL
         </div>
 
         {/* Gallery Container Box with subtle gold border matching screenshot */}
@@ -108,11 +115,10 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
               <button
                 key={item.id}
                 onClick={() => setActiveIndex(idx)}
-                className={`relative aspect-[16/9] overflow-hidden border transition-all cursor-pointer group text-left ${
-                  activeIndex === idx
+                className={`relative aspect-[16/9] overflow-hidden border transition-all cursor-pointer group text-left ${activeIndex === idx
                     ? 'border-[#d4af37] ring-1 ring-[#d4af37]'
                     : 'border-[#2e2619] opacity-70 hover:opacity-100 hover:border-[#8e7a46]'
-                }`}
+                  }`}
               >
                 <img
                   src={item.image}
