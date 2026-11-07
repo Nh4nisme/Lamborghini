@@ -5,6 +5,7 @@ export interface DongXe {
     moTa: string
     trangThai: string
     noiBat: boolean
+    hinhAnh?: string
 }
 
 export interface TinTuc {

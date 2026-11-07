@@ -2,6 +2,20 @@
 
 @import "leaflet/dist/leaflet.css";
 
+@theme {
+  --color-lambo-primary: #D8A016;
+  --color-lambo-secondary: #F7DE9F;
+  --color-lambo-tertiary: #282928;
+  --color-lambo-hover: #F9CE5C;
+  --color-lambo-pressed: #9F6B08;
+  --color-lambo-disabled: #282928;
+  --color-lambo-bold-black: #040404;
+  --color-lambo-dark: #070707;
+  --color-lambo-dark-light: #0a0a0a;
+  
+  --font-family-barlow: "Barlow Condensed", sans-serif;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -9,11 +23,28 @@
   }
 
   body {
-    background-color: #070707;
+    background-color: #040404;
     color: #e5e5e5;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
   }
+}
+
+/* Perspective utilities for 3D effects */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
 
 @keyframes fadeIn {
@@ -27,21 +58,160 @@
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slideInLeft {
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-zoomIn {
+  animation: zoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(216, 160, 22, 0.3) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
 }
 
 /* Leaflet custom popup styles for Lamborghini brand */
 .lambo-leaflet-popup .leaflet-popup-content-wrapper {
   background: #0b0a07;
-  border: 1px solid #d4af37;
+  border: 1px solid #D8A016;
   padding: 0;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
 }
 
 .lambo-leaflet-popup .leaflet-popup-tip {
   background: #0b0a07;
-  border: 1px solid #d4af37;
+  border: 1px solid #D8A016;
 }
 
 /* Custom scrollbar cho Lamborghini theme */
@@ -55,10 +225,10 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d4af37;
+  background: #D8A016;
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #e6be43;
+  background: #F9CE5C;
 }

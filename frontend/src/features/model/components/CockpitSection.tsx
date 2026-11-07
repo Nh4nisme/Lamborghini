@@ -6,7 +6,7 @@ interface CockpitSectionProps {
   carData: CarModelData;
 }
 
-export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
+export const CockpitSection: React.FC<CockpitSectionProps> = () => {
   const [activeDrivingMode, setActiveDrivingMode] = useState<'CITTA' | 'STRADA' | 'SPORT' | 'CORSA'>('CORSA');
   const [showModeInfo, setShowModeInfo] = useState(false);
 
