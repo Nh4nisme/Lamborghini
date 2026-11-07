@@ -4,10 +4,22 @@ import { Footer } from './components/Footer'
 import HomePage from './pages/HomePage'
 import ShowroomPage from './pages/ShowroomPage'
 import ModelShowcasePage from './pages/ModelShowcasePage'
+import ConfiguratorPage from './pages/ConfiguratorPage'
 
 function App() {
   const location = useLocation()
   const isHomePage = location.pathname === '/'
+  const isConfigurator = location.pathname.startsWith('/configurator')
+
+  // Dedicated full-screen atelier for Configurator (ẩn Navbar & Footer riêng theo mẫu thiết kế)
+  if (isConfigurator) {
+    return (
+      <Routes>
+        <Route path="/configurator/:maXe" element={<ConfiguratorPage />} />
+        <Route path="/configurator" element={<Navigate to="/configurator/1" replace />} />
+      </Routes>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-lambo-bold-black text-[#e5e5e5]">
@@ -24,7 +36,6 @@ function App() {
                 <Route path="/models/:id" element={<ModelShowcasePage />} />
                 <Route path="/models" element={<Navigate to="/models/1" replace />} />
                 <Route path="/showroom" element={<ShowroomPage />} />
-                <Route path="/configurator/:maXe" element={<ModelShowcasePage />} />l
             </Routes>
           </div>
         )}
