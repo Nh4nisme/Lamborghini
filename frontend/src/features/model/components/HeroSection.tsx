@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowUpRight, ChevronDown, Volume2, VolumeX } from 'lucide-react';
 import type { CarModelData } from '../data';
 
 interface HeroSectionProps {
@@ -13,6 +13,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenConfigurator,
   onOpenEnquiry,
 }) => {
+  const [isMuted, setIsMuted] = useState(false); // Mặc định BẬT âm thanh
+  
   const scrollToExplore = () => {
     const el = document.getElementById('overview');
     if (el) {
@@ -22,19 +24,56 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section className="relative w-full min-h-[90vh] sm:min-h-screen bg-[#070707] flex items-center overflow-hidden pt-28">
-      {/* Background Hero Car Image positioned on the right with seamless gradient blending */}
-      <div className="absolute inset-0 z-0 overflow-hidden flex justify-end">
-        <div className="relative w-full lg:w-3/5 h-full">
-          <img
-            src={carData.heroImage}
-            alt={`${carData.name} Supercar Model Showcase`}
-            className="w-full h-full object-cover object-left filter brightness-95"
-            loading="eager"
-          />
-          {/* Smooth gradient blend into dark left panel */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60" />
-        </div>
+      {/* Hero Background - YouTube Video hoặc Image */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {carData.name === 'REVUELTO' ? (
+          // YouTube Video cho Revuelto
+          <>
+            <iframe
+              className="absolute top-0 left-0 w-full h-full object-cover scale-150"
+              src={`https://www.youtube.com/embed/OfmNVANmalA?autoplay=1&loop=1&playlist=OfmNVANmalA&controls=0&showinfo=0&mute=${isMuted ? 1 : 0}&enablejsapi=1`}
+              title="Lamborghini Revuelto"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+            
+            {/* Mute/Unmute Button */}
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="absolute top-24 right-8 z-20 p-3 bg-black/60 border border-[#d4af37]/50 hover:bg-[#d4af37]/20 transition-colors"
+              aria-label={isMuted ? 'Unmute' : 'Mute'}
+            >
+              {isMuted ? (
+                <VolumeX className="w-5 h-5 text-white" />
+              ) : (
+                <Volume2 className="w-5 h-5 text-[#d4af37]" />
+              )}
+            </button>
+          </>
+        ) : (
+          // Fallback: Image cho các model khác
+          <div className="relative w-full h-full flex justify-end">
+            <div className="relative w-full lg:w-3/5 h-full">
+              <img
+                src={carData.heroImage}
+                alt={`${carData.name} Supercar Model Showcase`}
+                className="w-full h-full object-cover object-left filter brightness-95"
+                loading="eager"
+              />
+              {/* Smooth gradient blend into dark left panel */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60" />
+            </div>
+          </div>
+        )}
+        
+        {/* Dark overlay for video */}
+        {carData.name === 'REVUELTO' && (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60" />
+          </>
+        )}
       </div>
 
       {/* Content Container */}

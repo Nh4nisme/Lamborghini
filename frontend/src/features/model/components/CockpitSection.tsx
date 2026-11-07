@@ -45,12 +45,12 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
               className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-[0.95] mb-6"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              THE DRIVER.<br />AT THE CENTER.
+              {carData.interior.headline}
             </h2>
 
             {/* Story */}
             <p className="text-sm sm:text-base text-[#a3a3a3] font-normal leading-relaxed mb-8">
-              [INTERIOR STORY – HMI, driving modes and connectivity content slots.]
+              {carData.interior.story}
             </p>
 
             {/* Discover Cockpit Link */}
@@ -98,8 +98,8 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
           <div className="lg:col-span-7">
             <div className="relative border border-[#262016] overflow-hidden bg-[#0a0a0a] group">
               <img
-                src="/images/interior-cockpit.jpg"
-                alt="Lamborghini Driver Centric Interior Cockpit"
+                src={carData.interior.image}
+                alt="Lamborghini Interior Cockpit"
                 className="w-full h-auto object-cover filter brightness-95 group-hover:scale-102 transition-transform duration-700"
                 loading="lazy"
               />

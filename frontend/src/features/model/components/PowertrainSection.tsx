@@ -19,7 +19,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
             <div className="relative border border-[#2b2518] overflow-hidden group bg-[#0e0e0e]">
               <img
                 src={carData.powertrain.image}
-                alt="Supercar Hybrid Powertrain Architecture"
+                alt="Lamborghini Powertrain Engine"
                 className="w-full h-auto object-cover filter brightness-95 group-hover:scale-102 transition-transform duration-700"
                 loading="lazy"
               />
@@ -42,12 +42,12 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
               className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight leading-tight mb-5"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [POWERTRAIN HEADLINE]
+              {carData.powertrain.headline}
             </h3>
 
             {/* Story */}
             <p className="text-sm sm:text-base text-[#a3a3a3] font-normal leading-relaxed mb-8">
-              [POWERTRAIN STORY – verified architecture and output only.]
+              {carData.powertrain.story}
             </p>
 
             {/* Explore Powertrain Link / Button */}
@@ -103,10 +103,10 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
               className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [ENGINEERING HEADLINE]
+              {carData.engineering.ldvi.headline}
             </h4>
             <p className="text-xs sm:text-sm text-[#888888] leading-relaxed">
-              [ENGINEERING DESCRIPTION]
+              {carData.engineering.ldvi.description}
             </p>
           </div>
 
@@ -119,10 +119,10 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
               className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              [ENGINEERING HEADLINE]
+              {carData.engineering.spaceframe.headline}
             </h4>
             <p className="text-xs sm:text-sm text-[#888888] leading-relaxed">
-              [ENGINEERING DESCRIPTION]
+              {carData.engineering.spaceframe.description}
             </p>
           </div>
         </div>

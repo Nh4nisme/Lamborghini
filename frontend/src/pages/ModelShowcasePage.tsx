@@ -1,38 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 import HeroSection from '../features/model/components/HeroSection';
 import OverviewSection from '../features/model/components/OverviewSection';
 import PowertrainSection from '../features/model/components/PowertrainSection';
 import AerodynamicsSection from '../features/model/components/AerodynamicsSection';
 import SoundStudySection from '../features/model/components/SoundStudySection';
 import CockpitSection from '../features/model/components/CockpitSection';
+import DrivingDynamicsSection from '../features/model/components/DrivingDynamicsSection';
+import MonofuselageSection from '../features/model/components/MonofuselageSection';
 import DetailGallerySection from '../features/model/components/DetailGallerySection';
 import TechnicalSpecsSection from '../features/model/components/TechnicalSpecsSection';
 import AdPersonamSection from '../features/model/components/AdPersonamSection';
 import JourneySection from '../features/model/components/JourneySection';
 import NextChapterCTA from '../features/model/components/NextChapterCTA';
 import { defaultSupercarData } from '../features/model/data';
-import { useDongXe } from '../features/model/hooks';
-import { adaptDongXeToCarData } from '../features/model/types';
+import { useModelDetail } from '../features/model/hooks';
+import { adaptModelDetailToCarData } from '../features/model/types';
 
 const ModelShowcasePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const modelId = Number(id);
   
-  // Fetch dòng xe từ API
-  const { data: dongXeList, isLoading, isError } = useDongXe();
-  
-  // Tìm dòng xe theo id từ URL
-  const currentDongXe = dongXeList?.find(dx => dx.maDongXe === Number(id)) || dongXeList?.[0];
+  // Fetch model detail từ API mới
+  const { data: modelDetail, isLoading, isError } = useModelDetail(modelId);
   
   // Merge API data với form mẫu
-  const carData = currentDongXe 
-    ? adaptDongXeToCarData(currentDongXe, defaultSupercarData)
+  const carData = modelDetail 
+    ? adaptModelDetailToCarData(modelDetail, defaultSupercarData)
     : defaultSupercarData;
 
   const [isConfiguratorOpen, setIsConfiguratorOpen] = useState(false);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
-  // Scroll to top khi chuyển model
+  // Invalid ID
+  if (!id || isNaN(modelId)) {
+    return <Navigate to="/models/1" replace />;
+  }
+
+  // Scroll to top khi đổi model
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
@@ -50,7 +55,7 @@ const ModelShowcasePage: React.FC = () => {
   }
 
   // Error state
-  if (isError) {
+  if (isError || !modelDetail) {
     return (
       <div className="min-h-screen bg-[#070707] flex items-center justify-center">
         <div className="text-center">
@@ -79,6 +84,14 @@ const ModelShowcasePage: React.FC = () => {
       <AerodynamicsSection carData={carData} />
       <SoundStudySection carData={carData} />
       <CockpitSection carData={carData} />
+      
+      {/* Section 5: Driving Dynamics */}
+      <DrivingDynamicsSection carData={carData} />
+      
+      {/* Section 6: Monofuselage/Spaceframe */}
+      <MonofuselageSection carData={carData} />
+      
+      {/* Section 7: Detail Gallery (In Detail) */}
       <DetailGallerySection carData={carData} />
       <TechnicalSpecsSection carData={carData} onOpenEnquiry={() => setIsEnquiryOpen(true)} />
       <AdPersonamSection carData={carData} onOpenConfigurator={() => setIsConfiguratorOpen(true)} />

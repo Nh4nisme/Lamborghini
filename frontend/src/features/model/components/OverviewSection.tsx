@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { ToggleLeft, ToggleRight, Sparkles } from 'lucide-react';
+import React from 'react';
 import type { CarModelData } from '../data';
 
 interface OverviewSectionProps {
@@ -7,25 +6,7 @@ interface OverviewSectionProps {
 }
 
 export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => {
-  const [showVerifiedSpecs, setShowVerifiedSpecs] = useState(false);
-
   const stats = carData.stats;
-
-  const powerDisplay = showVerifiedSpecs
-    ? `${stats.combinedPower.value} ${stats.combinedPower.unit}`
-    : '[Value] [Unit]';
-
-  const accelDisplay = showVerifiedSpecs
-    ? `${stats.acceleration.value} ${stats.acceleration.unit}`
-    : '[Value] [Unit]';
-
-  const speedDisplay = showVerifiedSpecs
-    ? `${stats.topSpeed.value} ${stats.topSpeed.unit}`
-    : '[Value] [Unit]';
-
-  const rpmDisplay = showVerifiedSpecs
-    ? `${stats.engineSpeed.value} ${stats.engineSpeed.unit}`
-    : '[Value] [Unit]';
 
   return (
     <section id="overview" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
@@ -33,27 +14,8 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
         {/* Header Tag */}
         <div className="flex items-center justify-between mb-3">
           <span className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase">
-            OVERVIEW / [MODEL NAME]
+            OVERVIEW / {carData.name}
           </span>
-
-          {/* Toggle between template mode and verified data */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowVerifiedSpecs(!showVerifiedSpecs)}
-              className="flex items-center gap-1.5 text-[11px] text-[#9e947d] hover:text-[#d4af37] transition-colors cursor-pointer"
-              title="Toggle verified hypercar telemetry vs template tags"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
-              <span className="hidden sm:inline">
-                {showVerifiedSpecs ? 'Showing Verified Specs' : 'Preview Live Telemetry'}
-              </span>
-              {showVerifiedSpecs ? (
-                <ToggleRight className="w-4 h-4 text-[#d4af37]" />
-              ) : (
-                <ToggleLeft className="w-4 h-4 text-[#888]" />
-              )}
-            </button>
-          </div>
         </div>
 
         {/* Large Proposition Headline */}
@@ -61,7 +23,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
           className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight mb-5"
           style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
         >
-          {carData.proposition}
+          {carData.name}
         </h2>
 
         {/* Introduction text */}
@@ -80,10 +42,10 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
               className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-wide mb-2"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              {powerDisplay}
+              {stats.combinedPower.value} {stats.combinedPower.unit}
             </div>
             <p className="text-[11px] text-[#6b6b6b] leading-tight">
-              {showVerifiedSpecs ? '4.0L V8 twin-turbo + 3 electric motors' : 'Replace with verified model data.'}
+              4.0L V8 twin-turbo + 3 electric motors
             </p>
           </div>
 
@@ -96,10 +58,10 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
               className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-wide mb-2"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              {accelDisplay}
+              {stats.acceleration.value} {stats.acceleration.unit}
             </div>
             <p className="text-[11px] text-[#6b6b6b] leading-tight">
-              {showVerifiedSpecs ? 'Electric launch control with e-torque vectoring' : 'Replace with verified model data.'}
+              Electric launch control with e-torque vectoring
             </p>
           </div>
 
@@ -112,10 +74,10 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
               className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-wide mb-2"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              {speedDisplay}
+              {stats.topSpeed.value} {stats.topSpeed.unit}
             </div>
             <p className="text-[11px] text-[#6b6b6b] leading-tight">
-              {showVerifiedSpecs ? 'Aerodynamic low-drag high downforce trim' : 'Replace with verified model data.'}
+              Aerodynamic low-drag high downforce trim
             </p>
           </div>
 
@@ -128,10 +90,10 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
               className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-wide mb-2"
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
-              {rpmDisplay}
+              {stats.engineSpeed.value} {stats.engineSpeed.unit}
             </div>
             <p className="text-[11px] text-[#6b6b6b] leading-tight">
-              {showVerifiedSpecs ? 'Flat-plane crankshaft record 10,000 RPM redline' : 'Replace with verified model data.'}
+              Flat-plane crankshaft record 10,000 RPM redline
             </p>
           </div>
         </div>
