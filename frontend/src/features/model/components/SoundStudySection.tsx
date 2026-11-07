@@ -7,7 +7,7 @@ interface SoundStudySectionProps {
   carData: CarModelData;
 }
 
-export const SoundStudySection: React.FC<SoundStudySectionProps> = () => {
+export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [rpm, setRpm] = useState(1100);
   const [isRevving, setIsRevving] = useState(false);
