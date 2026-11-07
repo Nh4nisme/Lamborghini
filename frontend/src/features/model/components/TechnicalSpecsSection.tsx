@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { defaultSupercarData, type ModelSpec } from '../data';
+import type { CarModelData, ModelSpec } from '../data';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 
 interface TechnicalSpecsSectionProps {
+  carData: CarModelData;
   onOpenEnquiry: () => void;
 }
 
-export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ onOpenEnquiry }) => {
+export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ carData, onOpenEnquiry }) => {
   const [useVerifiedValues, setUseVerifiedValues] = useState(false);
 
   const verifiedMap: Record<string, { value: string; unit: string; context: string }> = {
@@ -42,7 +43,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ on
     },
   };
 
-  const allSpecs: ModelSpec[] = defaultSupercarData.specifications;
+  const allSpecs: ModelSpec[] = carData.specifications;
   const displayedSpecs = allSpecs;
 
   return (

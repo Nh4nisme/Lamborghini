@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { Navbar } from './components/Navbar'
 import { Footer } from './components/Footer'
 import HomePage from './pages/HomePage'
@@ -14,7 +14,8 @@ function App() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/models" element={<ModelShowcasePage />} />
+            <Route path="/models/:id" element={<ModelShowcasePage />} />
+            <Route path="/models" element={<Navigate to="/models/1" replace />} />
             <Route path="/showroom" element={<ShowroomPage />} />
           </Routes>
         </div>

@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { soundEngine } from '../soundEngine';
 import { Volume2, Play, Square, Gauge } from 'lucide-react';
+import type { CarModelData } from '../data';
 
-export const SoundStudySection: React.FC = () => {
+interface SoundStudySectionProps {
+  carData: CarModelData;
+}
+
+export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [rpm, setRpm] = useState(1100);
   const [isRevving, setIsRevving] = useState(false);

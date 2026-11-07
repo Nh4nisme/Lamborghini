@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import type { CarModelData } from '../data';
 
-export const CockpitSection: React.FC = () => {
+interface CockpitSectionProps {
+  carData: CarModelData;
+}
+
+export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
   const [activeDrivingMode, setActiveDrivingMode] = useState<'CITTA' | 'STRADA' | 'SPORT' | 'CORSA'>('CORSA');
   const [showModeInfo, setShowModeInfo] = useState(false);
 
