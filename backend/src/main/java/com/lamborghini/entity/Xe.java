@@ -56,4 +56,7 @@ public class Xe {
     @JsonIgnore
     private List<XeTuyChonCauHinh> danhSachTuyChon;
 
+    @OneToMany(mappedBy = "xe")
+    @JsonIgnore
+    private List<PhuTungCoBan> danhSachPhuTung;
 }
