@@ -7,14 +7,17 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [modelsDropdownOpen, setModelsDropdownOpen] = useState(false)
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const modelsDropdownRef = useRef<HTMLDivElement>(null)
+  const aboutDropdownRef = useRef<HTMLDivElement>(null)
   const location = useLocation()
   const { data: dongXeList } = useDongXe()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (modelsDropdownRef.current && !modelsDropdownRef.current.contains(event.target as Node)) {
         setModelsDropdownOpen(false)
+      }
+      if (aboutDropdownRef.current && !aboutDropdownRef.current.contains(event.target as Node)) {
         setAboutDropdownOpen(false)
       }
     }
@@ -37,7 +40,7 @@ export function Navbar() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8 text-xs uppercase tracking-[0.15em] font-semibold text-white/80">
             {/* Models Dropdown */}
-            <div className="relative group" ref={dropdownRef}>
+            <div className="relative group" ref={modelsDropdownRef}>
               <button
                   onClick={() => {
                     setModelsDropdownOpen(!modelsDropdownOpen)
@@ -93,7 +96,7 @@ export function Navbar() {
             </Link>
 
             {/* About Dropdown */}
-            <div className="relative group">
+            <div className="relative group" ref={aboutDropdownRef}>
               <button
                   onClick={() => {
                     setAboutDropdownOpen(!aboutDropdownOpen)
@@ -108,20 +111,20 @@ export function Navbar() {
               {aboutDropdownOpen && (
                   <div className="absolute top-full left-0 mt-2 w-56 bg-[#0a0a0a] border border-[#2a2a2a] shadow-2xl animate-fadeIn">
                     <div className="p-2">
-                      <a
-                          href="#company"
+                      <Link
+                          to="/about-brand"
                           onClick={() => setAboutDropdownOpen(false)}
                           className="block px-4 py-3 text-sm text-white hover:bg-lambo-primary/10 hover:text-lambo-primary transition-colors uppercase tracking-wide"
                       >
                         Company
-                      </a>
-                      <a
-                          href="#design"
+                      </Link>
+                      <Link
+                          to="/about-us"
                           onClick={() => setAboutDropdownOpen(false)}
                           className="block px-4 py-3 text-sm text-white hover:bg-lambo-primary/10 hover:text-lambo-primary transition-colors uppercase tracking-wide"
                       >
-                        Design
-                      </a>
+                        Developer
+                      </Link>
                       <a
                           href="#history"
                           onClick={() => setAboutDropdownOpen(false)}
@@ -222,8 +225,8 @@ export function Navbar() {
 
                   {aboutDropdownOpen && (
                       <div className="ml-4 mt-2 space-y-2">
-                        <a
-                            href="#company"
+                        <Link
+                            to="/about-brand"
                             onClick={() => {
                               setMobileMenuOpen(false)
                               setAboutDropdownOpen(false)
@@ -231,17 +234,17 @@ export function Navbar() {
                             className="block text-sm text-gray-400 hover:text-lambo-primary py-1"
                         >
                           Company
-                        </a>
-                        <a
-                            href="#design"
+                        </Link>
+                        <Link
+                            to="/about-us"
                             onClick={() => {
                               setMobileMenuOpen(false)
                               setAboutDropdownOpen(false)
                             }}
                             className="block text-sm text-gray-400 hover:text-lambo-primary py-1"
                         >
-                          Design
-                        </a>
+                          Developer
+                        </Link>
                         <a
                             href="#history"
                             onClick={() => {
