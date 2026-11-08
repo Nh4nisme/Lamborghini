@@ -92,10 +92,9 @@ export const defaultSupercarData: CarModelData = {
   id: 'temerario',
   name: 'TEMERARIO',
   tagline: 'AUTHENTIC ITALIAN HYBRID SUPER SPORTS CAR',
-  proposition: '[MODEL PROPOSITION]',
-  introduction:
-    '[INTRODUCTION – architecture, design intent and model context. Replace concept imagery and all facts before publishing.]',
-  heroHeadline: '[CAMPAIGN HEADLINE]',
+  proposition: '',
+  introduction: '',
+  heroHeadline: '',
   heroImage: '/images/hero-car.jpg',
   stats: {
     combinedPower: {
@@ -120,8 +119,8 @@ export const defaultSupercarData: CarModelData = {
     },
   },
   powertrain: {
-    headline: '[POWERTRAIN HEADLINE]',
-    story: '[POWERTRAIN STORY – verified architecture and output only.]',
+    headline: '',
+    story: '',
     image: '/images/powertrain-engine.jpg',
     displacement: '4.0 L Twin-Turbo V8',
     turbos: 'Dual Hot-V Twin-Scroll Turbos',
@@ -131,21 +130,19 @@ export const defaultSupercarData: CarModelData = {
   engineering: {
     ldvi: {
       title: 'LDVI 2.0',
-      headline: '[ENGINEERING HEADLINE]',
-      description:
-        '[ENGINEERING DESCRIPTION – Lamborghini Dinamica Veicolo Integrata 2.0 with torque vectoring & adaptive drift control.]',
+      headline: '',
+      description: '',
     },
     spaceframe: {
       title: 'SPACEFRAME',
-      headline: '[ENGINEERING HEADLINE]',
-      description:
-        '[ENGINEERING DESCRIPTION – All-aluminum ultra-high torsional stiffness architecture delivering optimum lightweight dynamics.]',
+      headline: '',
+      description: '',
     },
   },
   aerodynamics: {
     tag: '02 / EXTERIOR & AERODYNAMICS',
     headline: 'EVERY SURFACE HAS A PURPOSE.',
-    story: '[EXTERIOR STORY – replace with verified model-specific design details.]',
+    story: '',
     image: '/images/exterior-side.jpg',
     hotspots: [
       {
@@ -200,14 +197,14 @@ export const defaultSupercarData: CarModelData = {
   },
   soundStudy: {
     tag: '03 / ENGINE SOUND',
-    title: '[SOUND PANEL TITLE]',
+    title: '',
     description: 'Static listening experience. Audio and video playback are not connected.',
     image: '/images/sound-engine.jpg',
   },
   interior: {
     tag: '04 / INTERIOR & TECHNOLOGY',
     headline: 'THE DRIVER. AT THE CENTER.',
-    story: '[INTERIOR STORY – HMI, driving modes and connectivity content slots.]',
+    story: '',
     image: '/images/interior-cockpit.jpg',
   },
   gallery: [
@@ -244,42 +241,42 @@ export const defaultSupercarData: CarModelData = {
   specifications: [
     {
       parameter: 'Powertrain',
-      value: '[Architecture]',
+      value: '',
       unit: '—',
-      context: '[Context]',
+      context: '',
       category: 'engine',
     },
     {
       parameter: 'Combined power',
-      value: '[Value]',
+      value: '',
       unit: 'CV / kW',
       context: 'Maximum combined output',
       category: 'performance',
     },
     {
       parameter: 'Acceleration',
-      value: '[Value]',
+      value: '',
       unit: 's',
       context: '0-100 km/h',
       category: 'performance',
     },
     {
       parameter: 'Top speed',
-      value: '[Value]',
+      value: '',
       unit: 'km/h',
       context: 'Manufacturer reference',
       category: 'performance',
     },
     {
       parameter: 'Displacement',
-      value: '[Value]',
+      value: '',
       unit: 'cm³',
       context: '4.0-liter twin-turbo V8',
       category: 'engine',
     },
     {
       parameter: 'Engine speed',
-      value: '[Value]',
+      value: '',
       unit: 'rpm',
       context: 'Engine reference',
       category: 'engine',

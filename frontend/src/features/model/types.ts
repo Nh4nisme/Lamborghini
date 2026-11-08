@@ -209,21 +209,6 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
                 unit: 'rpm',
                 context: 'Maximum engine speed',
                 category: 'engine' as const
-            },
-            // Placeholder cho các specs chưa có
-            {
-                parameter: 'Weight',
-                value: '[Value]',
-                unit: 'kg',
-                context: 'Dry weight',
-                category: 'dimension' as const
-            },
-            {
-                parameter: 'Transmission',
-                value: '[Value]',
-                unit: '—',
-                context: 'Dual-clutch transmission',
-                category: 'engine' as const
             }
         ],
         
