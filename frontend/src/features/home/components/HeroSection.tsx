@@ -1,9 +1,14 @@
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-export function HeroSection() {
+interface HeroSectionProps {
+    onOpenModels?: () => void
+}
+
+export function HeroSection({ onOpenModels }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [scrollY, setScrollY] = useState(0)
+
 
   useEffect(() => {
     if (videoRef.current) {
@@ -19,6 +24,14 @@ export function HeroSection() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleOpenModels = () => {
+    if(onOpenModels) {
+        onOpenModels()
+    } else {
+      console.log('Open models pages')
+    }
+  }
 
   return (
     <section className="relative h-screen w-full overflow-hidden -mt-14">
@@ -56,7 +69,7 @@ export function HeroSection() {
               Khám phá thế giới của những siêu xe đỉnh cao, nơi công nghệ hybrid tiên tiến kết hợp với di sản huyền thoại.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
-              <button className="group bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-lambo-bold-black font-barlow font-bold px-8 py-4 uppercase tracking-wider text-sm transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
+              <button onClick={handleOpenModels} className="group bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-lambo-bold-black font-barlow font-bold px-8 py-4 uppercase tracking-wider text-sm transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
                 Khám phá dòng xe
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
