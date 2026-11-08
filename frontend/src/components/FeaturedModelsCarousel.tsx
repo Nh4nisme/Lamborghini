@@ -87,7 +87,7 @@ const getCarSpecs = (dongXe: DongXe) => {
   ]
 }
 
-export function FeaturedModelsCarousel({ items, showHeader = true }: FeaturedModelsCarouselProps) {
+export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -119,20 +119,6 @@ export function FeaturedModelsCarousel({ items, showHeader = true }: FeaturedMod
   return (
     <section className="relative py-24 px-6 lg:px-10 bg-lambo-bold-black overflow-hidden">
       <div className="max-w-[1920px] mx-auto">
-        {/* Optional Header */}
-        {showHeader && (
-          <div className="mb-16 text-center animate-fadeInUp">
-            <p className="text-sm text-lambo-primary uppercase tracking-wider font-barlow font-semibold mb-4">
-              MODELS
-            </p>
-            <h2 className="font-barlow font-bold text-4xl sm:text-5xl lg:text-6xl uppercase text-white mb-4 tracking-tight">
-              BEYOND THE LIMIT.
-            </h2>
-            <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-              Three families. Distinct characters. Discover a range where sculpted design, electrified performance and unmistakable emotion meet.
-            </p>
-          </div>
-        )}
 
         {/* Tab Navigation */}
         <div className="flex justify-center gap-0 mb-16">
@@ -189,16 +175,18 @@ export function FeaturedModelsCarousel({ items, showHeader = true }: FeaturedMod
               </p>
             </div>
 
-            {/* Car Image */}
+            {/* Car Image - Fixed dimensions */}
             <div className="relative mb-12 px-8 animate-zoomIn" style={{ animationDelay: '0.2s' }}>
-              <img
-                src={getCarImage(activeModel.tenDongXe)}
-                alt={activeModel.tenDongXe}
-                className="w-full h-auto transform hover:scale-105 transition-transform duration-700"
-                style={{
-                  filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.3))'
-                }}
-              />
+              <div className="relative w-full h-[300px] lg:h-[400px] flex items-center justify-center">
+                <img
+                  src={getCarImage(activeModel.tenDongXe)}
+                  alt={activeModel.tenDongXe}
+                  className="max-w-full max-h-full w-auto h-auto object-contain transform hover:scale-105 transition-transform duration-700"
+                  style={{
+                    filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.3))'
+                  }}
+                />
+              </div>
             </div>
 
             {/* CTA Buttons */}
@@ -252,35 +240,46 @@ export function FeaturedModelsCarousel({ items, showHeader = true }: FeaturedMod
             </div>
           )}
 
-          {/* Navigation Arrows */}
+          {/* Navigation Arrows - Hexagon Style */}
           {displayedModels.length > 1 && (
-            <>
-              <button
-                onClick={handlePrev}
-                disabled={isTransitioning}
-                className="absolute left-8 lg:left-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-white/20 hover:border-white hover:bg-white/10 text-white flex items-center justify-center transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed group"
-                aria-label="Previous model"
-              >
-                <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-              </button>
+              <>
+                <button
+                    onClick={handlePrev}
+                    disabled={isTransitioning}
+                    className="group absolute left-8 lg:left-16 top-[30%] -translate-y-1/2 w-16 aspect-[1.1547/1] flex items-center justify-center text-white transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:drop-shadow-[0_0_12px_rgba(216,160,22,0.6)]"
+                    aria-label="Previous model"
+                >
+                  <svg viewBox="0 0 100 86.6" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
+                    <polygon
+                        points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+                        strokeWidth="2"
+                        strokeLinejoin="round"
+                        vectorEffect="non-scaling-stroke"
+                        className="fill-black/50 stroke-white/30 group-hover:fill-lambo-primary/20 group-hover:stroke-lambo-primary transition-all duration-300"
+                    />
+                  </svg>
+                  <ArrowLeft className="w-6 h-6 relative z-10 group-hover:-translate-x-1 group-hover:text-lambo-primary transition-all duration-300" />
+                </button>
 
-              <button
-                onClick={handleNext}
-                disabled={isTransitioning}
-                className="absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-white/20 hover:border-white hover:bg-white/10 text-white flex items-center justify-center transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed group"
-                aria-label="Next model"
-              >
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </>
+                <button
+                    onClick={handleNext}
+                    disabled={isTransitioning}
+                    className="group absolute right-8 lg:right-16 top-[30%] -translate-y-1/2 w-16 aspect-[1.1547/1] flex items-center justify-center text-white transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:drop-shadow-[0_0_12px_rgba(216,160,22,0.6)]"
+                    aria-label="Next model"
+                >
+                  <svg viewBox="0 0 100 86.6" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
+                    <polygon
+                        points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+                        strokeWidth="2"
+                        strokeLinejoin="round"
+                        vectorEffect="non-scaling-stroke"
+                        className="fill-black/50 stroke-white/30 group-hover:fill-lambo-primary/20 group-hover:stroke-lambo-primary transition-all duration-300"
+                    />
+                  </svg>
+                  <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 group-hover:text-lambo-primary transition-all duration-300" />
+                </button>
+              </>
           )}
-        </div>
-
-        {/* Manufacturer Note */}
-        <div className="text-center mt-12 animate-fadeIn" style={{ animationDelay: '1s' }}>
-          <p className="text-xs text-gray-600 italic">
-            Manufacturer performance figures. Specifications may vary by market.
-          </p>
         </div>
       </div>
     </section>
