@@ -39,10 +39,10 @@ interface BeyondTheRangeSectionProps {
 }
 
 export default function BeyondTheRangeSection({
-                                                  cards = CARDS,
-                                                  eyebrow = 'THE STORY CONTINUES',
-                                                  title = 'BEYOND THE RANGE.',
-                                              }: BeyondTheRangeSectionProps) {
+    cards = CARDS,
+    eyebrow = 'THE STORY CONTINUES',
+    title = 'BEYOND THE RANGE.',
+}: BeyondTheRangeSectionProps) {
     return (
         <section className="py-24 px-4 sm:px-6 lg:px-10 bg-lambo-bold-black">
             <div className="max-w-[1440px] mx-auto">

@@ -21,9 +21,9 @@ const carImages = [
 ]
 
 export default function BeyondTheLimitHeader({
-                                                 title = 'BEYOND THE LIMIT.',
-                                                 description = 'Three families. Distinct characters. Discover a range where sculpted design, electrified performance and unmistakable emotion meet.',
-                                             }: BeyondTheLimitHeaderProps) {
+    title = 'BEYOND THE LIMIT.',
+    description = 'Three families. Distinct characters. Discover a range where sculpted design, electrified performance and unmistakable emotion meet.',
+}: BeyondTheLimitHeaderProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const carContainerRef = useRef<HTMLDivElement>(null)
     const titleRef = useRef<HTMLHeadingElement>(null)

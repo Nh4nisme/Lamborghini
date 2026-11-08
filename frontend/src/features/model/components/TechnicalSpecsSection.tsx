@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { CarModelData, ModelSpec } from '../data';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface TechnicalSpecsSectionProps {
   carData: CarModelData;
@@ -9,6 +13,10 @@ interface TechnicalSpecsSectionProps {
 
 export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ carData, onOpenEnquiry }) => {
   const [useVerifiedValues, setUseVerifiedValues] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   const verifiedMap: Record<string, { value: string; unit: string; context: string }> = {
     Powertrain: {
@@ -46,8 +54,64 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
   const allSpecs: ModelSpec[] = carData.specifications;
   const displayedSpecs = allSpecs;
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Animate header
+      if (headerRef.current) {
+        gsap.from(headerRef.current.children, {
+          scrollTrigger: {
+            trigger: headerRef.current,
+            start: 'top 80%',
+            end: 'bottom 60%',
+            toggleActions: 'play none none reverse',
+          },
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+        });
+      }
+
+      // Animate table rows with stagger
+      if (tableRef.current) {
+        const rows = tableRef.current.querySelectorAll('tbody tr');
+        gsap.from(rows, {
+          scrollTrigger: {
+            trigger: tableRef.current,
+            start: 'top 75%',
+            end: 'bottom 60%',
+            toggleActions: 'play none none reverse',
+          },
+          opacity: 0,
+          x: -30,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'power2.out',
+        });
+      }
+
+      // Animate footer
+      if (footerRef.current) {
+        gsap.from(footerRef.current, {
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+          opacity: 0,
+          y: 20,
+          duration: 0.7,
+          ease: 'power2.out',
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [displayedSpecs, useVerifiedValues]);
+
   return (
-    <section id="specs" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="specs" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -59,7 +123,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
         {/* Main Box with Gold Border matching screenshot */}
         <div className="border border-[#383020] bg-[#0c0c0c] p-6 sm:p-10">
           {/* Header Row: Title & Enquire Button */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#242017]">
+          <div ref={headerRef} className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#242017]">
             <div>
               <h3
                 className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide mb-1"
@@ -96,7 +160,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
 
           {/* Table Container */}
           <div className="overflow-x-auto mt-6">
-            <table className="w-full text-left text-xs sm:text-sm">
+            <table ref={tableRef} className="w-full text-left text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-[#292215] text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#8e826b]">
                   <th className="py-3 px-4 font-semibold">PARAMETER</th>
@@ -129,7 +193,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
           </div>
 
           {/* Footnote matching screenshot */}
-          <div className="mt-8 pt-4 border-t border-[#242017]">
+          <div ref={footerRef} className="mt-8 pt-4 border-t border-[#242017]">
             <p className="text-[11px] text-[#666666] leading-relaxed">
               Manufacturer figures shown for reference. Confirm local specifications. No price, battery, torque or electric range claims are made.
             </p>

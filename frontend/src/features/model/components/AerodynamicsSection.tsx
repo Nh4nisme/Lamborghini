@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { CarModelData, Hotspot } from '../data';
 import { Plus, X, Wind } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface AerodynamicsSectionProps {
   carData: CarModelData;
@@ -9,9 +13,83 @@ interface AerodynamicsSectionProps {
 export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carData }) => {
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const aeroData = carData.aerodynamics;
+  const sectionRef = useRef<HTMLElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const hotspotButtonsRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Animate headline
+      if (headlineRef.current) {
+        gsap.from(headlineRef.current, {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: headlineRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+
+      // Animate image with scale
+      if (imageRef.current) {
+        gsap.from(imageRef.current, {
+          scale: 0.95,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: imageRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+
+      // Animate hotspot buttons with stagger
+      if (hotspotButtonsRef.current) {
+        gsap.from(hotspotButtonsRef.current.children, {
+          y: 20,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: hotspotButtonsRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+
+      // Animate story text
+      if (storyRef.current) {
+        gsap.from(storyRef.current, {
+          y: 30,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: storyRef.current,
+            start: 'top 90%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [carData.name]);
 
   return (
-    <section id="aerodynamics" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="aerodynamics" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -27,6 +105,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
 
         {/* Headline */}
         <h2
+          ref={headlineRef}
           className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-tight mb-8"
           style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
         >
@@ -34,7 +113,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
         </h2>
 
         {/* Panoramic Landscape Exterior Side Profile Image */}
-        <div className="relative border border-[#262016] overflow-hidden bg-[#0a0a0a] group">
+        <div ref={imageRef} className="relative border border-[#262016] overflow-hidden bg-[#0a0a0a] group">
           <img
             src={carData.aerodynamics.image}
             alt="Lamborghini Aerodynamic Exploration"
@@ -96,7 +175,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
         </div>
 
         {/* Hotspot Toggle Buttons Bar matching the exact screenshot */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2 pb-6 border-b border-[#1c1810]">
+        <div ref={hotspotButtonsRef} className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2 pb-6 border-b border-[#1c1810]">
           {aeroData.hotspots.map((spot) => (
             <button
               key={spot.id}
@@ -114,7 +193,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
         </div>
 
         {/* Exterior Story */}
-        <div className="mt-8">
+        <div ref={storyRef} className="mt-8">
           <p className="text-sm sm:text-base text-[#a3a3a3] max-w-4xl font-normal leading-relaxed">
             {aeroData.story}
           </p>
