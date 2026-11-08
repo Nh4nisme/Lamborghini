@@ -46,7 +46,7 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-lambo-bold-black">
-            <HeroSection />
+            <HeroSection onOpenModels={() => navigate('/models')} />
             {dongXeList && dongXeList.length > 0 && (
                 <FeaturedModelsCarousel items={dongXeList} showHeader={true} />
             )}
