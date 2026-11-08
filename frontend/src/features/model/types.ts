@@ -55,8 +55,15 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
     const exterior = findPhuTung(['Exterior', 'Ngoại thất'])
     const interior = findPhuTung(['Interior', 'Nội thất'])
     const engineSound = findPhuTung(['Engine Sound', 'Âm thanh'])
-    const ldvi = findPhuTung(['LDVI', 'Driving Dynamics', 'Động lực học'])
-    const spaceframe = findPhuTung(['Spaceframe', 'Monofuselage', 'Khung'])
+
+    // 2 Technology Cards của phần 01 / POWERTRAIN:
+    // Là 2 phụ tùng còn lại trong danhSachPhuTung (loại trừ Powertrain, Exterior, Interior, Engine Sound)
+    const techCardsPhuTung = danhSachPhuTung.filter(pt => 
+        pt !== powertrain && pt !== exterior && pt !== interior && pt !== engineSound
+    )
+
+    const card1 = techCardsPhuTung[0]
+    const card2 = techCardsPhuTung[1]
     
     const folder = getModelFolder(xe.tenPhienBan)
 
@@ -107,18 +114,23 @@ export function adaptModelDetailToCarData(response: ModelDetailResponse, default
             transmission: xe.dongCo
         },
         
-        // Engineering sections
+        // Engineering sections (2 Technology Cards thuộc 01 / POWERTRAIN)
         engineering: {
             ldvi: {
-                title: ldvi?.tenPhuTung || 'LDVI',
-                headline: ldvi?.tenPhuTung || 'INTEGRATED VEHICLE DYNAMICS',
-                description: ldvi?.moTa || defaultData.engineering.ldvi.description
+                title: card1?.tenPhuTung || 'TECHNOLOGY',
+                headline: card1?.tenPhuTung || 'INTEGRATED VEHICLE DYNAMICS',
+                description: card1?.moTa || defaultData.engineering.ldvi.description
             },
             spaceframe: {
-                title: spaceframe?.tenPhuTung || 'SPACEFRAME',
-                headline: spaceframe?.tenPhuTung || 'CARBON FIBER MONOCOQUE',
-                description: spaceframe?.moTa || defaultData.engineering.spaceframe.description
-            }
+                title: card2?.tenPhuTung || 'STRUCTURE',
+                headline: card2?.tenPhuTung || 'CHASSIS & SPACEFRAME',
+                description: card2?.moTa || defaultData.engineering.spaceframe.description
+            },
+            technologyCards: techCardsPhuTung.map((pt, idx) => ({
+                title: pt.tenPhuTung,
+                description: pt.moTa,
+                tag: idx === 0 ? '02 / TECHNOLOGY' : '03 / STRUCTURE'
+            }))
         },
         
         // Aerodynamics section

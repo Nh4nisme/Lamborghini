@@ -1,11 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { CarModelData } from '../data';
 import { AnimatedSection } from '../../../components/AnimatedSection';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface CockpitSectionProps {
   carData: CarModelData;
@@ -14,11 +10,6 @@ interface CockpitSectionProps {
 export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
   const [activeDrivingMode, setActiveDrivingMode] = useState<'CITTA' | 'STRADA' | 'SPORT' | 'CORSA'>('CORSA');
   const [showModeInfo, setShowModeInfo] = useState(false);
-  
-  const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const modeButtonsRef = useRef<HTMLDivElement>(null);
 
   const drivingModes = {
     CITTA: {
@@ -39,77 +30,14 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
     },
   };
 
-  // GSAP Scroll Animations
-  useEffect(() => {
-    if (!sectionRef.current) return;
-
-    const ctx = gsap.context(() => {
-      // Parallax effect on the image
-      if (imageRef.current && imageContainerRef.current) {
-        gsap.to(imageRef.current, {
-          y: 80,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: imageContainerRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5,
-          },
-        });
-
-        // Subtle zoom effect on scroll
-        gsap.fromTo(
-          imageRef.current,
-          { scale: 1.1 },
-          {
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: imageContainerRef.current,
-              start: 'top 80%',
-              end: 'top 20%',
-              scrub: 1,
-            },
-          }
-        );
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  // Animate mode buttons when shown
-  useEffect(() => {
-    if (showModeInfo && modeButtonsRef.current) {
-      const buttons = modeButtonsRef.current.querySelectorAll('button');
-      
-      gsap.fromTo(
-        buttons,
-        {
-          opacity: 0,
-          y: 10,
-          scale: 0.95,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.4,
-          stagger: 0.08,
-          ease: 'back.out(1.7)',
-        }
-      );
-    }
-  }, [showModeInfo]);
-
   return (
-    <section ref={sectionRef} id="cockpit" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section id="cockpit" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Section Number - Top Right */}
+        {/* Section Number - Top Left */}
         <AnimatedSection animation="fadeUp">
-          <div className="flex justify-end mb-8">
+          <div className="flex justify-start mb-8">
             <span className="text-[11px] font-mono tracking-[0.3em] text-[#8e826b] uppercase">
-              05
+              04
             </span>
           </div>
         </AnimatedSection>
@@ -157,44 +85,42 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
 
             {/* Interactive HMI Mode Selector */}
             {showModeInfo && (
-              <div className="mt-6 p-4 border border-[#3d331f] bg-[#111111] animate-fadeIn">
-                <div className="text-[10px] uppercase font-semibold text-[#888] tracking-widest mb-3">
-                  Steering Wheel Anima Mode Selector:
+              <AnimatedSection animation="fadeUp" delay={0.1}>
+                <div className="mt-6 p-4 border border-[#3d331f] bg-[#111111]">
+                  <div className="text-[10px] uppercase font-semibold text-[#888] tracking-widest mb-3">
+                    Steering Wheel Anima Mode Selector:
+                  </div>
+                  <div className="grid grid-cols-4 gap-2 mb-3">
+                    {(['CITTA', 'STRADA', 'SPORT', 'CORSA'] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={() => setActiveDrivingMode(mode)}
+                        className={`py-1.5 px-2 text-[11px] font-bold tracking-wider uppercase border transition-all cursor-pointer ${
+                          activeDrivingMode === mode
+                            ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37]'
+                            : 'border-[#2a2418] text-[#777] hover:border-[#666]'
+                        }`}
+                      >
+                        {mode}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-[#ccc] leading-relaxed">
+                    <span className="font-semibold text-white">{activeDrivingMode}:</span>{' '}
+                    {drivingModes[activeDrivingMode].desc}
+                  </p>
                 </div>
-                <div ref={modeButtonsRef} className="grid grid-cols-4 gap-2 mb-3">
-                  {(['CITTA', 'STRADA', 'SPORT', 'CORSA'] as const).map((mode) => (
-                    <button
-                      key={mode}
-                      onClick={() => setActiveDrivingMode(mode)}
-                      className={`py-1.5 px-2 text-[11px] font-bold tracking-wider uppercase border transition-all cursor-pointer ${
-                        activeDrivingMode === mode
-                          ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37]'
-                          : 'border-[#2a2418] text-[#777] hover:border-[#666]'
-                      }`}
-                    >
-                      {mode}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-xs text-[#ccc] leading-relaxed">
-                  <span className="font-semibold text-white">{activeDrivingMode}:</span>{' '}
-                  {drivingModes[activeDrivingMode].desc}
-                </p>
-              </div>
+              </AnimatedSection>
             )}
           </div>
 
           {/* Right Column: Driver Cockpit Interior Image */}
           <AnimatedSection animation="fadeLeft" delay={0.2} className="lg:col-span-7">
-            <div 
-              ref={imageContainerRef}
-              className="relative border border-[#262016] overflow-hidden bg-[#0a0a0a] group"
-            >
+            <div className="relative border border-[#262016] overflow-hidden bg-[#0a0a0a] group">
               <img
-                ref={imageRef}
                 src={carData.interior.image}
                 alt="Lamborghini Interior Cockpit"
-                className="w-full h-auto object-cover filter brightness-95 will-change-transform"
+                className="w-full h-auto object-cover filter brightness-95"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />

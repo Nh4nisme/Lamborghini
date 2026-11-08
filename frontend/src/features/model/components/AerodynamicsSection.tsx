@@ -89,7 +89,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
   }, [carData.name]);
 
   return (
-    <section ref={sectionRef} id="aerodynamics" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="aerodynamics" className="relative w-full bg-[#070707] py-12 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
