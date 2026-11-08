@@ -90,6 +90,7 @@ const getCarSpecs = (dongXe: DongXe) => {
 export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [direction, setDirection] = useState<'left' | 'right'>('right')
 
   // Filter displayed models
   const displayedModels = items.filter(xe => xe.trangThai === 'HIEN_THI' && xe.noiBat)
@@ -100,6 +101,7 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
 
   const handleNext = () => {
     if (isTransitioning) return
+    setDirection('right')
     setIsTransitioning(true)
     setActiveIndex((prev) => (prev + 1) % displayedModels.length)
     setTimeout(() => setIsTransitioning(false), 500)
@@ -107,6 +109,7 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
 
   const handlePrev = () => {
     if (isTransitioning) return
+    setDirection('left')
     setIsTransitioning(true)
     setActiveIndex((prev) => (prev - 1 + displayedModels.length) % displayedModels.length)
     setTimeout(() => setIsTransitioning(false), 500)
@@ -151,11 +154,13 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
           {/* Side Preview - Previous */}
           {displayedModels.length > 1 && (
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 lg:w-48 opacity-30 hover:opacity-50 transition-opacity duration-300 z-10 cursor-pointer" onClick={handlePrev}>
-              <img
-                src={getCarImage(displayedModels[prevIndex].tenDongXe)}
-                alt={displayedModels[prevIndex].tenDongXe}
-                className="w-full h-auto transform scale-75"
-              />
+              <div className="w-full h-20 lg:h-32">
+                <img
+                  src={getCarImage(displayedModels[prevIndex].tenDongXe)}
+                  alt={displayedModels[prevIndex].tenDongXe}
+                  className="w-full h-full object-contain transform scale-75"
+                />
+              </div>
               <p className="text-xs text-gray-600 uppercase font-barlow font-bold mt-4 text-center">
                 {displayedModels[prevIndex].tenDongXe}
               </p>
@@ -175,13 +180,20 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
               </p>
             </div>
 
-            {/* Car Image - Fixed dimensions */}
-            <div className="relative mb-12 px-8 animate-zoomIn" style={{ animationDelay: '0.2s' }}>
-              <div className="relative w-full h-[300px] lg:h-[400px] flex items-center justify-center">
+            {/* Car Image - Fixed dimensions with transition */}
+            <div className="relative mb-12 px-8 overflow-hidden" style={{ animationDelay: '0.2s' }}>
+              <div className="relative w-full h-[300px] lg:h-[400px]">
                 <img
+                  key={activeModel.maDongXe}
                   src={getCarImage(activeModel.tenDongXe)}
                   alt={activeModel.tenDongXe}
-                  className="max-w-full max-h-full w-auto h-auto object-contain transform hover:scale-105 transition-transform duration-700"
+                  className={`absolute inset-0 w-full h-full object-contain transform hover:scale-105 transition-all duration-700 ${
+                    isTransitioning 
+                      ? direction === 'right' 
+                        ? 'animate-slideInFromRight' 
+                        : 'animate-slideInFromLeft'
+                      : 'opacity-100'
+                  }`}
                   style={{
                     filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.3))'
                   }}
@@ -229,11 +241,13 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
           {/* Side Preview - Next */}
           {displayedModels.length > 1 && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 lg:w-48 opacity-30 hover:opacity-50 transition-opacity duration-300 z-10 cursor-pointer" onClick={handleNext}>
-              <img
-                src={getCarImage(displayedModels[nextIndex].tenDongXe)}
-                alt={displayedModels[nextIndex].tenDongXe}
-                className="w-full h-auto transform scale-75"
-              />
+              <div className="w-full h-20 lg:h-32">
+                <img
+                  src={getCarImage(displayedModels[nextIndex].tenDongXe)}
+                  alt={displayedModels[nextIndex].tenDongXe}
+                  className="w-full h-full object-contain transform scale-75"
+                />
+              </div>
               <p className="text-xs text-gray-600 uppercase font-barlow font-bold mt-4 text-center">
                 {displayedModels[nextIndex].tenDongXe}
               </p>
