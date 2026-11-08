@@ -17,6 +17,7 @@ import {
   validateAppointmentForm,
 } from '../features/showroom/data';
 import { ShowroomBoxMap } from '../features/showroom/components/ShowroomBoxMap';
+import { LocationCard } from '../features/showroom/components/LocationCard';
 import { useShowroom } from '../features/showroom/hooks';
 import { adaptShowroomToUI } from '../features/showroom/types';
 import ScrollToTop from '../components/ScrollToTop';
@@ -371,90 +372,20 @@ export default function ShowroomPage() {
 
               {!isLoading && !isError && apiShowroomsUI.length > 0 && (
                 <div className="flex flex-col gap-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
-                  {apiShowroomsUI.map((loc) => {
+                  {apiShowroomsUI.slice(0, 3).map((loc) => {
                     const isSelected = currentSelectedShowroom?.id === loc.id;
                     return (
-                      <div
+                      <LocationCard
                         key={loc.id}
-                        onClick={() => setSelectedShowroomId(loc.id)}
-                        className={`p-6 transition-all duration-300 cursor-pointer flex-shrink-0 ${
-                          isSelected
-                            ? 'bg-[#0b0a07] border border-[#d4af37] ring-1 ring-[#d4af37]/40 shadow-2xl'
-                            : 'bg-[#100e0b] border border-[#262016] hover:border-[#524429]'
-                        }`}
-                      >
-                        {/* Badge */}
-                        <div className="text-[10px] sm:text-[11px] font-bold tracking-[0.22em] text-[#d4af37] uppercase mb-2">
-                          {isSelected ? 'SELECTED / OFFICIAL SHOWROOM' : 'OFFICIAL SHOWROOM'}
-                        </div>
-
-                        {/* Title */}
-                        <h3
-                          className="text-2xl sm:text-3xl font-extrabold uppercase text-white tracking-wide mb-2.5 leading-tight"
-                          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
-                          {loc.name}
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-xs text-[#a0a0a0] leading-relaxed mb-3">
-                          {loc.description}
-                        </p>
-
-                        {/* Services */}
-                        <div className="text-[11px] text-[#8e826b] font-medium tracking-wide mb-3">
-                          {loc.services}
-                        </div>
-
-                        {/* Contact Info */}
-                        <div className="space-y-1.5 text-xs text-[#999] mb-4">
-                          <div>📍 {loc.address}</div>
-                          <div>📞 {loc.phone}</div>
-                          <div>🕐 {loc.hours}</div>
-                        </div>
-
-                        {/* Status Badge */}
-                        {loc.trangThai && (
-                          <div className="mb-3">
-                            <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-1 ${
-                              loc.trangThai === 'HOAT_DONG' 
-                                ? 'bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/30'
-                                : 'bg-[#555]/10 text-[#999] border border-[#555]/30'
-                            }`}>
-                              {loc.trangThai === 'HOAT_DONG' ? 'Đang hoạt động' : loc.trangThai}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Action Button */}
-                        <div>
-                          {isSelected ? (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                scrollToAppointment();
-                              }}
-                              className="py-2.5 px-5 text-xs font-bold uppercase tracking-[0.16em] text-white border border-[#4d3f23] hover:border-[#d4af37] bg-black hover:bg-[#d4af37]/10 transition-colors flex items-center gap-1.5 cursor-pointer"
-                              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                            >
-                              <span>REQUEST APPOINTMENT</span>
-                              <ArrowUpRight className="w-3.5 h-3.5 text-[#d4af37]" />
-                            </button>
-                          ) : (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleOpenDetails(loc);
-                              }}
-                              className="py-2.5 px-5 text-xs font-bold uppercase tracking-[0.16em] text-[#bbb] hover:text-white border border-[#2b2518] hover:border-[#555] bg-transparent transition-colors flex items-center gap-1.5 cursor-pointer"
-                              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                            >
-                              <span>VIEW DETAILS</span>
-                              <ArrowUpRight className="w-3.5 h-3.5 text-[#888]" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                        showroom={loc}
+                        isSelected={isSelected}
+                        onSelect={handleSelectShowroom}
+                        onScheduleVisit={(showroom) => {
+                          handleSelectShowroom(showroom);
+                          scrollToAppointment();
+                        }}
+                        onViewDetails={handleOpenDetails}
+                      />
                     );
                   })}
                 </div>
