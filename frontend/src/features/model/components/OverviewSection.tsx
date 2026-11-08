@@ -45,7 +45,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
               {stats.combinedPower.value} {stats.combinedPower.unit}
             </div>
             <p className="text-[11px] text-[#6b6b6b] leading-tight">
-              4.0L V8 twin-turbo + 3 electric motors
+              {carData.tagline || 'Hybrid High Performance Powertrain'}
             </p>
           </div>
 
