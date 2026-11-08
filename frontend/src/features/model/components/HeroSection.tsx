@@ -83,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden -mt-14 flex items-center">
+    <section className="relative h-screen w-full overflow-hidden flex items-center">
       {/* Hero Background - Video background full width for all models */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <video
