@@ -210,13 +210,6 @@ export function FeaturedModels(_props: FeaturedModelsProps) {
             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
-
-        {/* Manufacturer Note */}
-        <div className="text-center mt-12 animate-fadeIn" style={{ animationDelay: '1s' }}>
-          <p className="text-xs text-gray-600 italic">
-            Manufacturer performance figures. Specifications may vary by market.
-          </p>
-        </div>
       </div>
     </section>
   )
