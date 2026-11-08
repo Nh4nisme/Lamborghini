@@ -5,20 +5,14 @@ import { UrusSection } from '../features/model/components/UrusSection.tsx'
 import BeyondTheRangeSection from "../features/model/components/BeyondTheRangeSection.tsx";
 import BeyondTheLimitHeader from "../features/model/components/BeyondTheLimitHeader.tsx";
 import {useNavigate} from "react-router-dom";
+import { LoadingScreen } from '../components/LoadingScreen'
 
 export default function ModelsPage() {
     const navigate = useNavigate()
     const { data: dongXeList, isLoading, isError, error } = useDongXe()
 
   if (isLoading) {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-lambo-bold-black">
-          <div className="text-center">
-            <div className="inline-block w-12 h-12 border-4 border-lambo-primary border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-lambo-primary font-barlow text-xl tracking-wider">Loading models...</p>
-          </div>
-        </div>
-    )
+    return <LoadingScreen />
   }
 
   if (isError) {

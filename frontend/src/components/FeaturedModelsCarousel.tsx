@@ -136,8 +136,8 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
                 }
               }}
               className={`relative px-12 py-4 text-sm font-barlow font-bold uppercase tracking-wider transition-all duration-300 ${index === activeIndex
-                  ? 'text-white'
-                  : 'text-gray-500 hover:text-gray-300'
+                ? 'text-white'
+                : 'text-gray-500 hover:text-gray-300'
                 }`}
             >
               {model.tenDongXe.toUpperCase()}
@@ -186,12 +186,7 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
                   key={activeModel.maDongXe}
                   src={getCarImage(activeModel.tenDongXe)}
                   alt={activeModel.tenDongXe}
-                  className={`absolute inset-0 w-full h-full object-contain transform hover:scale-105 transition-all duration-700 ${isTransitioning
-                      ? direction === 'right'
-                        ? 'animate-slideInFromRight'
-                        : 'animate-slideInFromLeft'
-                      : 'opacity-100'
-                    }`}
+                  className="max-w-full max-h-full w-auto h-auto object-contain transform hover:scale-105 transition-transform duration-700"
                   style={{
                     filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.3))'
                   }}
