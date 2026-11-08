@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, Play, Pause, VolumeX } from 'lucide-react';
 import { type CarModelData, getModelFolder } from '../data';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface SoundStudySectionProps {
   carData: CarModelData;
@@ -12,6 +16,9 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const modelFolder = getModelFolder(carData.name);
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoPanelRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
 
   // Khi chuyển model khác thì dừng cả video lẫn audio và reset
   useEffect(() => {
@@ -35,6 +42,46 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
       if (audioRef.current) audioRef.current.pause();
     };
   }, []);
+
+  // GSAP Scroll Animations
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Animate video panel with scale
+      if (videoPanelRef.current) {
+        gsap.from(videoPanelRef.current, {
+          scale: 0.9,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: videoPanelRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+
+      // Animate title and description
+      if (titleRef.current) {
+        gsap.from(titleRef.current.children, {
+          y: 40,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [carData.name]);
 
   const handleVideoPlay = () => {
     setIsVideoPlaying(true);
@@ -117,7 +164,7 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
   };
 
   return (
-    <section id="sound" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="sound" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -132,7 +179,7 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
         </div>
 
         {/* Central Audio / Video Panel Container */}
-        <div className="relative border border-[#2b2518] overflow-hidden bg-[#0c0c0c] max-w-4xl mx-auto group">
+        <div ref={videoPanelRef} className="relative border border-[#2b2518] overflow-hidden bg-[#0c0c0c] max-w-4xl mx-auto group">
           {/* File âm thanh sound.mp3 đi kèm với video sound-engine.mp4 */}
           <audio
             key={`audio-${modelFolder}`}
@@ -204,7 +251,7 @@ export const SoundStudySection: React.FC<SoundStudySectionProps> = ({ carData })
         </div>
 
         {/* Bottom Title & Description */}
-        <div className="max-w-4xl mx-auto mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
+        <div ref={titleRef} className="max-w-4xl mx-auto mt-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
           <div>
             <h3
               className="text-2xl sm:text-3xl md:text-4xl font-black uppercase text-white tracking-wide mb-4"

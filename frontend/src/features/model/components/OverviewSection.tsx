@@ -1,5 +1,7 @@
 import React from 'react';
 import type { CarModelData } from '../data';
+import { AnimatedSection } from '../../../components/AnimatedSection';
+import { useStaggerAnimation } from '../../../hooks/useScrollAnimation';
 
 interface OverviewSectionProps {
   carData: CarModelData;
@@ -7,34 +9,42 @@ interface OverviewSectionProps {
 
 export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => {
   const stats = carData.stats;
+  const statsRef = useStaggerAnimation<HTMLDivElement>('.stat-card', {
+    start: 'top 85%',
+    once: true,
+  });
 
   return (
     <section id="overview" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Header Tag */}
-        <div className="flex items-center justify-between mb-3">
+        <AnimatedSection animation="fadeUp" className="flex items-center justify-between mb-3">
           <span className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase">
             OVERVIEW / {carData.name}
           </span>
-        </div>
+        </AnimatedSection>
 
         {/* Large Proposition Headline */}
-        <h2
-          className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight mb-5"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-        >
-          {carData.name}
-        </h2>
+        <AnimatedSection animation="fadeUp" delay={0.1}>
+          <h2
+            className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight mb-5"
+            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          >
+            {carData.name}
+          </h2>
+        </AnimatedSection>
 
         {/* Introduction text */}
-        <p className="text-sm sm:text-base text-[#a3a3a3] max-w-4xl font-normal leading-relaxed mb-12">
-          {carData.introduction}
-        </p>
+        <AnimatedSection animation="fadeUp" delay={0.2}>
+          <p className="text-sm sm:text-base text-[#a3a3a3] max-w-4xl font-normal leading-relaxed mb-12">
+            {carData.introduction}
+          </p>
+        </AnimatedSection>
 
         {/* 4 Key Stat Cards in a Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div ref={statsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Stat 1: MAXIMUM COMBINED POWER */}
-          <div className="border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
+          <div className="stat-card border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
             <span className="block text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-semibold text-[#8a7f68] mb-3 group-hover:text-[#d4af37] transition-colors">
               MAXIMUM COMBINED POWER
             </span>
@@ -50,7 +60,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
           </div>
 
           {/* Stat 2: 0-100 KM/H */}
-          <div className="border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
+          <div className="stat-card border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
             <span className="block text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-semibold text-[#8a7f68] mb-3 group-hover:text-[#d4af37] transition-colors">
               0-100 KM/H
             </span>
@@ -66,7 +76,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
           </div>
 
           {/* Stat 3: TOP SPEED */}
-          <div className="border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
+          <div className="stat-card border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
             <span className="block text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-semibold text-[#8a7f68] mb-3 group-hover:text-[#d4af37] transition-colors">
               TOP SPEED
             </span>
@@ -82,7 +92,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({ carData }) => 
           </div>
 
           {/* Stat 4: ENGINE SPEED */}
-          <div className="border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
+          <div className="stat-card border border-[#383020] bg-[#0d0d0d]/90 p-5 sm:p-6 transition-all duration-300 hover:border-[#d4af37]/70 group">
             <span className="block text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-semibold text-[#8a7f68] mb-3 group-hover:text-[#d4af37] transition-colors">
               ENGINE SPEED
             </span>

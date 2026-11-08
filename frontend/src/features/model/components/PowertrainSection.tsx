@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight, Flame } from 'lucide-react';
 import { type CarModelData, getModelFolder } from '../data';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface PowertrainSectionProps {
   carData: CarModelData;
@@ -10,9 +14,68 @@ interface PowertrainSectionProps {
 export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData }) => {
   const [showArchitectureDetails, setShowArchitectureDetails] = useState(false);
   const modelFolder = getModelFolder(carData.name);
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Animate video container from left
+      if (videoRef.current) {
+        gsap.from(videoRef.current, {
+          x: -100,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: videoRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+
+      // Animate content from right
+      if (contentRef.current) {
+        gsap.from(contentRef.current.children, {
+          x: 100,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: contentRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+
+      // Animate technology cards
+      if (cardsRef.current) {
+        gsap.from(cardsRef.current.children, {
+          y: 60,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: cardsRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [carData.name]);
 
   return (
-    <section id="powertrain" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="powertrain" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -23,7 +86,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Powertrain Engine Video with Gold Accent Frame */}
-          <div className="lg:col-span-7">
+          <div ref={videoRef} className="lg:col-span-7">
             <div className="relative border border-[#2b2518] overflow-hidden group bg-[#0e0e0e]">
               <video
                 key={modelFolder}
@@ -43,7 +106,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
           </div>
 
           {/* Right Column: Headline, Story, and Action */}
-          <div className="lg:col-span-5 flex flex-col justify-center">
+          <div ref={contentRef} className="lg:col-span-5 flex flex-col justify-center">
             {/* Tag */}
             <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
               01 / POWERTRAIN
@@ -105,7 +168,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
         </div>
 
         {/* Technology Cards Grid - LDVI 2.0 & SPACEFRAME */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
           {/* LDVI 2.0 Card */}
           <div className="group relative border border-[#2b2518] bg-[#0e0e0e] overflow-hidden hover:border-[#3d331f] transition-all duration-500">
             <div className="p-6 sm:p-8">

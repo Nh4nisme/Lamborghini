@@ -22,7 +22,7 @@ interface FeaturedModelsCarouselProps {
 const getCarImage = (tenDongXe: string): string => {
   // Normalize car name for matching
   const normalizedName = tenDongXe.toLowerCase().trim()
-  
+
   // Map car names to image files
   const imageMap: { [key: string]: string } = {
     'revuelto': '/Images/models/Revuelto.png',
@@ -32,14 +32,14 @@ const getCarImage = (tenDongXe: string): string => {
     'huracán': '/Images/models/Huracan.png',
     'huracan': '/Images/models/Huracan.png',
   }
-  
+
   // Try to find matching image
   for (const [key, path] of Object.entries(imageMap)) {
     if (normalizedName.includes(key)) {
       return path
     }
   }
-  
+
   // Fallback to placeholder
   return 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800'
 }
@@ -47,7 +47,7 @@ const getCarImage = (tenDongXe: string): string => {
 // Map car data to specs
 const getCarSpecs = (dongXe: DongXe) => {
   const name = dongXe.tenDongXe.toLowerCase()
-  
+
   if (name.includes('revuelto')) {
     return [
       { value: 'V12', label: 'PLUG-IN HYBRID' },
@@ -77,7 +77,7 @@ const getCarSpecs = (dongXe: DongXe) => {
       { value: '325 KM/H', label: 'TOP SPEED' }
     ]
   }
-  
+
   // Default specs
   return [
     { value: 'V12', label: 'ENGINE' },
@@ -90,16 +90,18 @@ const getCarSpecs = (dongXe: DongXe) => {
 export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [direction, setDirection] = useState<'left' | 'right'>('right')
 
   // Filter displayed models
   const displayedModels = items.filter(xe => xe.trangThai === 'HIEN_THI' && xe.noiBat)
-  
+
   if (displayedModels.length === 0) {
     return null
   }
 
   const handleNext = () => {
     if (isTransitioning) return
+    setDirection('right')
     setIsTransitioning(true)
     setActiveIndex((prev) => (prev + 1) % displayedModels.length)
     setTimeout(() => setIsTransitioning(false), 500)
@@ -107,6 +109,7 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
 
   const handlePrev = () => {
     if (isTransitioning) return
+    setDirection('left')
     setIsTransitioning(true)
     setActiveIndex((prev) => (prev - 1 + displayedModels.length) % displayedModels.length)
     setTimeout(() => setIsTransitioning(false), 500)
@@ -132,11 +135,10 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
                   setTimeout(() => setIsTransitioning(false), 500)
                 }
               }}
-              className={`relative px-12 py-4 text-sm font-barlow font-bold uppercase tracking-wider transition-all duration-300 ${
-                index === activeIndex
+              className={`relative px-12 py-4 text-sm font-barlow font-bold uppercase tracking-wider transition-all duration-300 ${index === activeIndex
                   ? 'text-white'
                   : 'text-gray-500 hover:text-gray-300'
-              }`}
+                }`}
             >
               {model.tenDongXe.toUpperCase()}
               {index === activeIndex && (
@@ -151,11 +153,13 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
           {/* Side Preview - Previous */}
           {displayedModels.length > 1 && (
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-32 lg:w-48 opacity-30 hover:opacity-50 transition-opacity duration-300 z-10 cursor-pointer" onClick={handlePrev}>
-              <img
-                src={getCarImage(displayedModels[prevIndex].tenDongXe)}
-                alt={displayedModels[prevIndex].tenDongXe}
-                className="w-full h-auto transform scale-75"
-              />
+              <div className="w-full h-20 lg:h-32">
+                <img
+                  src={getCarImage(displayedModels[prevIndex].tenDongXe)}
+                  alt={displayedModels[prevIndex].tenDongXe}
+                  className="w-full h-full object-contain transform scale-75"
+                />
+              </div>
               <p className="text-xs text-gray-600 uppercase font-barlow font-bold mt-4 text-center">
                 {displayedModels[prevIndex].tenDongXe}
               </p>
@@ -175,13 +179,19 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
               </p>
             </div>
 
-            {/* Car Image - Fixed dimensions */}
-            <div className="relative mb-12 px-8 animate-zoomIn" style={{ animationDelay: '0.2s' }}>
-              <div className="relative w-full h-[300px] lg:h-[400px] flex items-center justify-center">
+            {/* Car Image - Fixed dimensions with transition */}
+            <div className="relative mb-12 px-8 overflow-hidden" style={{ animationDelay: '0.2s' }}>
+              <div className="relative w-full h-[300px] lg:h-[400px]">
                 <img
+                  key={activeModel.maDongXe}
                   src={getCarImage(activeModel.tenDongXe)}
                   alt={activeModel.tenDongXe}
-                  className="max-w-full max-h-full w-auto h-auto object-contain transform hover:scale-105 transition-transform duration-700"
+                  className={`absolute inset-0 w-full h-full object-contain transform hover:scale-105 transition-all duration-700 ${isTransitioning
+                      ? direction === 'right'
+                        ? 'animate-slideInFromRight'
+                        : 'animate-slideInFromLeft'
+                      : 'opacity-100'
+                    }`}
                   style={{
                     filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.3))'
                   }}
@@ -229,11 +239,13 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
           {/* Side Preview - Next */}
           {displayedModels.length > 1 && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-32 lg:w-48 opacity-30 hover:opacity-50 transition-opacity duration-300 z-10 cursor-pointer" onClick={handleNext}>
-              <img
-                src={getCarImage(displayedModels[nextIndex].tenDongXe)}
-                alt={displayedModels[nextIndex].tenDongXe}
-                className="w-full h-auto transform scale-75"
-              />
+              <div className="w-full h-20 lg:h-32">
+                <img
+                  src={getCarImage(displayedModels[nextIndex].tenDongXe)}
+                  alt={displayedModels[nextIndex].tenDongXe}
+                  className="w-full h-full object-contain transform scale-75"
+                />
+              </div>
               <p className="text-xs text-gray-600 uppercase font-barlow font-bold mt-4 text-center">
                 {displayedModels[nextIndex].tenDongXe}
               </p>
@@ -242,43 +254,43 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
 
           {/* Navigation Arrows - Hexagon Style */}
           {displayedModels.length > 1 && (
-              <>
-                <button
-                    onClick={handlePrev}
-                    disabled={isTransitioning}
-                    className="group absolute left-8 lg:left-16 top-[30%] -translate-y-1/2 w-16 aspect-[1.1547/1] flex items-center justify-center text-white transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:drop-shadow-[0_0_12px_rgba(216,160,22,0.6)]"
-                    aria-label="Previous model"
-                >
-                  <svg viewBox="0 0 100 86.6" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
-                    <polygon
-                        points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
-                        strokeWidth="2"
-                        strokeLinejoin="round"
-                        vectorEffect="non-scaling-stroke"
-                        className="fill-black/50 stroke-white/30 group-hover:fill-lambo-primary/20 group-hover:stroke-lambo-primary transition-all duration-300"
-                    />
-                  </svg>
-                  <ArrowLeft className="w-6 h-6 relative z-10 group-hover:-translate-x-1 group-hover:text-lambo-primary transition-all duration-300" />
-                </button>
+            <>
+              <button
+                onClick={handlePrev}
+                disabled={isTransitioning}
+                className="group absolute left-8 lg:left-16 top-[30%] -translate-y-1/2 w-16 aspect-[1.1547/1] flex items-center justify-center text-white transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:drop-shadow-[0_0_12px_rgba(216,160,22,0.6)]"
+                aria-label="Previous model"
+              >
+                <svg viewBox="0 0 100 86.6" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
+                  <polygon
+                    points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                    className="fill-black/50 stroke-white/30 group-hover:fill-lambo-primary/20 group-hover:stroke-lambo-primary transition-all duration-300"
+                  />
+                </svg>
+                <ArrowLeft className="w-6 h-6 relative z-10 group-hover:-translate-x-1 group-hover:text-lambo-primary transition-all duration-300" />
+              </button>
 
-                <button
-                    onClick={handleNext}
-                    disabled={isTransitioning}
-                    className="group absolute right-8 lg:right-16 top-[30%] -translate-y-1/2 w-16 aspect-[1.1547/1] flex items-center justify-center text-white transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:drop-shadow-[0_0_12px_rgba(216,160,22,0.6)]"
-                    aria-label="Next model"
-                >
-                  <svg viewBox="0 0 100 86.6" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
-                    <polygon
-                        points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
-                        strokeWidth="2"
-                        strokeLinejoin="round"
-                        vectorEffect="non-scaling-stroke"
-                        className="fill-black/50 stroke-white/30 group-hover:fill-lambo-primary/20 group-hover:stroke-lambo-primary transition-all duration-300"
-                    />
-                  </svg>
-                  <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 group-hover:text-lambo-primary transition-all duration-300" />
-                </button>
-              </>
+              <button
+                onClick={handleNext}
+                disabled={isTransitioning}
+                className="group absolute right-8 lg:right-16 top-[30%] -translate-y-1/2 w-16 aspect-[1.1547/1] flex items-center justify-center text-white transition-all duration-300 z-30 disabled:opacity-50 disabled:cursor-not-allowed hover:drop-shadow-[0_0_12px_rgba(216,160,22,0.6)]"
+                aria-label="Next model"
+              >
+                <svg viewBox="0 0 100 86.6" className="absolute inset-0 w-full h-full overflow-visible" aria-hidden="true">
+                  <polygon
+                    points="25,0 75,0 100,43.3 75,86.6 25,86.6 0,43.3"
+                    strokeWidth="2"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                    className="fill-black/50 stroke-white/30 group-hover:fill-lambo-primary/20 group-hover:stroke-lambo-primary transition-all duration-300"
+                  />
+                </svg>
+                <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-1 group-hover:text-lambo-primary transition-all duration-300" />
+              </button>
+            </>
           )}
         </div>
       </div>
