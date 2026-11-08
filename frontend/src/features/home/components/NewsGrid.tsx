@@ -76,7 +76,7 @@ export function NewsGrid({ items }: NewsGridProps) {
   }
 
   return (
-    <section ref={sectionRef} className="py-24 px-6 lg:px-10 bg-black">
+    <section ref={sectionRef} className="py-24 px-4 sm:px-6 lg:px-10 bg-black">
       <div className="max-w-[1440px] mx-auto">
         {/* Section Header */}
         <div className={`mb-16 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>

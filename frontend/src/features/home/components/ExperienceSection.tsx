@@ -2,7 +2,7 @@ import { ArrowRight } from 'lucide-react'
 
 export function ExperienceSection() {
   return (
-    <section className="relative py-32 px-6 lg:px-10 overflow-hidden">
+    <section className="relative py-32 px-4 sm:px-6 lg:px-10 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img

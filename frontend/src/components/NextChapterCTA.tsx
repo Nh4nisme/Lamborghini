@@ -28,7 +28,7 @@ export const NextChapterCTA: React.FC<NextChapterCTAProps> = ({
 
   return (
       <section className="relative w-full bg-lambo-disabled py-24 border-t border-gray-900">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-10 text-left">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 text-left">
           <div className="max-w-3xl animate-fadeInUp">
             {/* Eyebrow */}
             <div className="text-xs font-barlow font-semibold tracking-wider text-lambo-primary uppercase mb-4">

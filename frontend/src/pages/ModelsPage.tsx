@@ -4,9 +4,11 @@ import NextChapterCTA from '../components/NextChapterCTA'
 import { UrusSection } from '../features/model/components/UrusSection.tsx'
 import BeyondTheRangeSection from "../features/model/components/BeyondTheRangeSection.tsx";
 import BeyondTheLimitHeader from "../features/model/components/BeyondTheLimitHeader.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function ModelsPage() {
-  const { data: dongXeList, isLoading, isError, error } = useDongXe()
+    const navigate = useNavigate()
+    const { data: dongXeList, isLoading, isError, error } = useDongXe()
 
   if (isLoading) {
     return (
@@ -40,7 +42,10 @@ export default function ModelsPage() {
         )}
         <UrusSection />
         <BeyondTheRangeSection />
-        <NextChapterCTA />
+        <NextChapterCTA
+            onOpenConfigurator={() => navigate('/configurator/1')}
+            onOpenEnquiry={() => navigate('/showroom')}
+        />
       </div>
   )
 }

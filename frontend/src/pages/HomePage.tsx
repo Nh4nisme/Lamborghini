@@ -10,6 +10,7 @@ import { NewsGrid } from '../features/home/components/NewsGrid'
 import { PersonalSection } from '../features/home/components/PersonalSection'
 import { ShowroomCTA } from '../features/home/components/ShowroomCTA'
 import NextChapterCTA from '../components/NextChapterCTA'
+import ScrollToTop from "../components/ScrollToTop.tsx";
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -62,6 +63,9 @@ export default function HomePage() {
                 onOpenConfigurator={() => navigate('/configurator/1')}
                 onOpenEnquiry={() => navigate('/showroom')}
             />
+
+            {/* Scroll to Top Button */}
+            <ScrollToTop />
         </div>
     )
 }

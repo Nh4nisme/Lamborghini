@@ -44,8 +44,8 @@ export default function BeyondTheRangeSection({
                                                   title = 'BEYOND THE RANGE.',
                                               }: BeyondTheRangeSectionProps) {
     return (
-        <section className="py-24 px-6 lg:px-10 bg-lambo-bold-black">
-            <div className="max-w-[1920px] mx-auto">
+        <section className="py-24 px-4 sm:px-6 lg:px-10 bg-lambo-bold-black">
+            <div className="max-w-[1440px] mx-auto">
                 <div className="mb-16 animate-fadeInUp">
                     <p className="text-sm text-lambo-primary uppercase tracking-wider font-barlow font-semibold mb-4">
                         {eyebrow}

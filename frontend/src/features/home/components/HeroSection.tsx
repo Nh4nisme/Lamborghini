@@ -46,7 +46,7 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-10 w-full">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 w-full">
           <div className="max-w-2xl">
             <h1 className="font-barlow font-bold text-5xl sm:text-6xl lg:text-7xl xl:text-8xl uppercase tracking-tight text-white mb-6 leading-[0.95] animate-fadeInUp">
               BOLD BY<br />

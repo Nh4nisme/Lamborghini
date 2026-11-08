@@ -49,7 +49,7 @@ export function CustomizationSection() {
   }
 
   return (
-    <section ref={sectionRef} className="py-24 px-6 lg:px-10 bg-lambo-bold-black overflow-hidden">
+    <section ref={sectionRef} className="py-24 px-4 sm:px-6 lg:px-10 bg-lambo-bold-black overflow-hidden">
       <div className="max-w-[1440px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Image Side with 3D Tilt */}

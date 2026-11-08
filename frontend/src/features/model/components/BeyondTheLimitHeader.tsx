@@ -117,7 +117,7 @@ export default function BeyondTheLimitHeader({
     return (
         <section
             ref={containerRef}
-            className="relative h-dvh px-6 lg:px-10 bg-lambo-bold-black overflow-hidden flex items-center pb-16"
+            className="relative h-dvh px-4 sm:px-6 lg:px-10 bg-lambo-bold-black overflow-hidden flex items-center pb-16"
         >
             {/* Background gradient */}
             <div className="absolute inset-0 bg-gradient-to-b from-lambo-bold-black via-lambo-dark to-lambo-bold-black" />
@@ -149,7 +149,7 @@ export default function BeyondTheLimitHeader({
                     <img
                         src={carImages[currentImageIndex]}
                         alt="Lamborghini Revuelto 360°"
-                        className="relative z-10 w-full h-full object-contain transition-opacity duration-300 scale-[1.5] origin-center"
+                        className="relative z-10 w-full h-full object-contain transition-opacity duration-300 origin-center"
                         style={{
                             filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.4))'
                         }}
@@ -158,7 +158,7 @@ export default function BeyondTheLimitHeader({
             </div>
 
             {/* Text Content Layer (Foreground) - Bottom-Left */}
-            <div className="relative z-10 max-w-[1920px] mx-auto w-full">
+            <div className="relative z-10 max-w-[1440px] mx-auto w-full">
                 <div className="max-w-2xl">
                     <h1
                         ref={titleRef}
@@ -175,7 +175,7 @@ export default function BeyondTheLimitHeader({
                 </div>
             </div>
             {/* Scroll indicator */}
-            <div className="absolute bottom-20 left-1/2 -translate-x-1/2 animate-bounce z-20">
+            <div className="absolute bottom-30 left-1/2 -translate-x-1/2 animate-bounce z-20">
                 <div className="w-6 h-10 border-2 border-lambo-primary/50 rounded-full flex items-start justify-center p-2">
                     <div className="w-1.5 h-3 bg-lambo-primary rounded-full animate-pulse" />
                 </div>

@@ -76,8 +76,8 @@ export function FeaturedModels(_props: FeaturedModelsProps) {
   const nextIndex = (activeIndex + 1) % carModels.length
 
   return (
-    <section className="relative py-24 px-6 lg:px-10 bg-lambo-bold-black overflow-hidden">
-      <div className="max-w-[1920px] mx-auto">
+    <section className="relative py-24 px-4 sm:px-6 lg:px-10 bg-lambo-bold-black overflow-hidden">
+      <div className="max-w-[1440px] mx-auto">
         {/* Tab Navigation */}
         <div className="flex justify-center gap-0 mb-16">
           {carModels.map((model, index) => (
