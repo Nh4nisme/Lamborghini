@@ -4,6 +4,7 @@ import com.lamborghini.dto.response.HomeResponse;
 import com.lamborghini.entity.DongXe;
 import com.lamborghini.entity.Showroom;
 import com.lamborghini.entity.TinTuc;
+import com.lamborghini.entity.Xe;
 import com.lamborghini.enums.TrangThaiDongXe;
 import com.lamborghini.enums.TrangThaiShowroom;
 import com.lamborghini.enums.TrangThaiTinTuc;
@@ -14,9 +15,12 @@ import com.lamborghini.repository.XeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.awt.print.Pageable;
+import java.math.BigInteger;
 import java.util.List;
 
 @Service
@@ -55,7 +59,18 @@ public class HomeService {
     }
 
 
+    @Transactional
+    // UC007: tìm kiếm xe theo các tiêu chí có thể null gồm dòng xe, tên phiên bản và khoảng giá tiền
+    public List<Xe> searchDanhSachXeTheoDongXeAndTenPhienAndKhoangGiaDuocSapXep(Integer maDongXe, String keyword, BigInteger minPrice, BigInteger maxPrice) {
 
+        if (minPrice != null && maxPrice != null && minPrice.compareTo(maxPrice) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Giá thấp nhất không được lớn hơn giá cao nhất");
+        }
+
+        return xeRepository.searchDanhSachXeTheoDongXeAndTenPhienAndKhoangGiaDuocSapXep(maDongXe, keyword, minPrice, maxPrice);
+
+    }
 
 
 

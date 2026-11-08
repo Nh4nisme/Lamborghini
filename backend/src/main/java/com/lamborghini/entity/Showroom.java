@@ -1,5 +1,6 @@
 package com.lamborghini.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lamborghini.enums.TrangThaiShowroom;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Time;
+import java.util.List;
 
 @Entity
 @Table( name = "showroom")
@@ -43,7 +45,9 @@ public class Showroom {
     @Column(name = "trang_thai")
     private TrangThaiShowroom trangThai;
 
-
+    @OneToMany(mappedBy = "showroom")
+    @JsonIgnore
+    private List<LichHen> danhSachLichHen;
 
 
 }
