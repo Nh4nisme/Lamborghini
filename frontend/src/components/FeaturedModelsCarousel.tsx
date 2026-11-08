@@ -186,7 +186,12 @@ export function FeaturedModelsCarousel({ items }: FeaturedModelsCarouselProps) {
                   key={activeModel.maDongXe}
                   src={getCarImage(activeModel.tenDongXe)}
                   alt={activeModel.tenDongXe}
-                  className="max-w-full max-h-full w-auto h-auto object-contain transform hover:scale-105 transition-transform duration-700"
+                  className={`absolute inset-0 w-full h-full object-contain transform hover:scale-105 transition-all duration-700 ${isTransitioning
+                    ? direction === 'right'
+                      ? 'animate-slideInFromRight'
+                      : 'animate-slideInFromLeft'
+                    : 'opacity-100'
+                    }`}
                   style={{
                     filter: 'drop-shadow(0 20px 60px rgba(216, 160, 22, 0.3))'
                   }}
