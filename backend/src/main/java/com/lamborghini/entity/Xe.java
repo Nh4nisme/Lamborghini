@@ -70,5 +70,9 @@ public class Xe {
     @Column(name = "phan_khoi")
     private Integer phanKhoi;
 
+    @OneToMany(mappedBy = "xe")
+    @JsonIgnore
+    private List<LichHen> danhSachLichHen;
+
 
 }
