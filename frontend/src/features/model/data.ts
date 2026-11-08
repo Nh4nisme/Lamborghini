@@ -57,6 +57,11 @@ export interface CarModelData {
       headline: string;
       description: string;
     };
+    technologyCards?: Array<{
+      title: string;
+      description: string;
+      tag?: string;
+    }>;
   };
   aerodynamics: {
     tag: string;
@@ -130,14 +135,26 @@ export const defaultSupercarData: CarModelData = {
   engineering: {
     ldvi: {
       title: 'LDVI 2.0',
-      headline: '',
-      description: '',
+      headline: 'INTEGRATED VEHICLE DYNAMICS',
+      description: 'Advanced vehicle dynamics control system that orchestrates all-wheel drive, torque vectoring, and active aerodynamics.',
     },
     spaceframe: {
       title: 'SPACEFRAME',
-      headline: '',
-      description: '',
+      headline: 'CARBON FIBER MONOCOQUE',
+      description: 'Aluminum and carbon spaceframe architecture delivering exceptional rigidity, safety, and weight distribution.',
     },
+    technologyCards: [
+      {
+        title: 'LDVI 2.0',
+        description: 'Advanced vehicle dynamics control system that orchestrates all-wheel drive, torque vectoring, and active aerodynamics.',
+        tag: '02 / TECHNOLOGY',
+      },
+      {
+        title: 'SPACEFRAME',
+        description: 'Aluminum and carbon spaceframe architecture delivering exceptional rigidity, safety, and weight distribution.',
+        tag: '03 / STRUCTURE',
+      },
+    ],
   },
   aerodynamics: {
     tag: '02 / EXTERIOR & AERODYNAMICS',
