@@ -11,20 +11,16 @@ import { PersonalSection } from '../features/home/components/PersonalSection'
 import { ShowroomCTA } from '../features/home/components/ShowroomCTA'
 import NextChapterCTA from '../components/NextChapterCTA'
 import ScrollToTop from "../components/ScrollToTop.tsx";
+import {useDongXe} from "../features/model/hooks.ts";
+import { LoadingScreen } from '../components/LoadingScreen'
 
 export default function HomePage() {
     const navigate = useNavigate()
     const { data, isLoading, isError, error, refetch } = useHome()
+    const { data: dongXeList } = useDongXe()
 
     if (isLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-lambo-bold-black">
-                <div className="text-center">
-                    <div className="inline-block w-12 h-12 border-4 border-lambo-primary border-t-transparent rounded-full animate-spin"></div>
-                    <p className="mt-4 text-lambo-primary font-barlow text-xl tracking-wider">Đang tải...</p>
-                </div>
-            </div>
-        )
+        return <LoadingScreen />
     }
 
     if (isError) {
@@ -51,7 +47,9 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-lambo-bold-black">
             <HeroSection />
-            <FeaturedModelsCarousel items={data!.dongXe} showHeader={false} />
+            {dongXeList && dongXeList.length > 0 && (
+                <FeaturedModelsCarousel items={dongXeList} showHeader={true} />
+            )}
             <CustomizationSection />
             <VisionSection />
             <ExperienceSection />

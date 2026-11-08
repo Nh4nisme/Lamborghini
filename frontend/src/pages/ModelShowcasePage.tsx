@@ -15,6 +15,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import { defaultSupercarData } from '../features/model/data';
 import { useModelDetail } from '../features/model/hooks';
 import { adaptModelDetailToCarData } from '../features/model/types';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 const ModelShowcasePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,14 +45,7 @@ const ModelShowcasePage: React.FC = () => {
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-[#070707] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#d4af37] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#8e826b] uppercase tracking-wider text-sm">Loading model...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   // Error state
