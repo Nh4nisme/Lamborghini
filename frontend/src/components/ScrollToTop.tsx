@@ -55,20 +55,20 @@ export const ScrollToTop: React.FC<ScrollToTopProps> = ({
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-8 right-8 z-50 group animate-fadeIn"
+      className="fixed bottom-8 right-8 z-40 group animate-fadeIn"
       aria-label="Scroll to top"
     >
       {/* Outer glow ring */}
-      <div className="absolute inset-0 rounded-full bg-[#d4af37]/20 blur-xl group-hover:bg-[#d4af37]/30 transition-all duration-300" />
+      <div className="absolute inset-0 rounded-full bg-lambo-primary/20 blur-xl group-hover:bg-lambo-primary/30 transition-all duration-300" />
       
       {/* Main button */}
       <div className="relative flex flex-col items-center gap-1">
-        <div className="w-12 h-12 bg-[#0a0a0a] border-2 border-[#d4af37] rounded-full flex items-center justify-center group-hover:bg-[#d4af37] group-hover:scale-110 transition-all duration-300 shadow-2xl">
-          <ChevronUp className="w-5 h-5 text-[#d4af37] group-hover:text-black transition-colors duration-300" />
+        <div className="w-12 h-12 bg-lambo-dark-light border-2 border-lambo-primary rounded-full flex items-center justify-center group-hover:bg-lambo-primary group-hover:scale-110 transition-all duration-300 shadow-2xl">
+          <ChevronUp className="w-5 h-5 text-lambo-primary group-hover:text-lambo-bold-black transition-colors duration-300" />
         </div>
         
         {/* Label */}
-        <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#8e826b] group-hover:text-[#d4af37] transition-colors duration-300 whitespace-nowrap">
+        <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-[#8e826b] group-hover:text-lambo-primary transition-colors duration-300 whitespace-nowrap">
           Top
         </span>
       </div>
