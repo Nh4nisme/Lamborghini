@@ -2,8 +2,8 @@ import {ArrowRight} from "lucide-react";
 
 export function UrusSection() {
     return (
-        <section className="py-24 px-6 lg:px-10 bg-black">
-            <div className="max-w-[1920px] mx-auto">
+        <section className="py-24 px-4 sm:px-6 lg:px-10 bg-black">
+            <div className="max-w-[1440px] mx-auto">
                 <div className="grid lg:grid-cols-2 gap-12 items-center">
                     <div className="relative h-[400px] lg:h-[500px] overflow-hidden">
                         <img

@@ -2,7 +2,7 @@ import { ArrowRight } from 'lucide-react'
 
 export function VisionSection() {
   return (
-    <section className="py-24 px-6 lg:px-10 bg-black">
+    <section className="py-24 px-4 sm:px-6 lg:px-10 bg-black">
       <div className="max-w-[1440px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content Side */}

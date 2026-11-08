@@ -118,34 +118,15 @@ export default function ShowroomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070707] text-[#e5e5e5] pt-24 pb-16 font-sans">
+    <div className="min-h-screen bg-[#070707] text-[#e5e5e5] pb-16 font-sans">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* =========================================================================
-            1. BREADCRUMB NAVIGATION (Matches: Home > DEALERSHIP > Overview)
-            ========================================================================= */}
-        <nav
-          aria-label="Breadcrumb"
-          className="flex items-center gap-2 text-[11px] sm:text-xs uppercase tracking-[0.18em] text-[#8e826b] mb-8"
-        >
-          <button
-            onClick={() => window.location.href = '/'}
-            className="hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
-          >
-            <span>Home</span>
-          </button>
-          <span className="text-[#555]">&gt;</span>
-          <span className="text-white font-semibold">DEALERSHIP</span>
-          <span className="text-[#555]">&gt;</span>
-          <span className="text-[#d4af37] font-semibold">Overview</span>
-        </nav>
-
-        {/* =========================================================================
-            2. PAGE HERO TITLE
+            1. PAGE HERO TITLE
             DEALERSHIP
             YOUR WORLD.
             WITHIN REACH.
             ========================================================================= */}
-        <div className="mb-14">
+        <div className="mb-14 pt-8">
           <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
             DEALERSHIP
           </div>

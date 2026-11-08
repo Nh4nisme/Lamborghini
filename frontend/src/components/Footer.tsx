@@ -15,7 +15,7 @@ export function Footer() {
   return (
     <footer className="bg-black text-white border-t border-lambo-primary/30">
       {/* Top Section with Newsletter */}
-      <div className="max-w-[1920px] mx-auto px-6 lg:px-10 py-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Brand Section */}
           <div>
@@ -65,7 +65,7 @@ export function Footer() {
 
       {/* Links Section */}
       <div className="border-t border-gray-800">
-        <div className="max-w-[1920px] mx-auto px-6 lg:px-10 py-12">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {/* Models */}
             <div>
@@ -163,7 +163,7 @@ export function Footer() {
 
       {/* Bottom Section */}
       <div className="border-t border-gray-800">
-        <div className="max-w-[1920px] mx-auto px-6 lg:px-10 py-6">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
           {/* Legal Links */}
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-600 mb-6">
             <a href="#" className="hover:text-lambo-primary transition-colors">Company</a>
@@ -216,7 +216,7 @@ export function Footer() {
 
       {/* Copyright */}
       <div className="border-t border-gray-900">
-        <div className="max-w-[1920px] mx-auto px-6 lg:px-10 py-4">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-4">
           <p className="text-xs text-gray-700 text-center">
             © {new Date().getFullYear()} Automobili Lamborghini S.p.A. All rights reserved. Design study.
           </p>
