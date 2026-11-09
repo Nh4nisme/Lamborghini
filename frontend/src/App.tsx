@@ -10,6 +10,7 @@ import ConfiguratorPage from './pages/ConfiguratorPage'
 import ModelsPage from './pages/ModelsPage'
 import AboutUsPage from "./pages/AboutUsPage.tsx";
 import AboutBrandPage from "./pages/AboutBrandPage.tsx";
+import ContactPage from "./pages/ContactPage.tsx";
 
 function App() {
     const location = useLocation()
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/showroom" element={<ShowroomPage />} />
                     <Route path="/about-us" element={<AboutUsPage />} />
                     <Route path="/about-brand" element={<AboutBrandPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
                 </Routes>
             </main>
             <Footer />
