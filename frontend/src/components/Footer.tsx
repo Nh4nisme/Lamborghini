@@ -127,9 +127,9 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-lambo-primary transition-colors">
+                  <Link to="/contact" className="text-gray-400 hover:text-lambo-primary transition-colors">
                     Contact
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -174,7 +174,7 @@ export function Footer() {
             <a href="#" className="hover:text-lambo-primary transition-colors">Recall Campaign</a>
             <a href="#" className="hover:text-lambo-primary transition-colors">Privacy & Legal</a>
             <a href="#" className="hover:text-lambo-primary transition-colors">Newsletter</a>
-            <a href="#" className="hover:text-lambo-primary transition-colors">Contact</a>
+            <Link to="/contact" className="hover:text-lambo-primary transition-colors">Contact</Link>
             <a href="#" className="hover:text-lambo-primary transition-colors">Accessibility</a>
           </div>
 
