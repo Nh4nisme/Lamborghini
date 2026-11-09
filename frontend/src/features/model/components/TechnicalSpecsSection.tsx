@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { CarModelData, ModelSpec } from '../data';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -12,7 +12,7 @@ interface TechnicalSpecsSectionProps {
 }
 
 export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ carData, onOpenEnquiry }) => {
-  const [useVerifiedValues, setUseVerifiedValues] = useState(false);
+  const [useVerifiedValues] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
@@ -129,7 +129,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
                 className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide mb-1"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
-                [MODEL NAME] / TECHNICAL SPECIFICATIONS
+                TECHNICAL SPECIFICATIONS
               </h3>
               <p className="text-xs text-[#737373]">
                 Reusable data role / replace every cell with verified model information.
@@ -138,14 +138,14 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
 
             {/* Enquire Button */}
             <div className="flex items-center gap-3">
-              <button
+              {/* <button
                 onClick={() => setUseVerifiedValues(!useVerifiedValues)}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs text-[#d4af37] border border-[#d4af37]/30 hover:border-[#d4af37] bg-[#d4af37]/5 transition-colors cursor-pointer"
                 title="Toggle between template placeholders and real supercar specifications"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{useVerifiedValues ? 'Showing Verified' : 'Fill Real Data'}</span>
-              </button>
+              </button> */}
 
               <button
                 onClick={onOpenEnquiry}

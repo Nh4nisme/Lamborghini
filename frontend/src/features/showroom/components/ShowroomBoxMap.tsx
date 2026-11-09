@@ -245,7 +245,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
           </span>
         </div>
       </div>
-
+                
       {/* Main Map Body: Live Leaflet or Schematic */}
       {viewMode === 'live' ? (
         <div className="relative w-full h-64 sm:h-72 my-1 overflow-hidden border border-[#201a11]">
@@ -277,11 +277,11 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
               </button>
             </div>
 
-            <div className="flex flex-col bg-black/90 border border-[#332a18] p-0.5 shadow-lg">
+            <div className="inline-flex flex-col w-fit h-fit self-start bg-black/90 border border-[#332a18] shadow-lg">
               <button
                 onClick={handleZoomIn}
                 className="w-7 h-7 flex items-center justify-center text-white hover:text-[#d4af37] hover:bg-[#1a1610] cursor-pointer"
-                title="Zoom In"
+                title="Zoom In" 
               >
                 <ZoomIn className="w-3.5 h-3.5" />
               </button>

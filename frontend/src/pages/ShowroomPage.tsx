@@ -27,13 +27,13 @@ export default function ShowroomPage() {
   const { data: apiShowrooms, isLoading, isError } = useShowroom();
 
   // Filter state
-  const [searchLocation, setSearchLocation] = useState('Verona');
-  const [selectedCountry, setSelectedCountry] = useState('Italy');
-  const [selectedCity, setSelectedCity] = useState('Verona');
+  const [searchLocation, setSearchLocation] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('All');
+  const [selectedCity, setSelectedCity] = useState('All');
   const [activeTab, setActiveTab] = useState<'map' | 'list'>('map');
 
-  // Selected showroom state (default: verona #showroom,63540 from user prompt)
-  const [selectedShowroomId, setSelectedShowroomId] = useState<string>('verona');
+  // Selected showroom state
+  const [selectedShowroomId, setSelectedShowroomId] = useState<string>('');
 
   // Appointment section state
   const [appointmentService, setAppointmentService] = useState('Sales consultation');
@@ -341,19 +341,7 @@ export default function ShowroomPage() {
                 }}
               />
 
-              {/* Architectural Concept Photo Container */}
-              <div>
-                <div className="relative w-full aspect-[16/9] overflow-hidden border border-[#2b2518] bg-[#0c0c0c]">
-                  <img
-                    src="/images/showroom-architecture.jpg"
-                    alt="A showroom experience / original architectural concept"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-[11px] text-[#888] mt-2 tracking-wide">
-                  A showroom experience / original architectural concept
-                </p>
-              </div>
+
             </div>
 
             {/* Right Column (5 cols): Showroom Cards with Scroll */}
@@ -372,7 +360,7 @@ export default function ShowroomPage() {
 
               {!isLoading && !isError && apiShowroomsUI.length > 0 && (
                 <div className="flex flex-col gap-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
-                  {apiShowroomsUI.slice(0, 3).map((loc) => {
+                  {apiShowroomsUI.map((loc) => {
                     const isSelected = currentSelectedShowroom?.id === loc.id;
                     return (
                       <LocationCard

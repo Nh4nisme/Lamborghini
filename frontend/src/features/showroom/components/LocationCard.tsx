@@ -79,7 +79,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
       </div>
 
       {/* Block 3: Booking Information - Background #282928 */}
-      <div className="bg-[#282928] px-5 py-3.5">
+      <div className="bg-[#282928] px-5 pt-3.5 pb-6">
         <div className="text-[9px] font-bold tracking-[0.2em] text-[#8e826b] uppercase mb-2">
           BOOKING INFORMATION
         </div>
