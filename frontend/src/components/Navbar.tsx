@@ -132,6 +132,13 @@ export function Navbar() {
                       >
                         History
                       </a>
+                      <Link
+                          to="/contact"
+                          onClick={() => setAboutDropdownOpen(false)}
+                          className="block px-4 py-3 text-sm text-white hover:bg-lambo-primary/10 hover:text-lambo-primary transition-colors uppercase tracking-wide"
+                      >
+                        Contact
+                      </Link>
                     </div>
                   </div>
               )}
@@ -255,6 +262,16 @@ export function Navbar() {
                         >
                           History
                         </a>
+                        <Link
+                            to="/contact"
+                            onClick={() => {
+                              setMobileMenuOpen(false)
+                              setAboutDropdownOpen(false)
+                            }}
+                            className="block text-sm text-gray-400 hover:text-lambo-primary py-1"
+                        >
+                          Contact
+                        </Link>
                       </div>
                   )}
                 </div>
