@@ -1,159 +1,376 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { CarPreview } from '../features/configurator/components/CarPreview'
-import { OptionPanel } from '../features/configurator/components/OptionPanel'
-import { StepTabs } from '../features/configurator/components/StepTabs'
-import { SummaryBar } from '../features/configurator/components/SummaryBar'
+import { StudioScene } from '../features/configurator/3d/StudioScene'
+import { FigmaHeader } from '../features/configurator/components/FigmaHeader'
+import type { ConfigStep } from '../features/configurator/components/FigmaHeader'
+import { FigmaCanvasOverlays } from '../features/configurator/components/FigmaCanvasOverlays'
+import { FigmaCameraBar } from '../features/configurator/components/FigmaCameraBar'
+import type { FigmaCameraAngle } from '../features/configurator/components/FigmaCameraBar'
+import { FigmaRightPanel } from '../features/configurator/components/FigmaRightPanel'
+import { FigmaBottomBar } from '../features/configurator/components/FigmaBottomBar'
+import { SummaryModal } from '../features/configurator/components/SummaryModal'
+import type {
+    CarConfiguration,
+    CameraPreset,
+    PaintColor,
+} from '../features/configurator/types'
 import {
-    useXeConfigurator,
-    useMauCuaXeTheoLoai,
-    useTuyChonTheoNhom,
-} from '../features/configurator/hooks'
-import type { TuyChon, PaintType } from '../features/configurator/types'
-import { STEPS } from '../features/configurator/constants'
+    PAINT_COLORS,
+    RIMS,
+    CALIPERS,
+    INTERIOR_TRIMS,
+} from '../features/configurator/data/lamborghiniData'
+import {
+    setAudioMuted,
+    playUiClick,
+    startV12Engine,
+    stopV12Engine,
+} from '../features/configurator/audio/engineAudio'
+import { useXeConfigurator } from '../features/configurator/hooks'
+import { Check, X, ShieldAlert } from 'lucide-react'
 
 export default function ConfiguratorPage() {
     const { maXe } = useParams<{ maXe?: string }>()
     const navigate = useNavigate()
     const carId = Number(maXe) || 1
 
-    // Step state
-    const [stepIndex, setStepIndex] = useState(0)
+    // Theme state (Dark luxury by default)
+    const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+    const [currentStep, setCurrentStep] = useState<ConfigStep>('01 EXTERIOR')
+    const [activeCameraAngle, setActiveCameraAngle] = useState<FigmaCameraAngle>('SIDE')
+    const [isSummaryOpen, setIsSummaryOpen] = useState(false)
+    const [isExitModalOpen, setIsExitModalOpen] = useState(false)
+    const [isAudioMutedState, setIsAudioMutedState] = useState(false)
 
-    // Paint category state (loaiMau parameter for API @GetMapping("/{maXe}/color"))
-    const [activeLoaiMau, setActiveLoaiMau] = useState<PaintType>('Metallic')
-
-    // Selections state
-    const [selectedColor, setSelectedColor] = useState<TuyChon | null>(null)
-    const [selectedWheel, setSelectedWheel] = useState<TuyChon | null>(null)
-    const [selectedTire, setSelectedTire] = useState<TuyChon | null>(null)
-
-    // Toast alert state
-    const [showSaveToast, setShowSaveToast] = useState(false)
-
-    // 1. Fetch car information (@GetMapping("/{maXe}"))
+    // 1. Fetch car data from backend API
     const { data: carData } = useXeConfigurator(carId)
 
-    // 2. Fetch colors according to current paint type (@GetMapping("/{maXe}/color?loaiMau=..."))
-    const { data: colors = [] } = useMauCuaXeTheoLoai(carId, activeLoaiMau)
+    // Car configuration state
+    const [config, setConfig] = useState<CarConfiguration>(() => ({
+        model: 'Revuelto HPEV',
+        exteriorColor: PAINT_COLORS[0], // Arancio Borealis default
+        rim: RIMS[0], // Multi-spoke / gloss black
+        caliper: CALIPERS[0], // Giallo
+        carbonLower: 'body',
+        carbonUpper: 'body',
+        exhaust: 'matt_black',
+        spoilerPosition: 'retracted',
+        doorsOpen: false,
+        lightsOn: true,
+        engineStarted: false,
+        interiorTrim: INTERIOR_TRIMS[0],
+        contrastStitchingHex: '#ffcc00',
+        carbonInterior: false,
+        environment: 'envstudionewnight',
+        currency: 'VND',
+        language: 'VIE',
+        loungeMode: false,
+        activeTab: 'colors',
+        viewMode: 'exterior',
+        customModelUrl: '/models/lamborghini_sc18_draco.glb',
+        customModelName: 'Lamborghini SC18 Alston (Draco 3MB)',
+    }))
 
-    // 3. Fetch wheels (@GetMapping("/{maXe}/options?maNhomTuyChon=2"))
-    const { data: wheels = [] } = useTuyChonTheoNhom(carId, 2)
-
-    // 4. Fetch tires/exterior trim (@GetMapping("/{maXe}/options?maNhomTuyChon=6"))
-    const { data: tires = [] } = useTuyChonTheoNhom(carId, 6)
-
-    // Auto-select initial color when colors are loaded
+    // Sync car model name from backend API if loaded
     useEffect(() => {
-        if (colors.length > 0 && !selectedColor) {
-            // Prefer Arancio Borealis if available, otherwise first color
-            const preferred =
-                colors.find((c) => c.tenTuyChon.toLowerCase().includes('arancio')) || colors[0]
-            setSelectedColor(preferred)
+        if (carData?.tenPhienBan) {
+            setConfig((prev) => ({
+                ...prev,
+                model: carData.tenPhienBan,
+            }))
         }
-    }, [colors, selectedColor])
+    }, [carData])
 
-    // Auto-select initial wheel (group 2)
+    // Map active angle to Camera Preset for 3D Viewport
+    const getCameraPreset = (): CameraPreset => {
+        if (currentStep === '02 INTERIOR') {
+            return 'cockpit'
+        }
+        switch (activeCameraAngle) {
+            case 'FRONT':
+                return 'front_fascia'
+            case 'SIDE':
+                return 'side_profile'
+            case 'REAR':
+                return 'rear_three_quarter'
+            case 'DETAIL':
+                return 'wheel_closeup'
+            default:
+                return 'side_profile'
+        }
+    }
+
+    const handleUpdateConfig = (partial: Partial<CarConfiguration>) => {
+        setConfig((prev) => ({ ...prev, ...partial }))
+    }
+
+    const handleSelectColor = (color: PaintColor) => {
+        playUiClick()
+        setConfig((prev) => ({ ...prev, exteriorColor: color }))
+    }
+
+    const handleToggleAudio = () => {
+        const nextMuted = !isAudioMutedState
+        setIsAudioMutedState(nextMuted)
+        setAudioMuted(nextMuted)
+        if (nextMuted) {
+            stopV12Engine()
+        }
+    }
+
+    const handleToggleTheme = () => {
+        setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+    }
+
+    const handleNextStep = () => {
+        playUiClick()
+        if (currentStep === '01 EXTERIOR') {
+            setCurrentStep('02 INTERIOR')
+        } else if (currentStep === '02 INTERIOR') {
+            setCurrentStep('03 OPTIONS')
+        } else if (currentStep === '03 OPTIONS') {
+            setCurrentStep('04 SUMMARY')
+        } else if (currentStep === '04 SUMMARY') {
+            setIsSummaryOpen(true)
+        }
+    }
+
+    const handleResetConfig = () => {
+        playUiClick()
+        setConfig((prev) => ({
+            ...prev,
+            exteriorColor: PAINT_COLORS[0],
+            rim: RIMS[0],
+            carbonLower: 'body',
+            doorsOpen: false,
+            interiorTrim: INTERIOR_TRIMS[0],
+        }))
+        setActiveCameraAngle('SIDE')
+        setCurrentStep('01 EXTERIOR')
+    }
+
+    const isLight = theme === 'light'
+    const carSlug = carData?.tenPhienBan?.toLowerCase().includes('huracan')
+        ? 'huracan'
+        : carData?.tenPhienBan?.toLowerCase().includes('temerario')
+        ? 'temerario'
+        : carData?.tenPhienBan?.toLowerCase().includes('urus')
+        ? 'urus'
+        : 'revuelto'
+
+    // Keyboard shortcuts for studio controls
     useEffect(() => {
-        if (wheels.length > 0 && !selectedWheel) {
-            setSelectedWheel(wheels[0])
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+
+            if (e.key === 't' || e.key === 'T') {
+                handleToggleTheme()
+            } else if (e.key === 'd' || e.key === 'D') {
+                setConfig((prev) => ({ ...prev, doorsOpen: !prev.doorsOpen }))
+            } else if (e.key === 'l' || e.key === 'L') {
+                setConfig((prev) => ({ ...prev, lightsOn: !prev.lightsOn }))
+            } else if (e.key === 'e' || e.key === 'E') {
+                setConfig((prev) => {
+                    const next = !prev.engineStarted
+                    if (next) {
+                        startV12Engine(undefined, carSlug)
+                    } else {
+                        stopV12Engine()
+                    }
+                    return { ...prev, engineStarted: next }
+                })
+            }
         }
-    }, [wheels, selectedWheel])
 
-    // Auto-select initial tire (group 6)
-    useEffect(() => {
-        if (tires.length > 0 && !selectedTire) {
-            setSelectedTire(tires[0])
-        }
-    }, [tires, selectedTire])
-
-    // Handle reset
-    const handleReset = () => {
-        if (colors.length > 0) setSelectedColor(colors[0])
-        if (wheels.length > 0) setSelectedWheel(wheels[0])
-        if (tires.length > 0) setSelectedTire(tires[0])
-        setStepIndex(0)
-    }
-
-    // Handle exit
-    const handleExit = () => {
-        navigate(`/models/${carId}`)
-    }
-
-    // Handle save
-    const handleSave = () => {
-        setShowSaveToast(true)
-        setTimeout(() => setShowSaveToast(false), 3000)
-    }
-
-    // Handle continue to next step
-    const handleNext = () => {
-        setStepIndex((prev) => Math.min(prev + 1, STEPS.length - 1))
-    }
-
-    const carName = carData?.tenPhienBan || 'REVUELTO'
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [carSlug])
 
     return (
-        <div className="flex h-screen w-screen flex-col bg-[#edeae4] text-[#111111] overflow-hidden select-none font-sans">
-            {/* Top Navigation Bar */}
-            <header className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-6 lg:px-10 z-20">
-                {/* Brand / Model / Configurator Title */}
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-extrabold uppercase tracking-[0.2em] text-neutral-900 font-barlow">
-                        {carName} / CONFIGURATOR
-                    </span>
-                </div>
-
-                {/* Steps Tabs */}
-                <StepTabs currentIndex={stepIndex} onSelectStep={setStepIndex} />
-
-                {/* Exit Button */}
-                <button
-                    type="button"
-                    onClick={handleExit}
-                    className="border border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50 px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-neutral-800 transition-colors cursor-pointer"
-                >
-                    Exit Configurator
-                </button>
-            </header>
-
-            {/* Main Atelier Workspace */}
-            <main className="flex flex-1 flex-col lg:flex-row overflow-hidden relative">
-                {/* Center / Left: Interactive Car Display */}
-                <CarPreview car={carData} selectedColor={selectedColor} />
-
-                {/* Right: Customization Panel */}
-                <OptionPanel
-                    colors={colors}
-                    selectedColor={selectedColor}
-                    onSelectColor={setSelectedColor}
-                    activeLoaiMau={activeLoaiMau}
-                    onChangeLoaiMau={setActiveLoaiMau}
-                    wheels={wheels}
-                    selectedWheel={selectedWheel}
-                    onSelectWheel={setSelectedWheel}
-                    tires={tires}
-                    selectedTire={selectedTire}
-                    onSelectTire={setSelectedTire}
-                />
-            </main>
-
-            {/* Bottom Summary Bar */}
-            <SummaryBar
-                car={carData}
-                selectedColor={selectedColor}
-                selectedWheel={selectedWheel}
-                selectedTire={selectedTire}
-                onReset={handleReset}
-                onNext={handleNext}
-                onSave={handleSave}
+        <div
+            className={`relative w-screen h-screen overflow-hidden flex flex-col justify-between transition-colors duration-200 select-none ${
+                isLight ? 'bg-[#f4f4f6] text-[#111111]' : 'bg-[#08090b] text-[#ffffff]'
+            }`}
+        >
+            {/* 1. Top Header Bar */}
+            <FigmaHeader
+                currentStep={currentStep}
+                onSelectStep={(step) => {
+                    playUiClick()
+                    setCurrentStep(step)
+                }}
+                theme={theme}
+                onToggleTheme={handleToggleTheme}
+                isAudioMuted={isAudioMutedState}
+                onToggleAudio={handleToggleAudio}
+                onExit={() => setIsExitModalOpen(true)}
             />
 
-            {/* Toast notification */}
-            {showSaveToast && (
-                <div className="fixed bottom-24 right-8 z-50 bg-neutral-900 text-white px-5 py-3 rounded-xs shadow-xl text-xs font-semibold tracking-wider uppercase flex items-center gap-3 border border-neutral-700 animate-fade-in">
-                    <span className="w-2 h-2 rounded-full bg-[#eab308]" />
-                    Configuration saved successfully!
+            {/* 2. Main Middle Section: Left 3D Canvas + Right Configuration Panel */}
+            <div className="relative flex-1 flex flex-col lg:flex-row overflow-hidden w-full">
+                {/* 2A. Left 3D Viewport Area */}
+                <div className="relative flex-1 h-full min-h-[350px] overflow-hidden">
+                    {/* Three.js 3D Studio Scene */}
+                    <StudioScene
+                        config={config}
+                        activeCameraPreset={getCameraPreset()}
+                        theme={theme}
+                        onControlsInteracted={() => {}}
+                        onModelLoaded={(name, url) => {
+                            setConfig((prev) => ({
+                                ...prev,
+                                customModelUrl: url,
+                                customModelName: name,
+                                model: name,
+                            }))
+                        }}
+                    />
+
+                    {/* Canvas HUD Overlays (Top-left branding & Top-right color info) */}
+                    <FigmaCanvasOverlays
+                        theme={theme}
+                        exteriorColor={config.exteriorColor}
+                        viewModeLabel={
+                            currentStep === '02 INTERIOR'
+                                ? 'INTERIOR COCKPIT VIEW'
+                                : currentStep === '03 OPTIONS'
+                                ? 'AERODYNAMICS & OPTIONS'
+                                : currentStep === '04 SUMMARY'
+                                ? 'SPECIFICATION OVERVIEW'
+                                : 'EXTERIOR VIEW'
+                        }
+                    />
+
+                    {/* Bottom Camera Angle Pills (< FRONT SIDE REAR DETAIL >) */}
+                    <FigmaCameraBar
+                        activeAngle={activeCameraAngle}
+                        onSelectAngle={(angle) => {
+                            playUiClick()
+                            setActiveCameraAngle(angle)
+                        }}
+                        theme={theme}
+                    />
+
+                    {/* Model Switcher Pill (Top left under title) */}
+                    <div className="absolute top-24 left-6 md:left-8 z-20 hidden sm:flex items-center gap-1.5 p-1 rounded bg-black/60 backdrop-blur-md border border-white/10 text-xs">
+                        <button
+                            onClick={() => {
+                                setConfig((prev) => ({
+                                    ...prev,
+                                    customModelUrl: '/models/lamborghini_sc18_draco.glb',
+                                    customModelName: 'Lamborghini SC18 Alston (Draco 3MB)',
+                                }))
+                            }}
+                            className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 font-semibold ${
+                                config.customModelUrl
+                                    ? 'bg-amber-400 text-black shadow-sm'
+                                    : 'text-neutral-300 hover:text-white'
+                            }`}
+                        >
+                            {config.customModelUrl && <Check className="w-3 h-3" />}
+                            <span>SC18 GLB</span>
+                        </button>
+                        <button
+                            onClick={() => {
+                                setConfig((prev) => ({
+                                    ...prev,
+                                    customModelUrl: null,
+                                    customModelName: null,
+                                }))
+                            }}
+                            className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 font-semibold ${
+                                !config.customModelUrl
+                                    ? 'bg-amber-400 text-black shadow-sm'
+                                    : 'text-neutral-300 hover:text-white'
+                            }`}
+                        >
+                            {!config.customModelUrl && <Check className="w-3 h-3" />}
+                            <span>Revuelto 3D</span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* 2B. Right Configuration Sidebar Panel */}
+                <FigmaRightPanel
+                    currentStep={currentStep}
+                    config={config}
+                    onUpdateConfig={handleUpdateConfig}
+                    onSelectColor={handleSelectColor}
+                    theme={theme}
+                />
+            </div>
+
+            {/* 3. Bottom Sticky Action Bar */}
+            <FigmaBottomBar
+                config={config}
+                currentStep={currentStep}
+                onNextStep={handleNextStep}
+                onSave={() => setIsSummaryOpen(true)}
+                onReset={handleResetConfig}
+                theme={theme}
+            />
+
+            {/* 4. Specification Sheet Modal */}
+            <SummaryModal
+                config={config}
+                isOpen={isSummaryOpen}
+                onClose={() => setIsSummaryOpen(false)}
+            />
+
+            {/* 5. Exit Confirmation Modal */}
+            {isExitModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm select-none">
+                    <div
+                        className={`w-full max-w-md p-6 border shadow-2xl relative ${
+                            isLight
+                                ? 'bg-white border-neutral-300 text-black'
+                                : 'bg-[#12141a] border-neutral-800 text-white'
+                        }`}
+                    >
+                        <button
+                            onClick={() => setIsExitModalOpen(false)}
+                            className="absolute top-4 right-4 text-neutral-400 hover:text-white cursor-pointer"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+
+                        <div className="flex items-center gap-3 mb-3">
+                            <ShieldAlert className="w-6 h-6 text-amber-400" />
+                            <h3
+                                className="text-xl font-bold uppercase tracking-wider"
+                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                            >
+                                THOÁT KHỎI BỘ CẤU HÌNH
+                            </h3>
+                        </div>
+
+                        <p className="text-xs text-neutral-400 leading-relaxed mb-6">
+                            Bạn có muốn lưu lại cấu hình độc bản của mình hoặc quay trở lại trang chi tiết dòng xe?
+                        </p>
+
+                        <div className="flex items-center gap-3 justify-end">
+                            <button
+                                onClick={() => {
+                                    setIsExitModalOpen(false)
+                                    navigate(`/models/${carId}`)
+                                }}
+                                className="px-4 py-2 text-xs font-bold uppercase tracking-wider border border-neutral-600 hover:border-neutral-400 cursor-pointer"
+                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                            >
+                                VỀ TRANG XE
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setIsExitModalOpen(false)
+                                    setIsSummaryOpen(true)
+                                }}
+                                className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-amber-400 text-black hover:bg-amber-300 cursor-pointer"
+                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                            >
+                                XUẤT BẢNG BÁO GIÁ
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
