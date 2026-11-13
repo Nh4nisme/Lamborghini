@@ -623,10 +623,10 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#08090b]/90 border-2 border-dashed border-amber-400 p-6 pointer-events-none">
           <UploadCloud className="w-16 h-16 text-amber-400 animate-bounce mb-3" />
           <div className="text-xl font-bold text-white uppercase tracking-wider">
-            Tháº£ file 3D (.glb / .gltf) vĂ o Ä‘Ă¢y
+            Kéo thả file 3D (.glb / .gltf) vào đây
           </div>
           <div className="text-sm text-neutral-300 mt-1">
-            MĂ´ hĂ¬nh Lamborghini SC18 Alston sáº½ Ä‘Æ°á»£c náº¡p trá»±c tiáº¿p vĂ o Studio!
+            Mô hình 3D sẽ được nạp trực tiếp vào Studio!
           </div>
         </div>
       )}
