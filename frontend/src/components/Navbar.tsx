@@ -155,9 +155,9 @@ export function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
-            <button className="p-2 text-lambo-primary hover:text-lambo-hover transition-colors" aria-label="Search">
+            <Link to="/search" className="p-2 text-lambo-primary hover:text-lambo-hover transition-colors" aria-label="Search">
               <Search className="w-5 h-5" />
-            </button>
+            </Link>
             <button className="p-2 text-lambo-primary hover:text-lambo-hover transition-colors" aria-label="Language">
               <Globe className="w-5 h-5" />
             </button>
