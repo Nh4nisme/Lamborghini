@@ -28,7 +28,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
   return (
     <div
       onClick={() => onSelect(showroom)}
-      className={`transition-all duration-300 cursor-pointer overflow-hidden ${
+      className={`min-h-[320px] flex flex-col transition-all duration-300 cursor-pointer overflow-hidden ${
         isSelected
           ? 'border-2 border-[#D8A016] ring-2 ring-[#D8A016]/30'
           : 'border border-[#9F6B08]'
@@ -79,7 +79,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
       </div>
 
       {/* Block 3: Booking Information - Background #282928 */}
-      <div className="bg-[#282928] px-5 pt-3.5 pb-6">
+      <div className="bg-[#282928] px-5 pt-3.5 pb-12">
         <div className="text-[9px] font-bold tracking-[0.2em] text-[#8e826b] uppercase mb-2">
           BOOKING INFORMATION
         </div>
