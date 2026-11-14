@@ -145,7 +145,7 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white pointer-events-none">
+                <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white pointer-events-none font-barlow">
                   <span>{item.title}</span>
                   <span className="text-lambo-primary font-mono text-[9px]">{item.badge}</span>
                 </div>

@@ -130,7 +130,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           {/* Large Headline */}
           <h1
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase text-white tracking-tight leading-[0.95] mb-8 font-barlow"
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-white tracking-tight leading-[0.95] mb-8 font-barlow"
           >
             {carData.heroHeadline}
           </h1>

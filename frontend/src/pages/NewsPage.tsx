@@ -536,7 +536,7 @@ export default function NewsPage() {
                         {/* Action CTA: Explore Model */}
                         <div className="pt-6 pb-10 border-t border-b border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
-                                <span className="block text-xs font-bold uppercase tracking-wider text-white">
+                                <span className="block text-xs font-bold uppercase tracking-wider text-white font-barlow">
                                     READY TO EXPERIENCE THE REVOLUTION?
                                 </span>
                                 <span className="block text-xs text-neutral-400 mt-1">

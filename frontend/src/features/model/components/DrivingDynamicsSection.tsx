@@ -45,7 +45,7 @@ export const DrivingDynamicsSection: React.FC<DrivingDynamicsSectionProps> = ({ 
               <div className="flex items-start gap-3 p-4 border border-[#2b2518] bg-[#0d0d0d]">
                 <Zap className="w-5 h-5 text-lambo-primary mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1 font-barlow">
                     Integrated Control
                   </h4>
                   <p className="text-xs text-[#888]">
@@ -57,7 +57,7 @@ export const DrivingDynamicsSection: React.FC<DrivingDynamicsSectionProps> = ({ 
               <div className="flex items-start gap-3 p-4 border border-[#2b2518] bg-[#0d0d0d]">
                 <Gauge className="w-5 h-5 text-lambo-primary mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1 font-barlow">
                     Predictive Logic
                   </h4>
                   <p className="text-xs text-[#888]">

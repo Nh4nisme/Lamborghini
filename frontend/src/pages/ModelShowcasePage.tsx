@@ -97,7 +97,7 @@ const ModelShowcasePage: React.FC = () => {
       {isConfiguratorOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
           <div className="bg-[#0a0a0a] p-8 rounded max-w-2xl">
-            <h2 className="text-2xl text-white mb-4">Configurator Coming Soon</h2>
+            <h2 className="text-2xl text-white mb-4 font-barlow">Configurator Coming Soon</h2>
             <button
               onClick={() => setIsConfiguratorOpen(false)}
               className="px-6 py-2 bg-lambo-primary text-black font-bold"
@@ -111,7 +111,7 @@ const ModelShowcasePage: React.FC = () => {
       {isEnquiryOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
           <div className="bg-[#0a0a0a] p-8 rounded max-w-2xl">
-            <h2 className="text-2xl text-white mb-4">Enquiry Form Coming Soon</h2>
+            <h2 className="text-2xl text-white mb-4 font-barlow">Enquiry Form Coming Soon</h2>
             <button
               onClick={() => setIsEnquiryOpen(false)}
               className="px-6 py-2 bg-lambo-primary text-black font-bold"

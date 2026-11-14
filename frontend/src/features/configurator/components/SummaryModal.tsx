@@ -45,7 +45,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                 <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-lambo-dark-light">
                     <div className="flex items-center gap-3">
                         <div className="flex items-center justify-center w-8 h-8 border border-lambo-primary/40 bg-lambo-primary/10 text-lambo-primary">
-                            <Shield className="w-4 h-4 fill-amber-400/20" />
+                            <Shield className="w-4 h-4 fill-lambo-primary/20" />
                         </div>
                         <div>
                             <span className="block text-[10px] font-extrabold uppercase tracking-[0.25em] text-neutral-400 font-barlow">
@@ -185,7 +185,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         style={{ backgroundColor: config.exteriorColor.hex }}
                                     />
                                     <div>
-                                        <div className="font-bold text-white uppercase tracking-wider">
+                                        <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                             {config.exteriorColor.name}
                                         </div>
                                         <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -203,7 +203,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             {/* Rims */}
                             <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
-                                    <div className="font-bold text-white uppercase tracking-wider">
+                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                         {config.rim.name}
                                     </div>
                                     <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -223,7 +223,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         style={{ backgroundColor: config.caliper.hex }}
                                     />
                                     <div>
-                                        <div className="font-bold text-white uppercase tracking-wider">
+                                        <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                             Carbon Ceramic Calipers
                                         </div>
                                         <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -241,7 +241,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             {/* Lower Carbon */}
                             <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
-                                    <div className="font-bold text-white uppercase tracking-wider">
+                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                         Lower Aerodynamic Package
                                     </div>
                                     <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -258,7 +258,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             {/* Upper Carbon */}
                             <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
-                                    <div className="font-bold text-white uppercase tracking-wider">
+                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                         Upper Carbon Roof & Mirrors
                                     </div>
                                     <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -275,7 +275,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             {/* Exhaust */}
                             <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
-                                    <div className="font-bold text-white uppercase tracking-wider">
+                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                         Exhaust Tailpipes
                                     </div>
                                     <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -292,7 +292,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             {/* Interior Trim */}
                             <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
-                                    <div className="font-bold text-white uppercase tracking-wider">
+                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                         Cockpit Leather & Stitching
                                     </div>
                                     <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -309,7 +309,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             {/* Carbon Interior */}
                             <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
-                                    <div className="font-bold text-white uppercase tracking-wider">
+                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
                                         Carbon Steering & Corsa Dash
                                     </div>
                                     <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
@@ -362,7 +362,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                         <div className="flex items-start gap-3">
                             <MapPin className="w-5 h-5 text-lambo-primary shrink-0 mt-0.5" />
                             <div>
-                                <div className="font-bold text-white uppercase tracking-wider text-xs">
+                                <div className="font-bold text-white uppercase tracking-wider text-xs font-barlow">
                                     {isVN
                                         ? 'ĐẠI LÝ ỦY QUYỀN CHÍNH THỨC LAMBORGHINI VIỆT NAM'
                                         : 'OFFICIAL LAMBORGHINI AUTHORIZED DEALERSHIP'}

@@ -57,7 +57,7 @@ export const MonofuselageSection: React.FC<MonofuselageSectionProps> = ({ carDat
               <div className="flex items-start gap-3 p-4 border border-[#2b2518] bg-[#0d0d0d]">
                 <Box className="w-5 h-5 text-lambo-primary mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1 font-barlow">
                     Lightweight Design
                   </h4>
                   <p className="text-xs text-[#888]">
@@ -69,7 +69,7 @@ export const MonofuselageSection: React.FC<MonofuselageSectionProps> = ({ carDat
               <div className="flex items-start gap-3 p-4 border border-[#2b2518] bg-[#0d0d0d]">
                 <Shield className="w-5 h-5 text-lambo-primary mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1">
+                  <h4 className="text-sm font-bold text-white uppercase tracking-wide mb-1 font-barlow">
                     Enhanced Safety
                   </h4>
                   <p className="text-xs text-[#888]">
