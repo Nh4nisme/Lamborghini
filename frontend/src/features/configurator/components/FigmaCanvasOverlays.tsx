@@ -24,16 +24,14 @@ export const FigmaCanvasOverlays: React.FC<FigmaCanvasOverlaysProps> = ({
           <span
             className={`text-[10px] md:text-[11px] font-bold uppercase tracking-[0.24em] mb-1 ${
               isLight ? 'text-neutral-500' : 'text-neutral-400'
-            }`}
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            } font-barlow`}
           >
             LAMBORGHINI / V12 HPEV
           </span>
           <h1
             className={`text-3xl md:text-5xl font-black uppercase tracking-[0.06em] leading-none mb-1.5 ${
               isLight ? 'text-[#111111]' : 'text-[#ffffff]'
-            }`}
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            } font-barlow`}
           >
             REVUELTO
           </h1>
@@ -51,17 +49,15 @@ export const FigmaCanvasOverlays: React.FC<FigmaCanvasOverlaysProps> = ({
           <span
             className={`text-[10px] md:text-[11px] font-semibold uppercase tracking-[0.22em] mb-3 ${
               isLight ? 'text-neutral-500' : 'text-neutral-400'
-            }`}
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            } font-barlow`}
           >
             {viewModeLabel}
           </span>
-          <div className="w-9 h-[3px] bg-amber-400 mb-1.5" />
+          <div className="w-9 h-[3px] bg-lambo-primary mb-1.5" />
           <span
             className={`text-sm md:text-base font-extrabold uppercase tracking-[0.14em] ${
               isLight ? 'text-[#111111]' : 'text-[#ffffff]'
-            }`}
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            } font-barlow`}
           >
             {exteriorColor.name}
           </span>

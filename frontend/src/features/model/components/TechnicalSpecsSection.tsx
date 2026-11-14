@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import type { CarModelData, ModelSpec } from '../data';
 import { ArrowUpRight } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -111,7 +111,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
   }, [displayedSpecs, useVerifiedValues]);
 
   return (
-    <section ref={sectionRef} id="specs" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="specs" className="relative w-full bg-lambo-bold-black py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -126,8 +126,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
           <div ref={headerRef} className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#242017]">
             <div>
               <h3
-                className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide mb-1"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide mb-1 font-barlow"
               >
                 TECHNICAL SPECIFICATIONS
               </h3>
@@ -140,7 +139,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
             <div className="flex items-center gap-3">
               {/* <button
                 onClick={() => setUseVerifiedValues(!useVerifiedValues)}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs text-[#d4af37] border border-[#d4af37]/30 hover:border-[#d4af37] bg-[#d4af37]/5 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 text-xs text-lambo-primary border border-lambo-primary/30 hover:border-lambo-primary bg-lambo-primary/5 transition-colors cursor-pointer"
                 title="Toggle between template placeholders and real supercar specifications"
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -149,11 +148,10 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
 
               <button
                 onClick={onOpenEnquiry}
-                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white border border-[#4d3f23] hover:border-[#d4af37] bg-black/60 hover:bg-[#d4af37]/10 transition-colors cursor-pointer"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white border border-[#4d3f23] hover:border-lambo-primary bg-black/60 hover:bg-lambo-primary/10 transition-colors cursor-pointer font-barlow"
               >
                 <span>ENQUIRE ABOUT THIS MODEL</span>
-                <ArrowUpRight className="w-4 h-4 text-[#d4af37]" />
+                <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
               </button>
             </div>
           </div>
@@ -182,7 +180,7 @@ export const TechnicalSpecsSection: React.FC<TechnicalSpecsSectionProps> = ({ ca
                       className="hover:bg-[#14120e] transition-colors font-sans text-xs sm:text-[13px]"
                     >
                       <td className="py-3.5 px-4 font-medium text-white">{spec.parameter}</td>
-                      <td className="py-3.5 px-4 text-[#d4af37] font-mono font-medium">{val}</td>
+                      <td className="py-3.5 px-4 text-lambo-primary font-mono font-medium">{val}</td>
                       <td className="py-3.5 px-4 text-[#999999]">{unit}</td>
                       <td className="py-3.5 px-4 text-[#737373]">{ctx}</td>
                     </tr>

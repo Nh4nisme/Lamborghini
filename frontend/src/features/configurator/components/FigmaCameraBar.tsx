@@ -65,12 +65,11 @@ export const FigmaCameraBar: React.FC<FigmaCameraBarProps> = ({
                   : isLight
                   ? 'text-neutral-400 hover:text-neutral-700'
                   : 'text-neutral-500 hover:text-neutral-300'
-              }`}
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              } font-barlow`}
             >
               {angle}
               {isActive && (
-                <span className="absolute bottom-[-1px] left-0 right-0 h-[2.5px] bg-amber-400" />
+                <span className="absolute bottom-[-1px] left-0 right-0 h-[2.5px] bg-lambo-primary" />
               )}
             </button>
           );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import type { CarModelData } from '../data';
 import { AnimatedSection } from '../../../components/AnimatedSection';
@@ -31,7 +31,7 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
   };
 
   return (
-    <section id="cockpit" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section id="cockpit" className="relative w-full bg-lambo-bold-black py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Left */}
         <AnimatedSection animation="fadeUp">
@@ -47,7 +47,7 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
           <div className="lg:col-span-5 flex flex-col justify-center">
             {/* Tag */}
             <AnimatedSection animation="fadeUp" delay={0.1}>
-              <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-4">
+              <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-lambo-primary uppercase mb-4">
                 05 / INTERIOR & TECHNOLOGY
               </div>
             </AnimatedSection>
@@ -55,8 +55,7 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
             {/* Headline */}
             <AnimatedSection animation="fadeUp" delay={0.2}>
               <h2
-                className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-[0.95] mb-6"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-[0.95] mb-6 font-barlow"
               >
                 {carData.interior.headline}
               </h2>
@@ -74,11 +73,10 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
               <div>
                 <button
                   onClick={() => setShowModeInfo(!showModeInfo)}
-                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#d4af37] hover:text-[#f3cd60] transition-colors cursor-pointer group"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-lambo-primary hover:text-[#f3cd60] transition-colors cursor-pointer group font-barlow"
                 >
                   <span>DISCOVER THE COCKPIT</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#d4af37] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  <ArrowUpRight className="w-4 h-4 text-lambo-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </button>
               </div>
             </AnimatedSection>
@@ -97,7 +95,7 @@ export const CockpitSection: React.FC<CockpitSectionProps> = ({ carData }) => {
                         onClick={() => setActiveDrivingMode(mode)}
                         className={`py-1.5 px-2 text-[11px] font-bold tracking-wider uppercase border transition-all cursor-pointer ${
                           activeDrivingMode === mode
-                            ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37]'
+                            ? 'border-lambo-primary bg-lambo-primary/20 text-lambo-primary'
                             : 'border-[#2a2418] text-[#777] hover:border-[#666]'
                         }`}
                       >

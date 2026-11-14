@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight, ChevronDown, Volume2, VolumeX } from 'lucide-react';
 import { type CarModelData, getModelFolder } from '../data';
 
@@ -101,19 +101,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Mute/Unmute Button */}
         <button
           onClick={handleMuteToggle}
-          className="absolute bottom-20 right-6 sm:right-10 z-20 p-3 bg-black/80 border border-[#d4af37]/50 hover:bg-[#d4af37]/20 transition-colors backdrop-blur-sm cursor-pointer"
+          className="absolute bottom-20 right-6 sm:right-10 z-20 p-3 bg-black/80 border border-lambo-primary/50 hover:bg-lambo-primary/20 transition-colors backdrop-blur-sm cursor-pointer"
           aria-label={isMuted ? 'Unmute video' : 'Mute video'}
         >
           {isMuted ? (
             <VolumeX className="w-5 h-5 text-white" />
           ) : (
-            <Volume2 className="w-5 h-5 text-[#d4af37]" />
+            <Volume2 className="w-5 h-5 text-lambo-primary" />
           )}
         </button>
 
         {/* Dark overlay for video */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#070707] via-[#070707]/60 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070707] via-transparent to-[#070707]/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-lambo-bold-black via-lambo-bold-black/60 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-lambo-bold-black via-transparent to-lambo-bold-black/60 pointer-events-none" />
       </div>
 
       {/* Content Container - Bottom Aligned like Image 2 */}
@@ -122,16 +122,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="max-w-2xl mb-8 sm:mb-12">
           {/* Tag with Logo */}
           <div className="flex items-center gap-3 mb-4">
-            <LamborghiniLogo className="w-5 h-5 text-[#d4af37]" />
-            <span className="text-[11px] sm:text-xs font-semibold tracking-[0.22em] text-[#d4af37] uppercase">
+            <LamborghiniLogo className="w-5 h-5 text-lambo-primary" />
+            <span className="text-[11px] sm:text-xs font-semibold tracking-[0.22em] text-lambo-primary uppercase">
               {carData.name} / CAMPAIGN ROLE
             </span>
           </div>
 
           {/* Large Headline */}
           <h1
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase text-white tracking-tight leading-[0.95] mb-8"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold uppercase text-white tracking-tight leading-[0.95] mb-8 font-barlow"
           >
             {carData.heroHeadline}
           </h1>
@@ -141,8 +140,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* CONFIGURE */}
             <button
               onClick={onOpenConfigurator}
-              className="flex items-center gap-2 px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-black bg-[#d4af37] hover:bg-[#e6be43] transition-all cursor-pointer shadow-lg shadow-[#d4af37]/10"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              className="flex items-center gap-2 px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-all cursor-pointer shadow-lg shadow-lambo-primary/10 font-barlow"
             >
               CONFIGURE
               <ArrowUpRight className="w-4 h-4" />
@@ -151,8 +149,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* ENQUIRE */}
             <button
               onClick={onOpenEnquiry}
-              className="flex items-center gap-2 px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-white border border-[#4d3f23] hover:border-[#d4af37] bg-black/40 backdrop-blur-xs hover:bg-[#d4af37]/10 transition-all cursor-pointer"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              className="flex items-center gap-2 px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-white border border-[#4d3f23] hover:border-lambo-primary bg-black/40 backdrop-blur-xs hover:bg-lambo-primary/10 transition-all cursor-pointer font-barlow"
             >
               ENQUIRE
               <ArrowUpRight className="w-4 h-4" />
@@ -173,7 +170,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="flex items-center gap-1.5 hover:text-[#e8c872] transition-colors cursor-pointer group"
           >
             <span>SCROLL TO EXPLORE</span>
-            <ChevronDown className="w-4 h-4 text-[#d4af37] group-hover:translate-y-1 transition-transform" />
+            <ChevronDown className="w-4 h-4 text-lambo-primary group-hover:translate-y-1 transition-transform" />
           </button>
         </div>
       </div>
