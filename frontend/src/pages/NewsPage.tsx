@@ -271,7 +271,7 @@ const ArticleTiltCard: React.FC<ArticleTiltCardProps> = ({ article, onSelect }) 
             }}
             onClick={() => onSelect(article)}
             style={{ perspective: '1000px' }}
-            className="group relative flex flex-col justify-between overflow-hidden border border-white/10 bg-[#0e0f14] transition-all duration-300 hover:border-amber-400/40 hover:shadow-2xl hover:shadow-amber-400/5 cursor-pointer"
+            className="group relative flex flex-col justify-between overflow-hidden border border-white/10 bg-lambo-dark-light transition-all duration-300 hover:border-lambo-primary/50 hover:shadow-2xl hover:shadow-lambo-primary/10 cursor-pointer"
         >
             <div
                 style={{
@@ -283,13 +283,13 @@ const ArticleTiltCard: React.FC<ArticleTiltCardProps> = ({ article, onSelect }) 
                 className="flex flex-col h-full justify-between"
             >
                 {/* Image Banner */}
-                <div className="relative aspect-16/10 w-full overflow-hidden bg-neutral-950">
+                <div className="relative aspect-16/10 w-full overflow-hidden bg-lambo-bold-black">
                     <img
                         src={article.heroImage}
                         alt={article.title}
                         className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0e0f14] via-transparent to-black/30" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-lambo-dark-light via-transparent to-black/30" />
                 </div>
 
                 {/* Card Content */}
@@ -299,10 +299,7 @@ const ArticleTiltCard: React.FC<ArticleTiltCardProps> = ({ article, onSelect }) 
                             {article.date} · {article.category}
                         </div>
 
-                        <h3
-                            className="text-xl md:text-2xl font-bold uppercase tracking-[0.04em] text-white group-hover:text-amber-400 transition-colors line-clamp-2 leading-tight"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
+                        <h3 className="text-xl md:text-2xl font-bold uppercase tracking-[0.04em] text-white group-hover:text-lambo-primary transition-colors line-clamp-2 leading-tight font-barlow">
                             {article.title}
                         </h3>
 
@@ -314,8 +311,7 @@ const ArticleTiltCard: React.FC<ArticleTiltCardProps> = ({ article, onSelect }) 
                     <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
                         <button
                             type="button"
-                            className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-400 group-hover:text-amber-300 transition-colors cursor-pointer"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                            className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-lambo-primary group-hover:text-lambo-hover transition-colors cursor-pointer font-barlow"
                         >
                             <span>READ THE STORY</span>
                             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -421,24 +417,21 @@ export default function NewsPage() {
     }
 
     /* ---------------------------------------------------------------------- */
-    /*  VIEW 1: ARTICLE DETAIL VIEW (Ảnh 1)                                   */
+    /*  VIEW 1: ARTICLE DETAIL VIEW                                           */
     /* ---------------------------------------------------------------------- */
     if (selectedArticle) {
         const related = NEWS_ARTICLES.filter((a) => a.id !== selectedArticle.id).slice(0, 3)
 
         return (
-            <div className="min-h-screen bg-[#070707] text-[#e5e5e5] select-none font-sans">
+            <div className="min-h-screen bg-lambo-bold-black text-[#e5e5e5] select-none font-sans">
                 <main className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 md:py-12 animate-fade-in">
                     {/* Article Header */}
                     <div className="max-w-4xl mb-8">
-                        <div className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-amber-400 mb-3">
+                        <div className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-lambo-primary mb-3">
                             NEWS | {selectedArticle.date}
                         </div>
 
-                        <h1
-                            className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-[0.04em] text-white leading-[1.05]"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
+                        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-[0.04em] text-white leading-[1.05] font-barlow">
                             {selectedArticle.title}
                         </h1>
 
@@ -459,8 +452,7 @@ export default function NewsPage() {
                                 <button
                                     type="button"
                                     onClick={handleCopyShare}
-                                    className="flex items-center gap-1.5 px-4 py-2 border border-white/20 hover:border-amber-400 hover:text-amber-400 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
-                                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                    className="flex items-center gap-1.5 px-4 py-2 border border-white/20 hover:border-lambo-primary hover:text-lambo-primary text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer font-barlow"
                                 >
                                     {copiedShare ? (
                                         <>
@@ -478,8 +470,7 @@ export default function NewsPage() {
                                 <button
                                     type="button"
                                     onClick={handleBackToNewsroom}
-                                    className="flex items-center gap-1.5 px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer"
-                                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                    className="flex items-center gap-1.5 px-4 py-2 bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-lambo-bold-black text-xs font-extrabold uppercase tracking-wider transition-colors cursor-pointer font-barlow"
                                 >
                                     <span>OTHER TOPICS</span>
                                     <ArrowRight className="w-3.5 h-3.5" />
@@ -489,7 +480,7 @@ export default function NewsPage() {
                     </div>
 
                     {/* Cinematic Hero Image */}
-                    <div className="relative aspect-16/9 w-full overflow-hidden bg-neutral-950 mb-4 border border-white/10">
+                    <div className="relative aspect-16/9 w-full overflow-hidden bg-lambo-bold-black mb-4 border border-white/10">
                         <img
                             src={selectedArticle.heroImage}
                             alt={selectedArticle.title}
@@ -510,10 +501,7 @@ export default function NewsPage() {
                         {/* Iterated Sections */}
                         {selectedArticle.content.sections.map((sec, idx) => (
                             <div key={idx} className="space-y-4 pt-4">
-                                <h2
-                                    className="text-2xl sm:text-3xl font-black uppercase tracking-[0.06em] text-[#d4af37]"
-                                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                                >
+                                <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-[0.06em] text-lambo-primary font-barlow">
                                     {sec.heading}
                                 </h2>
 
@@ -528,7 +516,7 @@ export default function NewsPage() {
 
                                 {sec.image && (
                                     <div className="my-8 space-y-2">
-                                        <div className="aspect-16/9 overflow-hidden border border-white/10 bg-neutral-950">
+                                        <div className="aspect-16/9 overflow-hidden border border-white/10 bg-lambo-bold-black">
                                             <img
                                                 src={sec.image}
                                                 alt={sec.caption || 'Cockpit detail'}
@@ -558,8 +546,7 @@ export default function NewsPage() {
 
                             <Link
                                 to="/models/2"
-                                className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-black text-xs font-black uppercase tracking-[0.16em] flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-[0.98]"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="px-6 py-3 bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-lambo-bold-black text-xs font-black uppercase tracking-[0.16em] flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-[0.98] font-barlow"
                             >
                                 <span>EXPLORE / TEMERARIO</span>
                                 <ArrowRight className="w-4 h-4" />
@@ -573,7 +560,7 @@ export default function NewsPage() {
                                     {selectedArticle.galleryImages.map((img, i) => (
                                         <div
                                             key={i}
-                                            className="aspect-4/3 overflow-hidden border border-white/10 bg-neutral-950"
+                                            className="aspect-4/3 overflow-hidden border border-white/10 bg-lambo-bold-black"
                                         >
                                             <img
                                                 src={img}
@@ -588,8 +575,7 @@ export default function NewsPage() {
                                     <button
                                         type="button"
                                         onClick={handleCopyShare}
-                                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                        className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors cursor-pointer font-barlow"
                                     >
                                         <span>SHARE THIS STORY</span>
                                         <ChevronDown className="w-3.5 h-3.5" />
@@ -602,18 +588,14 @@ export default function NewsPage() {
                     {/* Related Stories Section */}
                     <div className="mt-20 pt-10 border-t border-white/10">
                         <div className="flex items-center justify-between mb-8">
-                            <h2
-                                className="text-2xl sm:text-3xl font-black uppercase tracking-[0.06em] text-white"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                            >
+                            <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-[0.06em] text-white font-barlow">
                                 RELATED STORIES.
                             </h2>
 
                             <button
                                 type="button"
                                 onClick={handleBackToNewsroom}
-                                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-lambo-primary hover:text-lambo-hover transition-colors cursor-pointer font-barlow"
                             >
                                 <span>BACK TO NEWSROOM</span>
                                 <ArrowRight className="w-3.5 h-3.5" />
@@ -636,22 +618,16 @@ export default function NewsPage() {
     }
 
     /* ---------------------------------------------------------------------- */
-    /*  VIEW 2: NEWSROOM OVERVIEW VIEW (Ảnh 2)                                */
+    /*  VIEW 2: NEWSROOM OVERVIEW VIEW                                        */
     /* ---------------------------------------------------------------------- */
     return (
-        <div className="min-h-screen bg-[#070707] text-[#e5e5e5] select-none font-sans">
+        <div className="min-h-screen bg-lambo-bold-black text-[#e5e5e5] select-none font-sans">
             <main className="max-w-[1320px] mx-auto px-5 sm:px-8 py-10 md:py-14 animate-fade-in">
                 <div className="mb-10">
-                    <span
-                        className="text-xs font-bold uppercase tracking-[0.24em] text-amber-400 block mb-2"
-                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                    >
+                    <span className="text-xs font-bold uppercase tracking-[0.24em] text-lambo-primary block mb-2 font-barlow">
                         NEWSROOM
                     </span>
-                    <h1
-                        className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-[0.04em] text-[#d4af37] leading-none"
-                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                    >
+                    <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-[0.04em] text-lambo-primary leading-none font-barlow">
                         STORIES FROM BEYOND.
                     </h1>
                     <p className="mt-4 text-sm md:text-base text-neutral-400 max-w-2xl font-light leading-relaxed">
@@ -662,7 +638,7 @@ export default function NewsPage() {
                 {/* 2. Featured Hero Story Card */}
                 <div
                     onClick={() => handleSelectArticle(heroArticle)}
-                    className="group relative w-full aspect-21/9 min-h-[360px] md:min-h-[460px] overflow-hidden border border-white/15 bg-neutral-950 mb-16 cursor-pointer"
+                    className="group relative w-full aspect-21/9 min-h-[360px] md:min-h-[460px] overflow-hidden border border-white/15 bg-lambo-bold-black mb-16 cursor-pointer"
                 >
                     <img
                         src={heroArticle.heroImage}
@@ -673,21 +649,17 @@ export default function NewsPage() {
 
                     {/* Floating Info on Hero */}
                     <div className="absolute inset-0 p-6 md:p-12 flex flex-col justify-end max-w-2xl">
-                        <span className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-amber-400 mb-2">
+                        <span className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-lambo-primary mb-2">
                             FEATURED STORY · {heroArticle.category}
                         </span>
-                        <h2
-                            className="text-3xl sm:text-5xl font-black uppercase tracking-[0.04em] text-white leading-tight mb-4 group-hover:text-amber-400 transition-colors"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
+                        <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-[0.04em] text-white leading-tight mb-4 group-hover:text-lambo-hover transition-colors font-barlow">
                             {heroArticle.title}
                         </h2>
 
                         <div className="flex items-center gap-4">
                             <button
                                 type="button"
-                                className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-black text-xs font-black uppercase tracking-[0.16em] flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-[0.98]"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="px-6 py-3 bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-lambo-bold-black text-xs font-black uppercase tracking-[0.16em] flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-[0.98] font-barlow"
                             >
                                 <span>READ THE FULL ARTICLE</span>
                                 <ArrowRight className="w-4 h-4" />
@@ -707,27 +679,23 @@ export default function NewsPage() {
                             <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-400 block mb-1">
                                 LATEST NEWS / EDITORIAL FEED
                             </span>
-                            <h2
-                                className="text-3xl sm:text-4xl font-black uppercase tracking-[0.06em] text-white"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                            >
+                            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.06em] text-white font-barlow">
                                 IN FOCUS.
                             </h2>
                         </div>
 
                         {/* Filter Tabs */}
-                        <div className="flex items-center gap-1 bg-[#111216] p-1 border border-white/10">
+                        <div className="flex items-center gap-1 bg-lambo-dark-light p-1 border border-white/10">
                             {(['ALL', 'MODELS', 'MOTORSPORT'] as const).map((tab) => (
                                 <button
                                     key={tab}
                                     type="button"
                                     onClick={() => handleFilterChange(tab)}
-                                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                                    className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer font-barlow ${
                                         activeFilter === tab
-                                            ? 'bg-amber-400 text-black'
+                                            ? 'bg-lambo-primary text-lambo-bold-black active:bg-lambo-pressed'
                                             : 'text-neutral-400 hover:text-white'
                                     }`}
-                                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                                 >
                                     {tab === 'ALL' ? 'ALL NEWS' : tab}
                                 </button>
@@ -750,15 +718,14 @@ export default function NewsPage() {
                     <div className="mt-12 pt-6 border-t border-white/10 flex items-center justify-between">
                         <button
                             type="button"
-                            className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                            className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-lambo-primary hover:text-lambo-hover transition-colors cursor-pointer font-barlow"
                         >
                             <span>DISCOVER MORE</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                         </button>
 
                         <div className="flex items-center gap-1 font-mono text-xs">
-                            <span className="px-3 py-1.5 bg-amber-400 text-black font-bold">1</span>
+                            <span className="px-3 py-1.5 bg-lambo-primary text-lambo-bold-black font-bold">1</span>
                             <span className="px-3 py-1.5 text-neutral-400 hover:text-white cursor-pointer">2</span>
                             <span className="px-3 py-1.5 text-neutral-400 hover:text-white cursor-pointer">3</span>
                             <span className="px-2 py-1.5 text-neutral-500">&gt;</span>
@@ -768,14 +735,11 @@ export default function NewsPage() {
 
                 {/* 4. EVERY SIDE OF THE STORY (6 Categories) */}
                 <section className="mb-20">
-                    <div className="mb-8 pb-3 border-b border-amber-400/30">
+                    <div className="mb-8 pb-3 border-b border-lambo-primary/30">
                         <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-400 block mb-1">
                             EXPLORE FROM EVERY ANGLE
                         </span>
-                        <h2
-                            className="text-2xl sm:text-3xl font-black uppercase tracking-[0.06em] text-white"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
+                        <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-[0.06em] text-white font-barlow">
                             EVERY SIDE OF THE STORY.
                         </h2>
                     </div>
@@ -786,17 +750,14 @@ export default function NewsPage() {
                             return (
                                 <div
                                     key={cat.title}
-                                    className="group p-6 bg-[#0e0f14] border border-white/10 hover:border-amber-400/40 transition-all flex flex-col justify-between min-h-[170px]"
+                                    className="group p-6 bg-lambo-dark-light border border-white/10 hover:border-lambo-primary/40 transition-all flex flex-col justify-between min-h-[170px]"
                                 >
                                     <div>
                                         <div className="flex items-center justify-between mb-3">
-                                            <IconComponent className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
-                                            <ArrowUpRight className="w-4 h-4 text-neutral-600 group-hover:text-amber-400 transition-colors" />
+                                            <IconComponent className="w-5 h-5 text-lambo-primary group-hover:scale-110 transition-transform" />
+                                            <ArrowUpRight className="w-4 h-4 text-neutral-600 group-hover:text-lambo-primary transition-colors" />
                                         </div>
-                                        <h3
-                                            className="text-lg font-bold uppercase tracking-wider text-white group-hover:text-amber-400 transition-colors"
-                                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                                        >
+                                        <h3 className="text-lg font-bold uppercase tracking-wider text-white group-hover:text-lambo-hover transition-colors font-barlow">
                                             {cat.title}
                                         </h3>
                                         <p className="mt-1.5 text-xs text-neutral-400 line-clamp-2">
@@ -810,8 +771,7 @@ export default function NewsPage() {
                                             setActiveFilter('ALL')
                                             window.scrollTo({ top: 600, behavior: 'smooth' })
                                         }}
-                                        className="mt-4 text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 group-hover:text-amber-400 transition-colors flex items-center gap-1 text-left cursor-pointer"
-                                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                        className="mt-4 text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 group-hover:text-lambo-hover transition-colors flex items-center gap-1 text-left cursor-pointer font-barlow"
                                     >
                                         <span>EXPLORE CATEGORY</span>
                                         <ArrowRight className="w-3 h-3" />
@@ -823,15 +783,12 @@ export default function NewsPage() {
                 </section>
 
                 {/* 5. NEWSLETTER Section */}
-                <section className="p-8 sm:p-12 bg-[#0e0f14] border border-white/15">
+                <section className="p-8 sm:p-12 bg-lambo-dark-light border border-white/15">
                     <div className="max-w-2xl">
-                        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-amber-400 block mb-2">
+                        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-lambo-primary block mb-2">
                             NEWSLETTER
                         </span>
-                        <h2
-                            className="text-3xl sm:text-4xl font-black uppercase tracking-[0.06em] text-white mb-2"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-                        >
+                        <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-[0.06em] text-white mb-2 font-barlow">
                             THE NEXT CHAPTER. STRAIGHT TO YOU.
                         </h2>
                         <p className="text-xs sm:text-sm text-neutral-400 mb-6 font-light">
@@ -845,12 +802,11 @@ export default function NewsPage() {
                                 value={newsletterEmail}
                                 onChange={(e) => setNewsletterEmail(e.target.value)}
                                 placeholder="Enter your email address"
-                                className="flex-1 h-12 bg-[#14151a] border border-neutral-700 px-4 text-xs font-medium text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 transition-colors"
+                                className="flex-1 h-12 bg-lambo-bold-black border border-neutral-700 px-4 text-xs font-medium text-white placeholder-neutral-500 focus:outline-none focus:border-lambo-primary transition-colors"
                             />
                             <button
                                 type="submit"
-                                className="h-12 px-8 bg-amber-400 hover:bg-amber-300 text-black text-xs font-black uppercase tracking-[0.16em] flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0 active:scale-[0.98]"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="h-12 px-8 bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-lambo-bold-black text-xs font-black uppercase tracking-[0.16em] flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0 active:scale-[0.98] font-barlow"
                             >
                                 {newsletterSuccess ? (
                                     <>

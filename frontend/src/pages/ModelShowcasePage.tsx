@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import HeroSection from '../features/model/components/HeroSection';
 import OverviewSection from '../features/model/components/OverviewSection';
@@ -51,12 +51,12 @@ const ModelShowcasePage: React.FC = () => {
   // Error state
   if (isError || !modelDetail) {
     return (
-      <div className="min-h-screen bg-[#070707] flex items-center justify-center">
+      <div className="min-h-screen bg-lambo-bold-black flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 mb-4">Failed to load model data</p>
           <button 
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-[#d4af37] text-black font-bold uppercase text-sm"
+            className="px-6 py-3 bg-lambo-primary text-black font-bold uppercase text-sm"
           >
             Retry
           </button>
@@ -66,7 +66,7 @@ const ModelShowcasePage: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#070707] min-h-screen">
+    <div className="bg-lambo-bold-black min-h-screen">
       <HeroSection
         carData={carData}
         onOpenConfigurator={() => navigate(`/configurator/${modelId}`)}
@@ -100,7 +100,7 @@ const ModelShowcasePage: React.FC = () => {
             <h2 className="text-2xl text-white mb-4">Configurator Coming Soon</h2>
             <button
               onClick={() => setIsConfiguratorOpen(false)}
-              className="px-6 py-2 bg-[#d4af37] text-black font-bold"
+              className="px-6 py-2 bg-lambo-primary text-black font-bold"
             >
               Close
             </button>
@@ -114,7 +114,7 @@ const ModelShowcasePage: React.FC = () => {
             <h2 className="text-2xl text-white mb-4">Enquiry Form Coming Soon</h2>
             <button
               onClick={() => setIsEnquiryOpen(false)}
-              className="px-6 py-2 bg-[#d4af37] text-black font-bold"
+              className="px-6 py-2 bg-lambo-primary text-black font-bold"
             >
               Close
             </button>

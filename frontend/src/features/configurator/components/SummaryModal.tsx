@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { CarConfiguration } from '../types'
 import { calculatePriceBreakdown, formatCurrency, generateConfigCode } from '../utils/pricing'
@@ -40,11 +40,11 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md select-none overflow-y-auto">
             {/* Modal Container: Angular, Sharp, Dark Luxury */}
-            <div className="relative w-full max-w-4xl bg-[#090a0d] border border-white/15 shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden my-auto text-white rounded-none">
+            <div className="relative w-full max-w-4xl bg-lambo-bold-black border border-white/15 shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden my-auto text-white rounded-none">
                 {/* 1. Header Bar: Official Lamborghini Title */}
-                <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-[#0d0e12]">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-lambo-dark-light">
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center w-8 h-8 border border-amber-400/40 bg-amber-400/10 text-amber-400">
+                        <div className="flex items-center justify-center w-8 h-8 border border-lambo-primary/40 bg-lambo-primary/10 text-lambo-primary">
                             <Shield className="w-4 h-4 fill-amber-400/20" />
                         </div>
                         <div>
@@ -67,7 +67,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             onClose()
                             playUiClick()
                         }}
-                        className="p-2 border border-white/10 text-neutral-400 hover:text-white hover:border-amber-400 hover:bg-white/5 transition-colors cursor-pointer"
+                        className="p-2 border border-white/10 text-neutral-400 hover:text-white hover:border-lambo-primary hover:bg-white/5 transition-colors cursor-pointer"
                         aria-label="Close"
                     >
                         <X className="w-5 h-5" />
@@ -80,7 +80,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border border-white/10 bg-[#0d0f14]">
                         <div className="p-4 border-b lg:border-b-0 border-r border-white/10 flex flex-col">
                             <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Gauge className="w-3.5 h-3.5 text-amber-400" />
+                                <Gauge className="w-3.5 h-3.5 text-lambo-primary" />
                                 <span>{isVN ? 'CÔNG SUẤT TỐI ĐA' : 'MAX. POWER'}</span>
                             </div>
                             <div className="text-2xl font-black text-white font-barlow mt-1.5 tracking-tight">
@@ -93,10 +93,10 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
                         <div className="p-4 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col">
                             <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                                <Zap className="w-3.5 h-3.5 text-lambo-primary" />
                                 <span>{isVN ? 'TĂNG TỐC 0-100 KM/H' : 'ACCELERATION'}</span>
                             </div>
-                            <div className="text-2xl font-black text-amber-400 font-barlow mt-1.5 tracking-tight">
+                            <div className="text-2xl font-black text-lambo-primary font-barlow mt-1.5 tracking-tight">
                                 2.5 s
                             </div>
                             <div className="text-[10px] text-neutral-400 font-light mt-0.5">
@@ -106,7 +106,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
                         <div className="p-4 border-r border-white/10 flex flex-col">
                             <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Award className="w-3.5 h-3.5 text-amber-400" />
+                                <Award className="w-3.5 h-3.5 text-lambo-primary" />
                                 <span>{isVN ? 'TỐC ĐỘ TỐI ĐA' : 'TOP SPEED'}</span>
                             </div>
                             <div className="text-2xl font-black text-white font-barlow mt-1.5 tracking-tight">
@@ -119,7 +119,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
                         <div className="p-4 flex flex-col">
                             <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Award className="w-3.5 h-3.5 text-amber-400" />
+                                <Award className="w-3.5 h-3.5 text-lambo-primary" />
                                 <span>{isVN ? 'HỘP SỐ TRUYỀN ĐỘNG' : 'TRANSMISSION'}</span>
                             </div>
                             <div className="text-xl font-black text-white font-barlow mt-1.5 tracking-tight">
@@ -137,7 +137,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             <span className="block text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400 font-barlow">
                                 {isVN ? 'MÃ CẤU HÌNH ĐẶC TẢ (LAMBORGHINI CODE)' : 'BESPOKE CONFIGURATION CODE'}
                             </span>
-                            <span className="font-mono text-base md:text-lg font-bold text-amber-400 tracking-wider">
+                            <span className="font-mono text-base md:text-lg font-bold text-lambo-primary tracking-wider">
                                 {configCode}
                             </span>
                         </div>
@@ -146,8 +146,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             <button
                                 type="button"
                                 onClick={copyConfigCode}
-                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 border border-white/20 hover:border-amber-400 hover:bg-white/5 text-xs font-bold uppercase tracking-wider text-neutral-200 transition-colors cursor-pointer"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 border border-white/20 hover:border-lambo-primary hover:bg-white/5 text-xs font-bold uppercase tracking-wider text-neutral-200 transition-colors cursor-pointer font-barlow"
                             >
                                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                                 <span>{copied ? (isVN ? 'ĐÃ SAO CHÉP' : 'COPIED') : (isVN ? 'SAO CHÉP MÃ' : 'COPY CODE')}</span>
@@ -156,8 +155,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             <button
                                 type="button"
                                 onClick={printSpecSheet}
-                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 border border-white/20 hover:border-white text-xs font-bold uppercase tracking-wider text-neutral-300 transition-colors cursor-pointer"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 border border-white/20 hover:border-white text-xs font-bold uppercase tracking-wider text-neutral-300 transition-colors cursor-pointer font-barlow"
                             >
                                 <Printer className="w-3.5 h-3.5" />
                                 <span>{isVN ? 'IN BẢNG BÁO GIÁ' : 'PRINT SHEET'}</span>
@@ -167,10 +165,9 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
                     {/* Detailed Options Table */}
                     <div className="flex flex-col gap-3">
-                        <div className="flex items-center justify-between pb-2 border-b border-amber-400/30">
+                        <div className="flex items-center justify-between pb-2 border-b border-lambo-primary/30">
                             <h3
-                                className="text-xs md:text-sm font-extrabold uppercase tracking-[0.16em] text-white"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="text-xs md:text-sm font-extrabold uppercase tracking-[0.16em] text-white font-barlow"
                             >
                                 {isVN ? 'CHI TIẾT TRANG BỊ VÀ TÙY CHỌN BỔ SUNG' : 'SELECTED SPECIFICATIONS & OPTIONS'}
                             </h3>
@@ -181,7 +178,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                             {/* Exterior Color */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div className="flex items-center gap-3">
                                     <div
                                         className="w-4 h-4 rounded-full border border-white/50 shrink-0"
@@ -196,7 +193,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         </div>
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.exteriorColorPrice === 0
                                         ? (isVN ? 'Tiêu chuẩn' : 'Standard')
                                         : formatCurrency(breakdown.exteriorColorPrice, config.currency, config.language)}
@@ -204,7 +201,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
 
                             {/* Rims */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
                                     <div className="font-bold text-white uppercase tracking-wider">
                                         {config.rim.name}
@@ -213,13 +210,13 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         {config.rim.size} · {config.rim.finish}
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {formatCurrency(breakdown.rimPrice, config.currency, config.language)}
                                 </div>
                             </div>
 
                             {/* Calipers */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div className="flex items-center gap-3">
                                     <div
                                         className="w-3.5 h-3.5 border border-white/40 shrink-0"
@@ -234,7 +231,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         </div>
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.caliperPrice === 0
                                         ? (isVN ? 'Tiêu chuẩn' : 'Standard')
                                         : formatCurrency(breakdown.caliperPrice, config.currency, config.language)}
@@ -242,7 +239,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
 
                             {/* Lower Carbon */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
                                     <div className="font-bold text-white uppercase tracking-wider">
                                         Lower Aerodynamic Package
@@ -251,7 +248,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         {config.carbonLower.replace('_', ' ').toUpperCase()}
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.carbonLowerPrice === 0
                                         ? (isVN ? 'Đã bao gồm' : 'Included')
                                         : formatCurrency(breakdown.carbonLowerPrice, config.currency, config.language)}
@@ -259,7 +256,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
 
                             {/* Upper Carbon */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
                                     <div className="font-bold text-white uppercase tracking-wider">
                                         Upper Carbon Roof & Mirrors
@@ -268,7 +265,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         {config.carbonUpper.replace('_', ' ').toUpperCase()}
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.carbonUpperPrice === 0
                                         ? (isVN ? 'Đã bao gồm' : 'Included')
                                         : formatCurrency(breakdown.carbonUpperPrice, config.currency, config.language)}
@@ -276,7 +273,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
 
                             {/* Exhaust */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
                                     <div className="font-bold text-white uppercase tracking-wider">
                                         Exhaust Tailpipes
@@ -285,7 +282,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         {config.exhaust.replace('_', ' ').toUpperCase()}
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.exhaustPrice === 0
                                         ? (isVN ? 'Tiêu chuẩn' : 'Standard')
                                         : formatCurrency(breakdown.exhaustPrice, config.currency, config.language)}
@@ -293,7 +290,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
 
                             {/* Interior Trim */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
                                     <div className="font-bold text-white uppercase tracking-wider">
                                         Cockpit Leather & Stitching
@@ -302,7 +299,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         {config.interiorTrim.name}
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.interiorTrimPrice === 0
                                         ? (isVN ? 'Tiêu chuẩn' : 'Standard')
                                         : formatCurrency(breakdown.interiorTrimPrice, config.currency, config.language)}
@@ -310,7 +307,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
 
                             {/* Carbon Interior */}
-                            <div className="flex items-center justify-between p-3 bg-[#111216] border border-white/10 hover:border-white/20 transition-colors">
+                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
                                 <div>
                                     <div className="font-bold text-white uppercase tracking-wider">
                                         Carbon Steering & Corsa Dash
@@ -319,7 +316,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                         {config.carbonInterior ? 'F1 Shift LEDs Equipped' : (isVN ? 'Tiêu chuẩn' : 'Standard')}
                                     </div>
                                 </div>
-                                <div className="font-mono font-bold text-amber-400 whitespace-nowrap ml-2">
+                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
                                     {breakdown.carbonInteriorPrice === 0
                                         ? (isVN ? 'Không' : 'No')
                                         : formatCurrency(breakdown.carbonInteriorPrice, config.currency, config.language)}
@@ -329,7 +326,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                     </div>
 
                     {/* Pricing Breakdown Summary */}
-                    <div className="p-5 bg-[#0f1015] border border-white/10 flex flex-col gap-2.5">
+                    <div className="p-5 bg-lambo-dark-light border border-white/10 flex flex-col gap-2.5">
                         <div className="flex items-center justify-between text-xs text-neutral-400">
                             <span className="uppercase tracking-wider">
                                 {isVN ? 'Giá Tiêu Chuẩn Xe (Base MSRP)' : 'Base Vehicle MSRP'}
@@ -343,28 +340,27 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             <span className="uppercase tracking-wider">
                                 {isVN ? 'Tổng Trang Bị Tùy Chọn (Options Total)' : 'Custom Equipment & Options'}
                             </span>
-                            <span className="font-mono text-amber-400 font-semibold">
+                            <span className="font-mono text-lambo-primary font-semibold">
                                 +{formatCurrency(breakdown.totalPrice - breakdown.basePrice, config.currency, config.language)}
                             </span>
                         </div>
 
                         <div className="flex items-center justify-between pt-3 border-t border-white/15">
                             <span
-                                className="text-sm md:text-base font-black text-white uppercase tracking-[0.14em]"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="text-sm md:text-base font-black text-white uppercase tracking-[0.14em] font-barlow"
                             >
                                 {isVN ? 'TỔNG GIÁ TRỊ DỰ KIẾN (TOTAL MSRP)' : 'TOTAL ESTIMATED PRICE'}
                             </span>
-                            <span className="font-mono text-amber-400 text-xl md:text-2xl font-black">
+                            <span className="font-mono text-lambo-primary text-xl md:text-2xl font-black">
                                 {formatCurrency(breakdown.totalPrice, config.currency, config.language)}
                             </span>
                         </div>
                     </div>
 
                     {/* Authorized Retailer Banner & Action Buttons */}
-                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 p-5 bg-[#111216] border border-amber-400/30">
+                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 p-5 bg-lambo-dark-light border border-lambo-primary/30">
                         <div className="flex items-start gap-3">
-                            <MapPin className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                            <MapPin className="w-5 h-5 text-lambo-primary shrink-0 mt-0.5" />
                             <div>
                                 <div className="font-bold text-white uppercase tracking-wider text-xs">
                                     {isVN
@@ -386,8 +382,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                                     onClose()
                                     navigate('/showroom')
                                 }}
-                                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-5 py-3 border border-amber-400/50 hover:border-amber-400 text-amber-400 hover:bg-amber-400/10 text-xs font-extrabold uppercase tracking-[0.16em] transition-colors cursor-pointer"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-5 py-3 border border-lambo-primary/50 hover:border-lambo-primary text-lambo-primary hover:bg-lambo-primary/10 text-xs font-extrabold uppercase tracking-[0.16em] transition-colors cursor-pointer font-barlow"
                             >
                                 <MapPin className="w-3.5 h-3.5" />
                                 <span>{isVN ? 'XEM SHOWROOM' : 'FIND SHOWROOM'}</span>
@@ -395,8 +390,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
                             <a
                                 href="tel:+842838221888"
-                                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-6 py-3 bg-amber-400 hover:bg-amber-300 text-black text-xs font-black uppercase tracking-[0.16em] transition-all cursor-pointer shadow-lg active:scale-[0.98]"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-6 py-3 bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-black text-xs font-black uppercase tracking-[0.16em] transition-all cursor-pointer shadow-lg active:scale-[0.98] font-barlow"
                             >
                                 <Phone className="w-3.5 h-3.5" />
                                 <span>{isVN ? 'LIÊN HỆ ĐẶT XE' : 'CONTACT DEALER'}</span>

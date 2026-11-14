@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   ArrowUpRight,
   Search,
@@ -119,7 +119,7 @@ export default function ShowroomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070707] text-[#e5e5e5] pb-16 font-sans">
+    <div className="min-h-screen bg-lambo-bold-black text-[#e5e5e5] pb-16 font-sans">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* =========================================================================
             1. PAGE HERO TITLE
@@ -128,7 +128,7 @@ export default function ShowroomPage() {
             WITHIN REACH.
             ========================================================================= */}
         <div className="mb-14 pt-8">
-          <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
+          <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-lambo-primary uppercase mb-3">
             DEALERSHIP
           </div>
 
@@ -151,7 +151,7 @@ export default function ShowroomPage() {
             3. FIND A SHOWROOM / ADAPTED LOCATOR PATTERN (FORM SECTION)
             ========================================================================= */}
         <section aria-label="Find a Showroom" className="mb-12">
-          <div className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-[#d4af37] uppercase mb-4">
+          <div className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-lambo-primary uppercase mb-4">
             FIND A SHOWROOM / ADAPTED LOCATOR PATTERN
           </div>
 
@@ -168,7 +168,7 @@ export default function ShowroomPage() {
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
                     placeholder="Enter a city or region"
-                    className="w-full bg-[#121212] border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-[#d4af37] transition-colors"
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-lambo-primary transition-colors"
                   />
                   <Search className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
@@ -186,7 +186,7 @@ export default function ShowroomPage() {
                   <select
                     value={selectedCountry}
                     onChange={(e) => setSelectedCountry(e.target.value)}
-                    className="w-full bg-[#121212] border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-[#d4af37] transition-colors cursor-pointer"
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
                   >
                     <option value="Italy">Italy</option>
                     <option value="All">All Countries</option>
@@ -222,7 +222,7 @@ export default function ShowroomPage() {
                         if (match) setSelectedShowroomId(match.id);
                       }
                     }}
-                    className="w-full bg-[#121212] border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-[#d4af37] transition-colors cursor-pointer"
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
                   >
                     <option value="Verona">Verona (#63540)</option>
                     <option value="Bologna">Bologna (#63501)</option>
@@ -246,7 +246,7 @@ export default function ShowroomPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="submit"
-                  className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-black bg-[#d4af37] hover:bg-[#e6be43] transition-colors flex items-center gap-2 cursor-pointer"
+                  className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
                   style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
                   <span>SEARCH SHOWROOMS</span>
@@ -256,11 +256,11 @@ export default function ShowroomPage() {
                 <button
                   type="button"
                   onClick={handleUseMyLocation}
-                  className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-[#d4af37] bg-black hover:bg-[#d4af37]/10 transition-colors flex items-center gap-2 cursor-pointer"
+                  className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer"
                   style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
                   <span>USE MY LOCATION</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#d4af37]" />
+                  <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
                 </button>
               </div>
 
@@ -269,7 +269,7 @@ export default function ShowroomPage() {
                 href="https://www.lamborghini.com/en-en/dealerships#showroom,63540"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-[#8e826b] hover:text-[#d4af37] flex items-center gap-1.5 transition-colors"
+                className="text-[11px] font-semibold text-[#8e826b] hover:text-lambo-primary flex items-center gap-1.5 transition-colors"
               >
                 <span>Official Locator: lamborghini.com (#63540)</span>
                 <ExternalLink className="w-3 h-3" />
@@ -293,7 +293,7 @@ export default function ShowroomPage() {
               onClick={() => setActiveTab('map')}
               className={`pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] transition-colors cursor-pointer border-b-2 ${
                 activeTab === 'map'
-                  ? 'text-[#d4af37] border-[#d4af37]'
+                  ? 'text-lambo-primary border-lambo-primary'
                   : 'text-[#888] hover:text-white border-transparent'
               }`}
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
@@ -304,7 +304,7 @@ export default function ShowroomPage() {
               onClick={() => setActiveTab('list')}
               className={`pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] transition-colors cursor-pointer border-b-2 ${
                 activeTab === 'list'
-                  ? 'text-[#d4af37] border-[#d4af37]'
+                  ? 'text-lambo-primary border-lambo-primary'
                   : 'text-[#888] hover:text-white border-transparent'
               }`}
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
@@ -348,7 +348,7 @@ export default function ShowroomPage() {
             <div className="lg:col-span-5 flex flex-col">
               {isLoading && (
                 <div className="flex items-center justify-center p-10">
-                  <div className="w-12 h-12 border-4 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-12 h-12 border-4 border-lambo-primary border-t-transparent rounded-full animate-spin"></div>
                 </div>
               )}
               
@@ -391,11 +391,11 @@ export default function ShowroomPage() {
                   onClick={() => handleSelectShowroom(loc)}
                   className={`p-6 transition-all duration-300 cursor-pointer ${
                     isSelected
-                      ? 'bg-[#0b0a07] border border-[#d4af37] ring-1 ring-[#d4af37]/50'
+                      ? 'bg-lambo-dark-light border border-lambo-primary ring-1 ring-lambo-primary/50'
                       : 'bg-[#100e0b] border border-[#262016] hover:border-[#524429]'
                   }`}
                 >
-                  <div className="text-[10px] font-bold tracking-[0.2em] text-[#d4af37] uppercase mb-2">
+                  <div className="text-[10px] font-bold tracking-[0.2em] text-lambo-primary uppercase mb-2">
                     {loc.city.toUpperCase()} · #{loc.code || '63540'}
                   </div>
                   <h3
@@ -413,7 +413,7 @@ export default function ShowroomPage() {
                       setActiveTab('map');
                       scrollToAppointment();
                     }}
-                    className="py-2 px-4 text-xs font-bold uppercase tracking-wider text-black bg-[#d4af37] hover:bg-[#e6be43] transition-colors flex items-center gap-1"
+                    className="py-2 px-4 text-xs font-bold uppercase tracking-wider text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-1"
                     style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
                     <span>SELECT &amp; APPOINTMENT</span>
@@ -435,7 +435,7 @@ export default function ShowroomPage() {
           className="border-t border-[#221c13] pt-14 pb-16"
         >
           {/* Sub-tag */}
-          <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
+          <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-lambo-primary uppercase mb-3">
             SELECTED LOCATION / {currentSelectedShowroom.city.toUpperCase()} — SAMPLE
           </div>
 
@@ -466,7 +466,7 @@ export default function ShowroomPage() {
                   <select
                     value={appointmentService}
                     onChange={(e) => setAppointmentService(e.target.value)}
-                    className="w-full bg-[#121212] border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-[#d4af37] transition-colors cursor-pointer"
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
                   >
                     <option value="Sales consultation">Choose a service</option>
                     <option value="Sales consultation">Sales consultation</option>
@@ -495,7 +495,7 @@ export default function ShowroomPage() {
                     type="date"
                     value={appointmentDate}
                     onChange={(e) => setAppointmentDate(e.target.value)}
-                    className="w-full bg-[#121212] border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-[#d4af37] transition-colors cursor-pointer"
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
                   />
                   <Calendar className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
@@ -519,7 +519,7 @@ export default function ShowroomPage() {
                     value={appointmentEmail}
                     onChange={(e) => setAppointmentEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full bg-[#121212] border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-[#d4af37] transition-colors"
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-lambo-primary transition-colors"
                   />
                   <Mail className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
@@ -535,11 +535,11 @@ export default function ShowroomPage() {
 
             {/* Success Feedback Banner */}
             {appointmentSuccess && (
-              <div className="p-4 bg-[#141209] border border-[#d4af37] flex items-center gap-3 animate-fadeIn">
-                <Check className="w-5 h-5 text-[#d4af37] shrink-0" />
+              <div className="p-4 bg-lambo-dark-light border border-lambo-primary flex items-center gap-3 animate-fadeIn">
+                <Check className="w-5 h-5 text-lambo-primary shrink-0" />
                 <p className="text-xs text-white">
                   Thank you. Your consultation request for{' '}
-                  <span className="text-[#d4af37] font-semibold">
+                  <span className="text-lambo-primary font-semibold">
                     {currentSelectedShowroom.name}
                   </span>{' '}
                   ({appointmentService}) on {appointmentDate} has been recorded.
@@ -551,7 +551,7 @@ export default function ShowroomPage() {
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 type="submit"
-                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-black bg-[#d4af37] hover:bg-[#e6be43] transition-colors flex items-center gap-2 cursor-pointer"
+                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
                 <span>REQUEST APPOINTMENT</span>
@@ -561,11 +561,11 @@ export default function ShowroomPage() {
               <button
                 type="button"
                 onClick={() => alert('Chức năng đang phát triển')}
-                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-[#d4af37] bg-black hover:bg-[#d4af37]/10 transition-colors flex items-center gap-2 cursor-pointer"
+                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
                 <span>CONTACT CUSTOMER CARE</span>
-                <ArrowUpRight className="w-4 h-4 text-[#d4af37]" />
+                <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
               </button>
             </div>
 
@@ -594,7 +594,7 @@ export default function ShowroomPage() {
 
             {/* Content Top */}
             <div className="relative z-10 max-w-xl">
-              <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-[#d4af37] uppercase mb-4">
+              <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-lambo-primary uppercase mb-4">
                 AN EXPERIENCE, NOT JUST A VISIT
               </div>
 
@@ -609,7 +609,7 @@ export default function ShowroomPage() {
 
               <button
                 onClick={() => alert('Chức năng đang phát triển')}
-                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-black bg-[#d4af37] hover:bg-[#e6be43] transition-colors flex items-center gap-2 cursor-pointer"
+                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
                 <span>MAKE AN ENQUIRY</span>
@@ -640,7 +640,7 @@ export default function ShowroomPage() {
           <div className="relative w-full max-w-lg bg-[#0e0d0b] border border-[#383020] p-6 sm:p-8">
             <div className="flex items-center justify-between pb-4 border-b border-[#242017] mb-6">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-[#d4af37]">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-lambo-primary">
                   SHOWROOM DETAILS / {detailShowroom.city.toUpperCase()}
                 </div>
                 <h3
@@ -665,7 +665,7 @@ export default function ShowroomPage() {
                   Address
                 </span>
                 <span className="text-white font-medium flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#d4af37] shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-lambo-primary shrink-0" />
                   <span>{detailShowroom.address}</span>
                 </span>
               </div>
@@ -693,7 +693,7 @@ export default function ShowroomPage() {
                   </span>
                   <span className={`text-xs uppercase font-bold tracking-wider px-2 py-1 ${
                     detailShowroom.trangThai === 'HOAT_DONG' 
-                      ? 'bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/30'
+                      ? 'bg-lambo-primary/10 text-lambo-primary border border-lambo-primary/30'
                       : 'bg-[#555]/10 text-[#999] border border-[#555]/30'
                   }`}>
                     {detailShowroom.trangThai === 'HOAT_DONG' ? 'Đang hoạt động' : detailShowroom.trangThai}
@@ -720,7 +720,7 @@ export default function ShowroomPage() {
                   setDetailsModalOpen(false);
                   scrollToAppointment();
                 }}
-                className="flex-1 py-3 bg-[#d4af37] text-black font-bold uppercase text-xs tracking-wider text-center cursor-pointer hover:bg-[#e6be43] transition-colors"
+                className="flex-1 py-3 bg-lambo-primary text-black font-bold uppercase text-xs tracking-wider text-center cursor-pointer hover:bg-lambo-hover active:bg-lambo-pressed transition-colors"
                 style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
                 REQUEST APPOINTMENT ↗
