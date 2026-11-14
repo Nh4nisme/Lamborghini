@@ -145,12 +145,12 @@ export function Navbar() {
             </div>
 
             {/* News Link */}
-            <a
-                href="#news"
+            <Link
+                to="/news"
                 className="hover:text-white transition-colors py-2"
             >
               NEWS
-            </a>
+            </Link>
           </nav>
 
           {/* Right Actions */}
@@ -276,13 +276,13 @@ export function Navbar() {
                   )}
                 </div>
 
-                <a
-                    href="#news"
+                <Link
+                    to="/news"
                     className="hover:text-lambo-primary transition-colors py-2"
                     onClick={() => setMobileMenuOpen(false)}
                 >
                   News
-                </a>
+                </Link>
               </nav>
             </div>
         )}
