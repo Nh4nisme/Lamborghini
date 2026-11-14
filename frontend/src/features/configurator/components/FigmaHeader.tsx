@@ -35,12 +35,11 @@ export const FigmaHeader: React.FC<FigmaHeaderProps> = ({
     >
       {/* Brand & Configurator Wordmark */}
       <div className="flex items-center gap-3">
-        <div className="w-5 h-5 flex items-center justify-center text-amber-500">
-          <Shield className="w-5 h-5 fill-amber-500/20 stroke-amber-500 stroke-[1.8]" />
+        <div className="w-5 h-5 flex items-center justify-center text-lambo-primary">
+          <Shield className="w-5 h-5 fill-lambo-primary/20 stroke-lambo-primary stroke-[1.8]" />
         </div>
         <div
-          className="text-lg font-extrabold uppercase tracking-[0.16em]"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          className="text-lg font-extrabold uppercase tracking-[0.16em] font-barlow"
         >
           REVUELTO <span className={isLight ? 'text-neutral-400 font-light' : 'text-neutral-600 font-light'}>/</span> CONFIGURATOR
         </div>
@@ -58,12 +57,11 @@ export const FigmaHeader: React.FC<FigmaHeaderProps> = ({
                 isActive
                   ? isLight
                     ? 'text-black border-b-2 border-black'
-                    : 'text-amber-400 border-b-2 border-amber-400'
+                    : 'text-lambo-primary border-b-2 border-lambo-primary'
                   : isLight
                   ? 'text-neutral-500 hover:text-black border-b-2 border-transparent'
                   : 'text-neutral-400 hover:text-white border-b-2 border-transparent'
               }`}
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               {step}
             </button>
@@ -84,7 +82,7 @@ export const FigmaHeader: React.FC<FigmaHeaderProps> = ({
               : 'border-white/10 text-neutral-300 hover:text-white hover:bg-white/5'
           }`}
         >
-          {isAudioMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+          {isAudioMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-lambo-primary" />}
         </button>
 
         {/* Light / Dark Mode Toggle */}
@@ -98,7 +96,7 @@ export const FigmaHeader: React.FC<FigmaHeaderProps> = ({
               : 'border-white/10 text-neutral-300 hover:text-white hover:bg-white/5'
           }`}
         >
-          {isLight ? <Moon className="w-4 h-4 text-neutral-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
+          {isLight ? <Moon className="w-4 h-4 text-neutral-700" /> : <Sun className="w-4 h-4 text-lambo-primary" />}
         </button>
 
         {/* Exit Configurator Button */}
@@ -107,9 +105,8 @@ export const FigmaHeader: React.FC<FigmaHeaderProps> = ({
           className={`px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] border transition-all cursor-pointer ${
             isLight
               ? 'border-neutral-800 text-neutral-900 hover:bg-black hover:text-white'
-              : 'border-[#3a2c14] text-neutral-200 hover:border-amber-400 hover:text-amber-400'
-          }`}
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              : 'border-[#3a2c14] text-neutral-200 hover:border-lambo-primary hover:text-lambo-primary'
+          } font-barlow`}
         >
           EXIT CONFIGURATOR
         </button>

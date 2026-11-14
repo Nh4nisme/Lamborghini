@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { ArrowUpRight, Compass } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -76,7 +76,7 @@ export const JourneySection: React.FC<JourneySectionProps> = ({
   }, []);
 
   return (
-    <section ref={sectionRef} id="journey" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="journey" className="relative w-full bg-lambo-bold-black py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div ref={numberRef} className="flex justify-end mb-8">
@@ -88,8 +88,7 @@ export const JourneySection: React.FC<JourneySectionProps> = ({
         {/* Section Title */}
         <h2
           ref={titleRef}
-          className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight mb-10"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight mb-10 font-barlow"
         >
           THE JOURNEY CONTINUES.
         </h2>
@@ -97,16 +96,15 @@ export const JourneySection: React.FC<JourneySectionProps> = ({
         {/* Two Cards Grid matching screenshot */}
         <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: REVUELTO & URUS */}
-          <div className="journey-card border border-[#383020] bg-[#0c0c0c] p-6 sm:p-10 flex flex-col justify-between hover:border-[#d4af37] transition-all duration-300 group">
+          <div className="journey-card border border-[#383020] bg-[#0c0c0c] p-6 sm:p-10 flex flex-col justify-between hover:border-lambo-primary transition-all duration-300 group">
             <div>
               {/* Compass / Steering Icon in small gold circle */}
-              <div className="w-9 h-9 rounded-full border border-[#d4af37]/60 flex items-center justify-center text-[#d4af37] mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-9 h-9 rounded-full border border-lambo-primary/60 flex items-center justify-center text-lambo-primary mb-6 group-hover:scale-110 transition-transform">
                 <Compass className="w-4 h-4" />
               </div>
 
               <h3
-                className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3 font-barlow"
               >
                 REVUELTO &amp; URUS
               </h3>
@@ -119,26 +117,24 @@ export const JourneySection: React.FC<JourneySectionProps> = ({
             <div>
               <button
                 onClick={onOpenConfigurator}
-                className="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#4d3f23] hover:border-[#d4af37] bg-black/80 hover:bg-[#d4af37]/10 transition-all cursor-pointer"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#4d3f23] hover:border-lambo-primary bg-black/80 hover:bg-lambo-primary/10 transition-all cursor-pointer font-barlow"
               >
                 <span>EXPLORE MODELS</span>
-                <ArrowUpRight className="w-4 h-4 text-[#d4af37]" />
+                <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
               </button>
             </div>
           </div>
 
           {/* Card 2: PRE-OWNED */}
-          <div className="journey-card border border-[#383020] bg-[#0c0c0c] p-6 sm:p-10 flex flex-col justify-between hover:border-[#d4af37] transition-all duration-300 group">
+          <div className="journey-card border border-[#383020] bg-[#0c0c0c] p-6 sm:p-10 flex flex-col justify-between hover:border-lambo-primary transition-all duration-300 group">
             <div>
               {/* Compass / Shield Icon */}
-              <div className="w-9 h-9 rounded-full border border-[#d4af37]/60 flex items-center justify-center text-[#d4af37] mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-9 h-9 rounded-full border border-lambo-primary/60 flex items-center justify-center text-lambo-primary mb-6 group-hover:scale-110 transition-transform">
                 <Compass className="w-4 h-4" />
               </div>
 
               <h3
-                className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-2xl sm:text-3xl font-black uppercase text-white tracking-wide mb-3 font-barlow"
               >
                 PRE-OWNED
               </h3>
@@ -151,11 +147,10 @@ export const JourneySection: React.FC<JourneySectionProps> = ({
             <div>
               <button
                 onClick={onOpenEnquiry}
-                className="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#4d3f23] hover:border-[#d4af37] bg-black/80 hover:bg-[#d4af37]/10 transition-all cursor-pointer"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#4d3f23] hover:border-lambo-primary bg-black/80 hover:bg-lambo-primary/10 transition-all cursor-pointer font-barlow"
               >
                 <span>EXPLORE PRE-OWNED</span>
-                <ArrowUpRight className="w-4 h-4 text-[#d4af37]" />
+                <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
               </button>
             </div>
           </div>

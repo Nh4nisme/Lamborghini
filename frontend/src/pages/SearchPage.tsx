@@ -182,7 +182,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ car, onConfigure, onRequestQuote })
             style={{
                 perspective: '1000px',
             }}
-            className="group relative flex flex-col justify-between overflow-hidden rounded-xs border border-white/10 bg-[#0e0f13] transition-all duration-300 hover:border-amber-400/50 hover:shadow-2xl hover:shadow-amber-400/10"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-xs border border-white/10 bg-[#0e0f13] transition-all duration-300 hover:border-lambo-primary/50 hover:shadow-2xl hover:shadow-lambo-primary/10"
         >
             <div
                 style={{
@@ -213,7 +213,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ car, onConfigure, onRequestQuote })
                     )}
 
                     {/* Top Right Price Tag */}
-                    <div className="absolute top-3 right-3 rounded-xs bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-mono font-bold text-amber-400 border border-white/10">
+                    <div className="absolute top-3 right-3 rounded-xs bg-black/70 backdrop-blur-md px-2.5 py-1 text-[11px] font-mono font-bold text-lambo-primary border border-white/10">
                         ${car.priceUSD.toLocaleString()} USD
                     </div>
                 </div>
@@ -221,7 +221,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ car, onConfigure, onRequestQuote })
                 {/* 2. Body Details */}
                 <div className="p-6 md:p-8 flex flex-col justify-between flex-1">
                     <div>
-                        <span className="text-[10px] md:text-[11px] font-extrabold uppercase tracking-[0.2em] text-amber-400 font-mono">
+                        <span className="text-[10px] md:text-[11px] font-extrabold uppercase tracking-[0.2em] text-lambo-primary font-mono">
                             {car.tag}
                         </span>
 
@@ -273,7 +273,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ car, onConfigure, onRequestQuote })
                         <button
                             type="button"
                             onClick={() => onConfigure(car.modelDetailId)}
-                            className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-xs border border-white/20 text-[11px] font-extrabold uppercase tracking-[0.14em] text-white hover:border-amber-400 hover:text-amber-400 transition-colors cursor-pointer"
+                            className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-xs border border-white/20 text-[11px] font-extrabold uppercase tracking-[0.14em] text-white hover:border-lambo-primary hover:text-lambo-primary transition-colors cursor-pointer"
                         >
                             <Sparkles className="w-3.5 h-3.5" />
                             <span>CONFIG 3D</span>
@@ -282,7 +282,7 @@ const TiltCard: React.FC<TiltCardProps> = ({ car, onConfigure, onRequestQuote })
                         <button
                             type="button"
                             onClick={() => onRequestQuote(car)}
-                            className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-xs bg-amber-400 hover:bg-amber-300 text-black text-[11px] font-extrabold uppercase tracking-[0.14em] transition-all cursor-pointer shadow-lg active:scale-[0.98]"
+                            className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-xs bg-lambo-primary hover:bg-lambo-hover text-black text-[11px] font-extrabold uppercase tracking-[0.14em] transition-all cursor-pointer shadow-lg active:scale-[0.98]"
                         >
                             <span>REQUEST QUOTE</span>
                             <ArrowRight className="w-3.5 h-3.5" />
@@ -397,14 +397,13 @@ export default function SearchPage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#070707] text-[#e5e5e5] select-none">
+        <div className="min-h-screen bg-lambo-dark text-[#e5e5e5] select-none">
             {/* Main Center Container */}
             <div className="mx-auto max-w-[1200px] px-6 py-12 md:py-16">
                 {/* 1. Header Hero Title */}
                 <header className="mb-10">
                     <h1
-                        className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-[0.05em] text-[#d4af37] leading-[1.05]"
-                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                        className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-[0.05em] text-lambo-primary leading-[1.05] font-barlow"
                     >
                         WHAT ARE YOU LOOKING FOR?
                     </h1>
@@ -417,8 +416,7 @@ export default function SearchPage() {
                 <div className="relative mb-6">
                     <label
                         htmlFor="site-search-input"
-                        className="block text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400 mb-2"
-                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                        className="block text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-400 mb-2 font-barlow"
                     >
                         Search on the website
                     </label>
@@ -431,7 +429,7 @@ export default function SearchPage() {
                                 value={keyword}
                                 onChange={(e) => setKeyword(e.target.value)}
                                 placeholder="Search by keyword"
-                                className="w-full h-12 md:h-14 bg-[#111215] border border-neutral-800 text-white placeholder-neutral-500 px-5 pr-12 text-sm font-medium tracking-wide focus:border-amber-400 focus:outline-none transition-colors"
+                                className="w-full h-12 md:h-14 bg-lambo-dark-light border border-neutral-800 text-white placeholder-neutral-500 px-5 pr-12 text-sm font-medium tracking-wide focus:border-lambo-primary focus:outline-none transition-colors"
                             />
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500">
                                 <Search className="w-5 h-5" />
@@ -443,8 +441,7 @@ export default function SearchPage() {
                             onClick={() => {
                                 // Trigger search focus
                             }}
-                            className="h-12 md:h-14 px-8 md:px-10 bg-amber-400 hover:bg-amber-300 text-black text-xs md:text-sm font-extrabold uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer shrink-0 active:scale-[0.98]"
-                            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                            className="h-12 md:h-14 px-8 md:px-10 bg-lambo-primary hover:bg-lambo-hover text-black text-xs md:text-sm font-extrabold uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer shrink-0 active:scale-[0.98] font-barlow"
                         >
                             <span>SEARCH</span>
                             <ArrowRight className="w-4 h-4" />
@@ -467,7 +464,7 @@ export default function SearchPage() {
                                 setIsPriceDropdownOpen(false)
                                 setIsMoreFiltersOpen(false)
                             }}
-                            className="w-full text-left p-4 md:p-5 bg-[#111215] border border-neutral-800 hover:border-neutral-700 transition-colors flex items-start justify-between cursor-pointer"
+                            className="w-full text-left p-4 md:p-5 bg-lambo-dark-light border border-neutral-800 hover:border-neutral-700 transition-colors flex items-start justify-between cursor-pointer"
                         >
                             <div>
                                 <span className="block text-xs md:text-sm font-bold uppercase tracking-wider text-white">
@@ -481,7 +478,7 @@ export default function SearchPage() {
                             </div>
                             <ChevronDown
                                 className={`w-4 h-4 text-neutral-400 transition-transform ${
-                                    isModelDropdownOpen ? 'rotate-180 text-amber-400' : ''
+                                    isModelDropdownOpen ? 'rotate-180 text-lambo-primary' : ''
                                 }`}
                             />
                         </button>
@@ -499,7 +496,7 @@ export default function SearchPage() {
                                         }}
                                         className={`w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xs flex items-center justify-between cursor-pointer transition-colors ${
                                             selectedModelFilter === m
-                                                ? 'bg-amber-400 text-black'
+                                                ? 'bg-lambo-primary text-black'
                                                 : 'text-neutral-300 hover:bg-white/5'
                                         }`}
                                     >
@@ -520,18 +517,18 @@ export default function SearchPage() {
                                 setIsModelDropdownOpen(false)
                                 setIsMoreFiltersOpen(false)
                             }}
-                            className="w-full text-left p-4 md:p-5 bg-[#111215] border border-neutral-800 hover:border-neutral-700 transition-colors flex items-start justify-between cursor-pointer"
+                            className="w-full text-left p-4 md:p-5 bg-lambo-dark-light border border-neutral-800 hover:border-neutral-700 transition-colors flex items-start justify-between cursor-pointer"
                         >
                             <div>
                                 <span className="block text-xs md:text-sm font-bold uppercase tracking-wider text-white">
                                     PRICE RANGE
                                 </span>
-                                <span className="block text-[11px] text-amber-400 font-mono mt-1">
+                                <span className="block text-[11px] text-lambo-primary font-mono mt-1">
                                     ${priceRange[0].toLocaleString()} - ${priceRange[1].toLocaleString()} USD
                                 </span>
                             </div>
                             {isPriceDropdownOpen ? (
-                                <ChevronUp className="w-4 h-4 text-amber-400" />
+                                <ChevronUp className="w-4 h-4 text-lambo-primary" />
                             ) : (
                                 <ChevronDown className="w-4 h-4 text-neutral-400" />
                             )}
@@ -553,7 +550,7 @@ export default function SearchPage() {
                                     onChange={(e) =>
                                         setPriceRange([priceRange[0], Number(e.target.value)])
                                     }
-                                    className="w-full accent-amber-400 cursor-pointer"
+                                    className="w-full accent-lambo-primary cursor-pointer"
                                 />
                                 <div className="flex justify-end gap-2">
                                     <button
@@ -569,7 +566,7 @@ export default function SearchPage() {
                                     <button
                                         type="button"
                                         onClick={() => setIsPriceDropdownOpen(false)}
-                                        className="text-[10px] uppercase font-bold bg-amber-400 text-black px-3 py-1 rounded-xs"
+                                        className="text-[10px] uppercase font-bold bg-lambo-primary text-black px-3 py-1 rounded-xs"
                                     >
                                         Apply
                                     </button>
@@ -587,7 +584,7 @@ export default function SearchPage() {
                                 setIsModelDropdownOpen(false)
                                 setIsPriceDropdownOpen(false)
                             }}
-                            className="w-full text-left p-4 md:p-5 bg-[#111215] border border-neutral-800 hover:border-neutral-700 transition-colors flex items-start justify-between cursor-pointer"
+                            className="w-full text-left p-4 md:p-5 bg-lambo-dark-light border border-neutral-800 hover:border-neutral-700 transition-colors flex items-start justify-between cursor-pointer"
                         >
                             <div>
                                 <span className="block text-xs md:text-sm font-bold uppercase tracking-wider text-white">
@@ -601,7 +598,7 @@ export default function SearchPage() {
                             </div>
                             <SlidersHorizontal
                                 className={`w-4 h-4 text-neutral-400 transition-colors ${
-                                    isMoreFiltersOpen ? 'text-amber-400' : ''
+                                    isMoreFiltersOpen ? 'text-lambo-primary' : ''
                                 }`}
                             />
                         </button>
@@ -623,7 +620,7 @@ export default function SearchPage() {
                                             }}
                                             className={`px-3 py-2 text-xs font-semibold uppercase tracking-wider rounded-xs cursor-pointer text-left ${
                                                 selectedEngine === eng
-                                                    ? 'bg-amber-400 text-black font-bold'
+                                                    ? 'bg-lambo-primary text-black font-bold'
                                                     : 'text-neutral-300 hover:bg-white/5'
                                             }`}
                                         >
@@ -640,7 +637,7 @@ export default function SearchPage() {
                 {hasActiveSearch && (
                     <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2 text-xs text-neutral-400">
-                            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                            <span className="w-2 h-2 rounded-full bg-lambo-primary animate-pulse" />
                             <span>Filters active ({filteredResults.length} models matched)</span>
                         </div>
 
@@ -660,8 +657,7 @@ export default function SearchPage() {
                     <section className="mb-16 animate-fade-in">
                         <div className="mb-8">
                             <h2
-                                className="text-3xl md:text-4xl font-black uppercase tracking-[0.06em] text-white"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="text-3xl md:text-4xl font-black uppercase tracking-[0.06em] text-white font-barlow"
                             >
                                 SEARCH RESULTS
                             </h2>
@@ -682,7 +678,7 @@ export default function SearchPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="p-12 text-center rounded-xs border border-white/10 bg-[#101115]">
+                            <div className="p-12 text-center rounded-xs border border-white/10 bg-lambo-dark-light">
                                 <Car className="w-12 h-12 text-neutral-600 mx-auto mb-3" />
                                 <h3 className="text-lg font-bold uppercase text-white mb-1">
                                     No models found
@@ -693,7 +689,7 @@ export default function SearchPage() {
                                 <button
                                     type="button"
                                     onClick={handleResetAll}
-                                    className="px-6 py-2.5 bg-amber-400 text-black font-extrabold uppercase text-xs tracking-wider cursor-pointer"
+                                    className="px-6 py-2.5 bg-lambo-primary text-black font-extrabold uppercase text-xs tracking-wider cursor-pointer"
                                 >
                                     RESET SEARCH
                                 </button>
@@ -703,16 +699,14 @@ export default function SearchPage() {
                 ) : (
                     /* 5. Default State: Explore By Category */
                     <section className="mb-16 animate-fade-in">
-                        <div className="mb-8 pb-3 border-b border-amber-400/40">
+                        <div className="mb-8 pb-3 border-b border-lambo-primary/40">
                             <span
-                                className="text-xs font-bold uppercase tracking-[0.24em] text-amber-400 block mb-1"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="text-xs font-bold uppercase tracking-[0.24em] text-lambo-primary block mb-1 font-barlow"
                             >
                                 MAIN TOPICS
                             </span>
                             <h2
-                                className="text-2xl md:text-3xl font-black uppercase tracking-[0.08em] text-white"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="text-2xl md:text-3xl font-black uppercase tracking-[0.08em] text-white font-barlow"
                             >
                                 EXPLORE BY CATEGORY
                             </h2>
@@ -722,8 +716,7 @@ export default function SearchPage() {
                             {EXPLORE_CATEGORIES.map((cat) => (
                                 <div key={cat.title} className="flex flex-col">
                                     <h3
-                                        className="text-base font-extrabold uppercase tracking-[0.16em] text-neutral-300 pb-3 border-b border-white/10 mb-4"
-                                        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                        className="text-base font-extrabold uppercase tracking-[0.16em] text-neutral-300 pb-3 border-b border-white/10 mb-4 font-barlow"
                                     >
                                         {cat.title}
                                     </h3>
@@ -733,10 +726,10 @@ export default function SearchPage() {
                                                 <button
                                                     type="button"
                                                     onClick={() => handleCategoryClick(link.value)}
-                                                    className="group w-full flex items-center justify-between text-left text-xs md:text-sm font-medium text-neutral-400 hover:text-amber-400 transition-colors py-1 cursor-pointer"
+                                                    className="group w-full flex items-center justify-between text-left text-xs md:text-sm font-medium text-neutral-400 hover:text-lambo-primary transition-colors py-1 cursor-pointer"
                                                 >
                                                     <span className="tracking-wide">{link.label}</span>
-                                                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-600 group-hover:text-amber-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                                    <ArrowUpRight className="w-3.5 h-3.5 text-neutral-600 group-hover:text-lambo-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                                                 </button>
                                             </li>
                                         ))}

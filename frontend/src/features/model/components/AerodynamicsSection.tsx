@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import type { CarModelData, Hotspot } from '../data';
 import { Plus, X, Wind } from 'lucide-react';
 import { gsap } from 'gsap';
@@ -89,7 +89,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
   }, [carData.name]);
 
   return (
-    <section ref={sectionRef} id="aerodynamics" className="relative w-full bg-[#070707] py-12 border-b border-[#1c1810]">
+    <section ref={sectionRef} id="aerodynamics" className="relative w-full bg-lambo-bold-black py-12 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -99,15 +99,14 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
         </div>
         
         {/* Tag */}
-        <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
+        <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-lambo-primary uppercase mb-3">
           {aeroData.tag}
         </div>
 
         {/* Headline */}
         <h2
           ref={headlineRef}
-          className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-tight mb-8"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-tight mb-8 font-barlow"
         >
           {aeroData.headline}
         </h2>
@@ -129,8 +128,8 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
               style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
               className={`absolute -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 z-20 ${
                 selectedHotspot?.id === spot.id
-                  ? 'bg-[#d4af37] text-black scale-125 ring-4 ring-[#d4af37]/40'
-                  : 'bg-black/80 border border-[#d4af37] text-[#d4af37] hover:scale-110 hover:bg-[#d4af37] hover:text-black'
+                  ? 'bg-lambo-primary text-black scale-125 ring-4 ring-lambo-primary/40'
+                  : 'bg-black/80 border border-lambo-primary text-lambo-primary hover:scale-110 hover:bg-lambo-primary hover:text-black'
               }`}
               aria-label={`Inspect ${spot.name}`}
             >
@@ -141,7 +140,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
           {/* Active Hotspot Popover Tooltip */}
           {selectedHotspot && (
             <div
-              className="absolute z-30 max-w-xs sm:max-w-sm bg-[#111111]/95 border border-[#d4af37] p-4 text-xs shadow-2xl backdrop-blur-md animate-fadeIn transition-all"
+              className="absolute z-30 max-w-xs sm:max-w-sm bg-[#111111]/95 border border-lambo-primary p-4 text-xs shadow-2xl backdrop-blur-md animate-fadeIn transition-all"
               style={{
                 left: `${Math.min(75, Math.max(20, selectedHotspot.x))}%`,
                 top: `${selectedHotspot.y > 50 ? selectedHotspot.y - 35 : selectedHotspot.y + 12}%`,
@@ -149,7 +148,7 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
               }}
             >
               <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#292318]">
-                <div className="flex items-center gap-1.5 text-[#d4af37] font-bold uppercase tracking-wider text-[11px]">
+                <div className="flex items-center gap-1.5 text-lambo-primary font-bold uppercase tracking-wider text-[11px]">
                   <Wind className="w-3.5 h-3.5" />
                   <span>{selectedHotspot.title}</span>
                 </div>
@@ -182,11 +181,11 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
               onClick={() => setSelectedHotspot(selectedHotspot?.id === spot.id ? null : spot)}
               className={`flex items-center gap-1.5 text-xs sm:text-sm uppercase tracking-[0.14em] font-medium transition-colors cursor-pointer ${
                 selectedHotspot?.id === spot.id
-                  ? 'text-[#d4af37] font-bold'
-                  : 'text-[#9c937f] hover:text-[#d4af37]'
+                  ? 'text-lambo-primary font-bold'
+                  : 'text-[#9c937f] hover:text-lambo-primary'
               }`}
             >
-              <Plus className="w-3.5 h-3.5 text-[#d4af37]" />
+              <Plus className="w-3.5 h-3.5 text-lambo-primary" />
               <span>{spot.name}</span>
             </button>
           ))}
