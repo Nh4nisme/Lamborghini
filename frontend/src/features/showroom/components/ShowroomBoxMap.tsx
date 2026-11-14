@@ -11,6 +11,7 @@ import type { ShowroomStudy } from '../data';
 import { OFFICIAL_LAMBORGHINI_DEALERSHIPS } from '../data';
 
 interface ShowroomBoxMapProps {
+  showrooms?: ShowroomStudy[];
   selectedShowroomId: string;
   onSelectShowroom: (showroom: ShowroomStudy) => void;
   onRequestAppointment?: (showroom: ShowroomStudy) => void;
@@ -65,6 +66,7 @@ function createLamborghiniShieldIcon(isSelected: boolean, city: string, code?: s
 }
 
 export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
+  showrooms,
   selectedShowroomId,
   onSelectShowroom,
 }) => {
@@ -75,22 +77,29 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
   const [mapStyle, setMapStyle] = useState<'dark' | 'satellite'>('dark');
   const [viewMode, setViewMode] = useState<'live' | 'schematic'>('live');
 
+  // Showrooms to display: use passed showrooms if available, otherwise fallback to official dealerships
+  const activeShowrooms = (showrooms && showrooms.length > 0) ? showrooms : OFFICIAL_LAMBORGHINI_DEALERSHIPS;
+
   // Find currently selected showroom
   const currentShowroom =
-    OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === selectedShowroomId) ||
+    activeShowrooms.find((s) => s.id === selectedShowroomId) ||
+    activeShowrooms[0] ||
     OFFICIAL_LAMBORGHINI_DEALERSHIPS[0];
+
+  const isVietnam = activeShowrooms.some((s) => s.country === 'Vietnam');
 
   // Initialize Map
   useEffect(() => {
     if (viewMode !== 'live' || !mapContainerRef.current) return;
 
     if (!mapInstanceRef.current) {
-      const initialLat = currentShowroom.lat || 45.45423;
-      const initialLng = currentShowroom.lng || 10.92022;
+      const initialLat = currentShowroom.lat || (isVietnam ? 21.0185 : 45.45423);
+      const initialLng = currentShowroom.lng || (isVietnam ? 105.7825 : 10.92022);
+      const initialZoom = isVietnam ? 12 : 9;
 
       const map = L.map(mapContainerRef.current, {
         center: [initialLat, initialLng],
-        zoom: 9,
+        zoom: initialZoom,
         zoomControl: false,
         attributionControl: false,
       });
@@ -139,7 +148,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
     }
   }, [mapStyle]);
 
-  // Populate Markers for all Lamborghini Showrooms
+  // Populate Markers for all active Showrooms
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map || viewMode !== 'live') return;
@@ -148,7 +157,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current.clear();
 
-    OFFICIAL_LAMBORGHINI_DEALERSHIPS.forEach((showroom) => {
+    activeShowrooms.forEach((showroom) => {
       if (!showroom.lat || !showroom.lng) return;
 
       const isSelected = showroom.id === selectedShowroomId;
@@ -163,12 +172,12 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
       const popupHtml = `
         <div class="bg-[#0a0a0a] border border-[#D8A016] p-3 text-white font-sans max-w-[240px] shadow-2xl">
           <div class="text-[9px] font-bold text-[#D8A016] tracking-[0.16em] uppercase">OFFICIAL SHOWROOM</div>
-          <div class="text-sm font-extrabold uppercase mt-0.5 tracking-wide text-white">${showroom.name}</div>
+          <div class="text-sm font-extrabold uppercase mt-0.5 tracking-wide text-white font-barlow">${showroom.name}</div>
           <div class="text-[10px] text-[#bbb] mt-1 leading-snug">${showroom.address}</div>
           ${showroom.phone ? `<div class="text-[10px] text-[#D8A016] font-semibold mt-1.5">${showroom.phone}</div>` : ''}
           <div class="mt-2 pt-2 border-t border-[#2a2316] flex items-center justify-between text-[9px]">
             <span class="text-[#888]">${showroom.city}, ${showroom.country}</span>
-            <span class="text-[#D8A016] font-bold">#${showroom.code || '63540'}</span>
+            <span class="text-[#D8A016] font-bold">#${showroom.code || ''}</span>
           </div>
         </div>
       `;
@@ -189,7 +198,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
 
       markersRef.current.set(showroom.id, marker);
     });
-  }, [selectedShowroomId, viewMode]);
+  }, [activeShowrooms, selectedShowroomId, viewMode]);
 
   // Smooth flyTo when selectedShowroomId changes
   useEffect(() => {
@@ -197,7 +206,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
     if (!map || viewMode !== 'live') return;
 
     if (currentShowroom && currentShowroom.lat && currentShowroom.lng) {
-      map.flyTo([currentShowroom.lat, currentShowroom.lng], 10, {
+      map.flyTo([currentShowroom.lat, currentShowroom.lng], 13, {
         duration: 1.2,
       });
 
@@ -206,25 +215,30 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
         activeMarker.openPopup();
       }
     }
-  }, [selectedShowroomId, viewMode]);
+  }, [selectedShowroomId, currentShowroom, viewMode]);
 
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
   const handleZoomOut = () => mapInstanceRef.current?.zoomOut();
-  const handleResetToItaly = () => {
-    mapInstanceRef.current?.flyTo([43.5, 12.0], 6.5, { duration: 1.2 });
+  const handleResetOverview = () => {
+    if (!mapInstanceRef.current) return;
+    if (isVietnam) {
+      mapInstanceRef.current.flyTo([16.0544, 107.5], 6, { duration: 1.2 });
+    } else {
+      mapInstanceRef.current.flyTo([43.5, 12.0], 6.5, { duration: 1.2 });
+    }
   };
 
   return (
     <div className="bg-[#0b0a08] border border-[#2b2518] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden min-h-[340px] sm:min-h-[380px]">
-      {/* Map Sub-Header (Matches: SCHEMATIC / EMILIA-ROMAGNA with Coordinates) */}
+      {/* Map Sub-Header */}
       <div className="flex items-center justify-between z-10 pb-3 border-b border-[#1c1811] mb-2">
         <div className="flex items-center gap-3">
           <div className="text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#D8A016] uppercase flex items-center gap-1.5">
             <Shield className="w-3.5 h-3.5 text-[#D8A016]" />
             <span>
               {viewMode === 'live'
-                ? 'MAP / OFFICIAL SHOWROOM NETWORK'
-                : 'SCHEMATIC / EMILIA-ROMAGNA'}
+                ? (isVietnam ? 'MAP / VIETNAM SHOWROOM NETWORK' : 'MAP / OFFICIAL SHOWROOM NETWORK')
+                : (isVietnam ? 'SCHEMATIC / VIETNAM LOCATIONS' : 'SCHEMATIC / EMILIA-ROMAGNA')}
             </span>
           </div>
 
@@ -295,9 +309,9 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
             </div>
 
             <button
-              onClick={handleResetToItaly}
+              onClick={handleResetOverview}
               className="bg-black/90 border border-[#332a18] hover:border-[#D8A016] text-[#D8A016] p-1.5 flex items-center justify-center shadow-lg cursor-pointer"
-              title="Reset View to Italy Network"
+              title={isVietnam ? 'Reset View to Vietnam Network' : 'Reset View to Italy Network'}
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -311,102 +325,193 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
           </div>
         </div>
       ) : (
-        /* Schematic SVG Map fallback */
+        /* Schematic SVG Map */
         <div className="relative w-full h-64 sm:h-72 my-1 border border-[#201a11] bg-[#080808] flex items-center justify-center">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 500 240"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <polygon
-              points="120,120 240,65 375,175 120,120"
+          {isVietnam ? (
+            /* Vietnam Schematic Network */
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 500 240"
               fill="none"
-              stroke="#D8A016"
-              strokeWidth="1.2"
-              strokeOpacity="0.45"
-            />
-            <line
-              x1="120"
-              y1="120"
-              x2="375"
-              y2="175"
-              stroke="#D8A016"
-              strokeWidth="0.8"
-              strokeOpacity="0.25"
-              strokeDasharray="4 4"
-            />
-            <line
-              x1="240"
-              y1="65"
-              x2="100"
-              y2="40"
-              stroke="#443b2a"
-              strokeWidth="0.8"
-              strokeOpacity="0.3"
-            />
-            <line
-              x1="375"
-              y1="175"
-              x2="450"
-              y2="210"
-              stroke="#443b2a"
-              strokeWidth="0.8"
-              strokeOpacity="0.3"
-            />
-
-            {/* Modena Node */}
-            <g
-              role="button"
-              tabIndex={0}
-              className="cursor-pointer group"
-              onClick={() => {
-                const modena = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'bologna');
-                if (modena) onSelectShowroom(modena);
-              }}
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="120" cy="120" r="5" fill="#D8A016" />
-              <text x="105" y="142" fill="#cccccc" fontSize="11" fontFamily="'Barlow Condensed'">
-                Modena
-              </text>
-            </g>
+              <polygon
+                points="240,40 280,120 220,195 240,40"
+                fill="none"
+                stroke="#D8A016"
+                strokeWidth="1.2"
+                strokeOpacity="0.45"
+              />
+              <line
+                x1="240"
+                y1="40"
+                x2="280"
+                y2="120"
+                stroke="#D8A016"
+                strokeWidth="0.8"
+                strokeOpacity="0.25"
+                strokeDasharray="4 4"
+              />
+              <line
+                x1="280"
+                y1="120"
+                x2="220"
+                y2="195"
+                stroke="#D8A016"
+                strokeWidth="0.8"
+                strokeOpacity="0.25"
+                strokeDasharray="4 4"
+              />
 
-            {/* Sant'Agata Bolognese Node */}
-            <g
-              role="button"
-              tabIndex={0}
-              className="cursor-pointer group"
-              onClick={() => {
-                const bologna = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'bologna');
-                if (bologna) onSelectShowroom(bologna);
-              }}
-            >
-              <circle cx="240" cy="65" r="5" fill="#D8A016" />
-              <text x="235" y="50" fill="#ffffff" fontSize="11" fontFamily="'Barlow Condensed'">
-                Sant&apos;Agata Bolognese
-              </text>
-            </g>
+              {activeShowrooms.map((showroom, idx) => {
+                // Determine node positions along north-central-south axis
+                const isSelected = showroom.id === selectedShowroomId;
+                let cx = 250;
+                let cy = 120;
+                const lowerCity = showroom.city.toLowerCase();
 
-            {/* Bologna Node */}
-            <g
-              role="button"
-              tabIndex={0}
-              className="cursor-pointer group"
-              onClick={() => {
-                const verona = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'verona');
-                if (verona) onSelectShowroom(verona);
-              }}
+                if (lowerCity.includes('hà nội') || lowerCity.includes('hanoi')) {
+                  cx = 240;
+                  cy = 45;
+                } else if (lowerCity.includes('đà nẵng') || lowerCity.includes('danang')) {
+                  cx = 280;
+                  cy = 120;
+                } else if (lowerCity.includes('hồ chí minh') || lowerCity.includes('hcm')) {
+                  cx = 220;
+                  cy = 195;
+                } else {
+                  cx = 200 + (idx * 50);
+                  cy = 60 + (idx * 45);
+                }
+
+                return (
+                  <g
+                    key={showroom.id}
+                    role="button"
+                    tabIndex={0}
+                    className="cursor-pointer group"
+                    onClick={() => onSelectShowroom(showroom)}
+                  >
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={isSelected ? 7 : 5}
+                      fill={isSelected ? '#D8A016' : '#9F6B08'}
+                      stroke={isSelected ? '#ffffff' : '#D8A016'}
+                      strokeWidth={isSelected ? 2 : 1}
+                    />
+                    <text
+                      x={cx + 14}
+                      y={cy + 4}
+                      fill={isSelected ? '#D8A016' : '#cccccc'}
+                      fontSize="11"
+                      fontFamily="'Barlow Condensed'"
+                      fontWeight={isSelected ? 'bold' : 'normal'}
+                      letterSpacing="0.5"
+                    >
+                      {showroom.city.toUpperCase()}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
+          ) : (
+            /* Europe / Italy Schematic */
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 500 240"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <circle cx="375" cy="175" r="5" fill="#D8A016" />
-              <text x="368" y="198" fill="#cccccc" fontSize="11" fontFamily="'Barlow Condensed'">
-                Bologna
-              </text>
-            </g>
-          </svg>
+              <polygon
+                points="120,120 240,65 375,175 120,120"
+                fill="none"
+                stroke="#D8A016"
+                strokeWidth="1.2"
+                strokeOpacity="0.45"
+              />
+              <line
+                x1="120"
+                y1="120"
+                x2="375"
+                y2="175"
+                stroke="#D8A016"
+                strokeWidth="0.8"
+                strokeOpacity="0.25"
+                strokeDasharray="4 4"
+              />
+              <line
+                x1="240"
+                y1="65"
+                x2="100"
+                y2="40"
+                stroke="#443b2a"
+                strokeWidth="0.8"
+                strokeOpacity="0.3"
+              />
+              <line
+                x1="375"
+                y1="175"
+                x2="450"
+                y2="210"
+                stroke="#443b2a"
+                strokeWidth="0.8"
+                strokeOpacity="0.3"
+              />
+
+              {/* Modena Node */}
+              <g
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer group"
+                onClick={() => {
+                  const modena = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'bologna');
+                  if (modena) onSelectShowroom(modena);
+                }}
+              >
+                <circle cx="120" cy="120" r="5" fill="#D8A016" />
+                <text x="105" y="142" fill="#cccccc" fontSize="11" fontFamily="'Barlow Condensed'">
+                  Modena
+                </text>
+              </g>
+
+              {/* Sant'Agata Bolognese Node */}
+              <g
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer group"
+                onClick={() => {
+                  const bologna = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'bologna');
+                  if (bologna) onSelectShowroom(bologna);
+                }}
+              >
+                <circle cx="240" cy="65" r="5" fill="#D8A016" />
+                <text x="235" y="50" fill="#ffffff" fontSize="11" fontFamily="'Barlow Condensed'">
+                  Sant&apos;Agata Bolognese
+                </text>
+              </g>
+
+              {/* Bologna Node */}
+              <g
+                role="button"
+                tabIndex={0}
+                className="cursor-pointer group"
+                onClick={() => {
+                  const verona = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'verona');
+                  if (verona) onSelectShowroom(verona);
+                }}
+              >
+                <circle cx="375" cy="175" r="5" fill="#D8A016" />
+                <text x="368" y="198" fill="#cccccc" fontSize="11" fontFamily="'Barlow Condensed'">
+                  Bologna
+                </text>
+              </g>
+            </svg>
+          )}
         </div>
       )}
 
-      {/* Map Footer Note (Matches: Illustrative sample locations...) */}
+      {/* Map Footer Note */}
       <div className="flex items-center justify-between text-[10px] text-[#777] z-10 pt-2.5 border-t border-[#1d1911]">
         <span>
           {viewMode === 'live'
@@ -414,7 +519,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
             : 'Illustrative sample locations. No live map data or distance estimates.'}
         </span>
         <span className="text-[#8e826b] font-medium hidden sm:inline">
-          {OFFICIAL_LAMBORGHINI_DEALERSHIPS.length} locations
+          {activeShowrooms.length} locations
         </span>
       </div>
     </div>

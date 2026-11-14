@@ -11,12 +11,12 @@ interface LocationCardProps {
 }
 
 /**
- * LocationCard - Thiết kế Dealership chuẩn Lamborghini Color Palette
- * 4 Blocks cấu trúc xen kẽ với theme colors:
- * 1. Showroom Info (bg-lambo-tertiary)
- * 2. Services (bg-lambo-bold-black với border lambo-pressed)
- * 3. Booking Info (bg-lambo-tertiary)
- * 4. Action Buttons (bg-lambo-bold-black với border lambo-pressed)
+ * LocationCard - Chuẩn thiết kế tối giản Lamborghini Dealership
+ * Thiết kế nguyên bản theo đúng hình UI thiết kế:
+ * - Nền xám than đậm (#232323), phẳng, không chia block rườm rà
+ * - Viền vàng gold nổi bật khi được chọn (border-2 border-lambo-primary)
+ * - Typography Barlow Condensed chuẩn nhận diện thương hiệu
+ * - Nút bấm viền vàng gold sang trọng: REQUEST APPOINTMENT (khi chọn) hoặc VIEW DETAILS
  */
 export const LocationCard: React.FC<LocationCardProps> = ({
   showroom,
@@ -28,99 +28,61 @@ export const LocationCard: React.FC<LocationCardProps> = ({
   return (
     <div
       onClick={() => onSelect(showroom)}
-      className={`min-h-[320px] flex flex-col transition-all duration-300 cursor-pointer overflow-hidden ${
+      className={`p-5 sm:p-6 transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3.5 bg-[#232323] ${
         isSelected
-          ? 'border-2 border-lambo-primary ring-2 ring-lambo-primary/30'
-          : 'border border-lambo-pressed'
+          ? 'border-2 border-lambo-primary shadow-xl shadow-black/70'
+          : 'border border-transparent hover:border-[#3a3a3a]'
       }`}
     >
-      {/* Block 1: Showroom Info - Background lambo-tertiary */}
-      <div className="bg-lambo-tertiary px-5 py-5">
-        {/* Label */}
-        <div className="text-[10px] font-bold tracking-[0.22em] text-lambo-primary uppercase mb-3 font-barlow">
-          {isSelected ? 'SELECTED / OFFICIAL SHOWROOM' : 'OFFICIAL SHOWROOM'}
+      <div className="space-y-2.5">
+        {/* 1. Category / Sub-tag */}
+        <div className="text-[10px] sm:text-[11px] font-bold tracking-[0.22em] text-lambo-primary uppercase font-barlow">
+          {isSelected ? 'SELECTED / SAMPLE LOCATION' : 'SAMPLE LOCATION'}
         </div>
 
-        {/* Title */}
-        <h3 className="text-lg font-extrabold uppercase text-white tracking-wide mb-3 leading-tight font-barlow">
+        {/* 2. Showroom Title */}
+        <h3 className="font-barlow text-2xl sm:text-[26px] font-black uppercase text-[#F3EFE6] tracking-wide leading-tight">
           {showroom.name}
         </h3>
 
-        {/* Contact Info Grid */}
-        <div className="space-y-2 text-xs text-[#bbb]">
-          <div className="flex items-start gap-2">
-            <span className="text-lambo-primary shrink-0">📍</span>
-            <span>{showroom.address}</span>
-          </div>
-          {showroom.phone && (
-            <div className="flex items-center gap-2">
-              <span className="text-lambo-primary shrink-0">📞</span>
-              <span>{showroom.phone}</span>
-            </div>
-          )}
-          <div className="flex items-center gap-2">
-            <span className="text-lambo-primary shrink-0">🕐</span>
-            <span>{showroom.hours}</span>
-          </div>
+        {/* 3. Address / Description (Clean plain text, không emoji) */}
+        <p className="text-xs text-[#a09d96] leading-relaxed font-light">
+          {showroom.address || showroom.description || 'Showroom address — to be confirmed. This is a placeholder location, not an official dealership listing.'}
+        </p>
+
+        {/* 4. Services line */}
+        <div className="text-xs text-lambo-primary font-medium tracking-wide">
+          {showroom.services || 'Sales consultation · Personalization · Service enquiry'}
         </div>
       </div>
 
-      {/* Block 2: Services - Background lambo-bold-black */}
-      <div className="bg-lambo-bold-black px-5 py-3 border-y border-lambo-pressed">
-        <div className="text-[9px] font-bold tracking-[0.2em] text-[#8e826b] uppercase mb-1.5 font-barlow">
-          SERVICES AVAILABLE
-        </div>
-        <div className="text-[11px] text-lambo-primary font-medium tracking-wide">
-          {showroom.services}
-        </div>
-      </div>
-
-      {/* Block 3: Booking Information - Background lambo-tertiary */}
-      <div className="bg-lambo-tertiary px-5 pt-3.5 pb-12">
-        <div className="text-[9px] font-bold tracking-[0.2em] text-[#8e826b] uppercase mb-2 font-barlow">
-          BOOKING INFORMATION
-        </div>
-        <div className="space-y-1 text-xs text-[#999]">
-          <div>
-            <span className="text-lambo-primary font-semibold">3</span> specialists available
-          </div>
-          <div>
-            Earliest: <span className="text-white font-medium">Mon 25 November</span>
-          </div>
-          <div>
-            Showroom capacity:{' '}
-            <span className="text-lambo-primary font-semibold">35/38</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Block 4: Action Buttons - Background lambo-bold-black */}
-      <div className="bg-lambo-bold-black px-5 py-4 border-t border-lambo-pressed">
-        <div className="flex gap-3">
-          {/* Primary Button: SCHEDULE VISIT */}
+      {/* 5. Action Button (Bám sát thiết kế: nút nền đen, viền vàng, chữ vàng, kích thước vừa vặn) */}
+      <div className="pt-1.5">
+        {isSelected ? (
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               onScheduleVisit(showroom);
             }}
-            className="flex-1 py-2.5 px-4 text-[11px] font-bold uppercase tracking-[0.16em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-all duration-200 flex items-center justify-center gap-1.5 font-barlow"
+            className="w-fit py-2 px-5 bg-black border border-lambo-primary text-lambo-primary hover:bg-lambo-primary hover:text-black transition-colors font-barlow text-xs font-bold uppercase tracking-[0.18em] flex items-center gap-2 cursor-pointer"
           >
-            <span>SCHEDULE VISIT</span>
+            <span>REQUEST APPOINTMENT</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
-
-          {/* Secondary Button: VIEW DETAILS */}
+        ) : (
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               onViewDetails(showroom);
             }}
-            className="flex-1 py-2.5 px-4 text-[11px] font-bold uppercase tracking-[0.16em] text-lambo-secondary border border-lambo-pressed hover:border-lambo-primary hover:bg-lambo-primary/10 transition-all duration-200 flex items-center justify-center gap-1.5 font-barlow"
+            className="w-fit py-2 px-5 bg-black border border-lambo-primary text-lambo-primary hover:bg-lambo-primary hover:text-black transition-colors font-barlow text-xs font-bold uppercase tracking-[0.18em] flex items-center gap-2 cursor-pointer"
           >
             <span>VIEW DETAILS</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
-        </div>
+        )}
       </div>
     </div>
   );

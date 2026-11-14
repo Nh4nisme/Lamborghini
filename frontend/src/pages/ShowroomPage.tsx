@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import {
   ArrowUpRight,
   Search,
@@ -46,26 +46,56 @@ export default function ShowroomPage() {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [detailShowroom, setDetailShowroom] = useState<ShowroomStudy | null>(null);
 
-  // Filtered showrooms from official dealerships dataset
-  const filteredList = filterShowrooms(
-    OFFICIAL_LAMBORGHINI_DEALERSHIPS,
-    searchLocation,
-    selectedCountry,
-    selectedCity === 'All' ? 'All' : selectedCity
-  );
-
-  const displayShowrooms = filteredList.length > 0 ? filteredList : OFFICIAL_LAMBORGHINI_DEALERSHIPS;
-
   // Convert API showrooms to UI format
-  const apiShowroomsUI = apiShowrooms ? apiShowrooms.map(adaptShowroomToUI) : [];
+  const apiShowroomsUI = useMemo(() => {
+    return apiShowrooms ? apiShowrooms.map(adaptShowroomToUI) : [];
+  }, [apiShowrooms]);
+
+  // Active showrooms source: prefer API data if available, fallback to default dataset
+  const activeShowrooms = useMemo(() => {
+    return apiShowroomsUI.length > 0 ? apiShowroomsUI : OFFICIAL_LAMBORGHINI_DEALERSHIPS;
+  }, [apiShowroomsUI]);
+
+  // Auto select first showroom when dataset loads
+  useEffect(() => {
+    if (activeShowrooms.length > 0) {
+      const exists = activeShowrooms.some((s) => s.id === selectedShowroomId);
+      if (!exists) {
+        setSelectedShowroomId(activeShowrooms[0].id);
+      }
+    }
+  }, [activeShowrooms, selectedShowroomId]);
+
+  // Available cities & countries from active dataset
+  const availableCities = useMemo(() => {
+    return Array.from(new Set(activeShowrooms.map((s) => s.city))).filter(Boolean);
+  }, [activeShowrooms]);
+
+  const availableCountries = useMemo(() => {
+    return Array.from(new Set(activeShowrooms.map((s) => s.country))).filter(Boolean);
+  }, [activeShowrooms]);
+
+  // Filtered showrooms from active dataset
+  const filteredList = useMemo(() => {
+    return filterShowrooms(
+      activeShowrooms,
+      searchLocation,
+      selectedCountry,
+      selectedCity === 'All' ? 'All' : selectedCity
+    );
+  }, [activeShowrooms, searchLocation, selectedCountry, selectedCity]);
+
+  const displayShowrooms = filteredList.length > 0 ? filteredList : activeShowrooms;
 
   // Selected showroom object
-  const currentSelectedShowroom =
-    apiShowroomsUI.find((s) => s.id === selectedShowroomId) ||
-    apiShowroomsUI[0] ||
-    OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === selectedShowroomId) ||
-    displayShowrooms[0] ||
-    OFFICIAL_LAMBORGHINI_DEALERSHIPS[0];
+  const currentSelectedShowroom = useMemo(() => {
+    return (
+      activeShowrooms.find((s) => s.id === selectedShowroomId) ||
+      displayShowrooms[0] ||
+      activeShowrooms[0] ||
+      OFFICIAL_LAMBORGHINI_DEALERSHIPS[0]
+    );
+  }, [activeShowrooms, selectedShowroomId, displayShowrooms]);
 
   const handleSearchClick = (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,10 +105,13 @@ export default function ShowroomPage() {
   };
 
   const handleUseMyLocation = () => {
-    setSearchLocation('Verona');
-    setSelectedCountry('Italy');
-    setSelectedCity('Verona');
-    setSelectedShowroomId('verona');
+    if (activeShowrooms.length > 0) {
+      const target = activeShowrooms[0];
+      setSearchLocation(target.city);
+      setSelectedCountry(target.country);
+      setSelectedCity(target.city);
+      setSelectedShowroomId(target.id);
+    }
   };
 
   const handleSelectShowroom = (showroom: ShowroomStudy) => {
@@ -187,19 +220,19 @@ export default function ShowroomPage() {
                     onChange={(e) => setSelectedCountry(e.target.value)}
                     className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
                   >
-                    <option value="Italy">Italy</option>
                     <option value="All">All Countries</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Switzerland">Switzerland</option>
-                    <option value="France">France</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Monaco">Monaco</option>
-                    <option value="Vietnam">Vietnam</option>
+                    {availableCountries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                    {!availableCountries.includes('Vietnam') && <option value="Vietnam">Vietnam</option>}
+                    {!availableCountries.includes('Italy') && <option value="Italy">Italy</option>}
                   </select>
                   <ChevronDown className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
                 <p className="text-[10px] sm:text-[11px] text-[#666] mt-1.5">
-                  Sample country selection.
+                  Country selection.
                 </p>
               </div>
 
@@ -212,30 +245,29 @@ export default function ShowroomPage() {
                   <select
                     value={selectedCity}
                     onChange={(e) => {
-                      setSelectedCity(e.target.value);
-                      if (e.target.value !== 'All') {
-                        setSearchLocation(e.target.value);
-                        const match = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find(
-                          (d) => d.city.toLowerCase() === e.target.value.toLowerCase()
+                      const val = e.target.value;
+                      setSelectedCity(val);
+                      if (val !== 'All') {
+                        setSearchLocation(val);
+                        const match = activeShowrooms.find(
+                          (d) => d.city.toLowerCase() === val.toLowerCase()
                         );
                         if (match) setSelectedShowroomId(match.id);
                       }
                     }}
                     className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
                   >
-                    <option value="Verona">Verona (#63540)</option>
-                    <option value="Bologna">Bologna (#63501)</option>
-                    <option value="Milan">Milan (#63510)</option>
-                    <option value="Bergamo">Bergamo (#63515)</option>
-                    <option value="Rome">Rome (#63520)</option>
-                    <option value="Torino">Torino (#63525)</option>
-                    <option value="Bari">Bari (#63530)</option>
                     <option value="All">All Cities</option>
+                    {availableCities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
                   </select>
                   <ChevronDown className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
                 <p className="text-[10px] sm:text-[11px] text-[#666] mt-1.5">
-                  Sample city selection.
+                  City selection.
                 </p>
               </div>
             </div>
@@ -311,7 +343,7 @@ export default function ShowroomPage() {
           <div
             className="font-barlow pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#8e826b]"
           >
-            {activeTab === 'map' ? '3 SAMPLE RESULTS' : `${displayShowrooms.length} LOCATIONS`}
+            {activeTab === 'map' ? `${displayShowrooms.length} SHOWROOMS FOUND` : `${displayShowrooms.length} LOCATIONS`}
           </div>
         </div>
 
@@ -325,8 +357,9 @@ export default function ShowroomPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
             {/* Left Column (7 cols): Showroom Map + Architecture Photo */}
             <div className="lg:col-span-7 flex flex-col gap-6">
-              {/* The Map Box: displaying all showrooms like on lambo map */}
+              {/* The Map Box: displaying all active showrooms with live coordinates */}
               <ShowroomBoxMap
+                showrooms={activeShowrooms}
                 selectedShowroomId={currentSelectedShowroom.id}
                 onSelectShowroom={handleSelectShowroom}
                 onRequestAppointment={(showroom) => {
@@ -352,9 +385,9 @@ export default function ShowroomPage() {
                 </div>
               )}
 
-              {!isLoading && !isError && apiShowroomsUI.length > 0 && (
+              {!isLoading && !isError && displayShowrooms.length > 0 && (
                 <div className="flex flex-col gap-4 max-h-[800px] overflow-y-auto pr-2 custom-scrollbar">
-                  {apiShowroomsUI.map((loc) => {
+                  {displayShowrooms.map((loc) => {
                     const isSelected = currentSelectedShowroom?.id === loc.id;
                     return (
                       <LocationCard
