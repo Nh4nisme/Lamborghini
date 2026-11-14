@@ -13,7 +13,30 @@
   --color-lambo-dark: #070707;
   --color-lambo-dark-light: #0a0a0a;
   
+  --font-barlow: "Barlow Condensed", sans-serif;
   --font-family-barlow: "Barlow Condensed", sans-serif;
+  --font-barlow-condensed: "Barlow Condensed", sans-serif;
+  --font-barlow-body: "Barlow", sans-serif;
+}
+
+@utility font-barlow {
+  font-family: "Barlow Condensed", sans-serif;
+}
+
+@utility font-barlow-condensed {
+  font-family: "Barlow Condensed", sans-serif;
+}
+
+@utility font-barlow-body {
+  font-family: "Barlow", sans-serif;
+}
+
+.font-barlow {
+  font-family: "Barlow Condensed", sans-serif !important;
+}
+
+.font-family-barlow {
+  font-family: "Barlow Condensed", sans-serif !important;
 }
 
 @layer base {

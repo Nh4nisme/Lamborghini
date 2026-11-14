@@ -133,8 +133,7 @@ export default function ShowroomPage() {
           </div>
 
           <h1
-            className="text-5xl sm:text-7xl lg:text-8xl font-black uppercase text-white tracking-tight leading-[0.92] mb-5"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            className="font-barlow text-5xl sm:text-7xl lg:text-8xl font-black uppercase text-white tracking-tight leading-[0.92] mb-5"
           >
             YOUR WORLD.
             <br />
@@ -246,8 +245,7 @@ export default function ShowroomPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="submit"
-                  className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="font-barlow py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
                 >
                   <span>SEARCH SHOWROOMS</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -256,8 +254,7 @@ export default function ShowroomPage() {
                 <button
                   type="button"
                   onClick={handleUseMyLocation}
-                  className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="font-barlow py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer"
                 >
                   <span>USE MY LOCATION</span>
                   <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
@@ -291,31 +288,28 @@ export default function ShowroomPage() {
           <div className="flex items-center gap-8">
             <button
               onClick={() => setActiveTab('map')}
-              className={`pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] transition-colors cursor-pointer border-b-2 ${
+              className={`pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] font-barlow transition-colors cursor-pointer border-b-2 ${
                 activeTab === 'map'
                   ? 'text-lambo-primary border-lambo-primary'
                   : 'text-[#888] hover:text-white border-transparent'
               }`}
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               MAP
             </button>
             <button
               onClick={() => setActiveTab('list')}
-              className={`pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] transition-colors cursor-pointer border-b-2 ${
+              className={`pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] font-barlow transition-colors cursor-pointer border-b-2 ${
                 activeTab === 'list'
                   ? 'text-lambo-primary border-lambo-primary'
                   : 'text-[#888] hover:text-white border-transparent'
               }`}
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               LIST
             </button>
           </div>
 
           <div
-            className="pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#8e826b]"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            className="font-barlow pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#8e826b]"
           >
             {activeTab === 'map' ? '3 SAMPLE RESULTS' : `${displayShowrooms.length} LOCATIONS`}
           </div>
@@ -399,8 +393,7 @@ export default function ShowroomPage() {
                     {loc.city.toUpperCase()} · #{loc.code || '63540'}
                   </div>
                   <h3
-                    className="text-xl font-bold uppercase text-white mb-2"
-                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                    className="font-barlow text-xl font-bold uppercase text-white mb-2"
                   >
                     {loc.name}
                   </h3>
@@ -413,8 +406,7 @@ export default function ShowroomPage() {
                       setActiveTab('map');
                       scrollToAppointment();
                     }}
-                    className="py-2 px-4 text-xs font-bold uppercase tracking-wider text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-1"
-                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                    className="py-2 px-4 text-xs font-bold uppercase tracking-wider text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-1 font-barlow"
                   >
                     <span>SELECT &amp; APPOINTMENT</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -441,8 +433,7 @@ export default function ShowroomPage() {
 
           {/* Headline */}
           <h2
-            className="text-3xl sm:text-5xl font-black uppercase text-white tracking-tight leading-tight mb-4"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+            className="font-barlow text-3xl sm:text-5xl font-black uppercase text-white tracking-tight leading-tight mb-4"
           >
             A PERSONAL INTRODUCTION.
           </h2>
@@ -551,8 +542,7 @@ export default function ShowroomPage() {
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 type="submit"
-                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="font-barlow py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <span>REQUEST APPOINTMENT</span>
                 <ArrowUpRight className="w-4 h-4" />
@@ -561,8 +551,7 @@ export default function ShowroomPage() {
               <button
                 type="button"
                 onClick={() => alert('Chức năng đang phát triển')}
-                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer font-barlow"
               >
                 <span>CONTACT CUSTOMER CARE</span>
                 <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
@@ -599,8 +588,7 @@ export default function ShowroomPage() {
               </div>
 
               <h2
-                className="text-4xl sm:text-6xl md:text-7xl font-black uppercase text-white tracking-tight leading-[0.95] mb-6"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="font-barlow text-4xl sm:text-6xl md:text-7xl font-black uppercase text-white tracking-tight leading-[0.95] mb-6"
               >
                 LET&apos;S BEGIN
                 <br />
@@ -609,8 +597,7 @@ export default function ShowroomPage() {
 
               <button
                 onClick={() => alert('Chức năng đang phát triển')}
-                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer font-barlow"
               >
                 <span>MAKE AN ENQUIRY</span>
                 <ArrowUpRight className="w-4 h-4" />
@@ -644,8 +631,7 @@ export default function ShowroomPage() {
                   SHOWROOM DETAILS / {detailShowroom.city.toUpperCase()}
                 </div>
                 <h3
-                  className="text-2xl font-black uppercase text-white tracking-wide mt-1"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="font-barlow text-2xl font-black uppercase text-white tracking-wide mt-1"
                 >
                   {detailShowroom.name}
                 </h3>
@@ -720,8 +706,7 @@ export default function ShowroomPage() {
                   setDetailsModalOpen(false);
                   scrollToAppointment();
                 }}
-                className="flex-1 py-3 bg-lambo-primary text-black font-bold uppercase text-xs tracking-wider text-center cursor-pointer hover:bg-lambo-hover active:bg-lambo-pressed transition-colors"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="flex-1 py-3 bg-lambo-primary text-black font-bold uppercase text-xs tracking-wider text-center cursor-pointer hover:bg-lambo-hover active:bg-lambo-pressed transition-colors font-barlow"
               >
                 REQUEST APPOINTMENT ↗
               </button>
