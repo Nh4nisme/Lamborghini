@@ -13,7 +13,30 @@
   --color-lambo-dark: #070707;
   --color-lambo-dark-light: #0a0a0a;
   
+  --font-barlow: "Barlow Condensed", sans-serif;
   --font-family-barlow: "Barlow Condensed", sans-serif;
+  --font-barlow-condensed: "Barlow Condensed", sans-serif;
+  --font-barlow-body: "Barlow", sans-serif;
+}
+
+@utility font-barlow {
+  font-family: "Barlow Condensed", sans-serif;
+}
+
+@utility font-barlow-condensed {
+  font-family: "Barlow Condensed", sans-serif;
+}
+
+@utility font-barlow-body {
+  font-family: "Barlow", sans-serif;
+}
+
+.font-barlow {
+  font-family: "Barlow Condensed", sans-serif !important;
+}
+
+.font-family-barlow {
+  font-family: "Barlow Condensed", sans-serif !important;
 }
 
 @layer base {
@@ -25,8 +48,12 @@
   body {
     background-color: #040404;
     color: #e5e5e5;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Barlow', sans-serif;
     overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Barlow Condensed', sans-serif;
   }
 }
 

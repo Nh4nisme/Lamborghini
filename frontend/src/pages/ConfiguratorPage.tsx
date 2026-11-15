@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { StudioScene } from '../features/configurator/3d/StudioScene'
 import { FigmaHeader } from '../features/configurator/components/FigmaHeader'
@@ -189,7 +189,7 @@ export default function ConfiguratorPage() {
     return (
         <div
             className={`relative w-screen h-screen overflow-hidden flex flex-col justify-between transition-colors duration-200 select-none ${
-                isLight ? 'bg-[#f4f4f6] text-[#111111]' : 'bg-[#08090b] text-[#ffffff]'
+                isLight ? 'bg-[#f4f4f6] text-[#111111]' : 'bg-lambo-bold-black text-[#ffffff]'
             }`}
         >
             {/* 1. Top Header Bar */}
@@ -263,7 +263,7 @@ export default function ConfiguratorPage() {
                             }}
                             className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 font-semibold ${
                                 config.customModelUrl
-                                    ? 'bg-amber-400 text-black shadow-sm'
+                                    ? 'bg-lambo-primary text-lambo-bold-black shadow-sm'
                                     : 'text-neutral-300 hover:text-white'
                             }`}
                         >
@@ -280,7 +280,7 @@ export default function ConfiguratorPage() {
                             }}
                             className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 font-semibold ${
                                 !config.customModelUrl
-                                    ? 'bg-amber-400 text-black shadow-sm'
+                                    ? 'bg-lambo-primary text-lambo-bold-black shadow-sm'
                                     : 'text-neutral-300 hover:text-white'
                             }`}
                         >
@@ -324,7 +324,7 @@ export default function ConfiguratorPage() {
                         className={`w-full max-w-md p-6 border shadow-2xl relative ${
                             isLight
                                 ? 'bg-white border-neutral-300 text-black'
-                                : 'bg-[#12141a] border-neutral-800 text-white'
+                                : 'bg-lambo-dark-light border-neutral-800 text-white'
                         }`}
                     >
                         <button
@@ -335,10 +335,9 @@ export default function ConfiguratorPage() {
                         </button>
 
                         <div className="flex items-center gap-3 mb-3">
-                            <ShieldAlert className="w-6 h-6 text-amber-400" />
+                            <ShieldAlert className="w-6 h-6 text-lambo-primary" />
                             <h3
-                                className="text-xl font-bold uppercase tracking-wider"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="text-xl font-bold uppercase tracking-wider font-barlow"
                             >
                                 THOÁT KHỎI BỘ CẤU HÌNH
                             </h3>
@@ -354,8 +353,7 @@ export default function ConfiguratorPage() {
                                     setIsExitModalOpen(false)
                                     navigate(`/models/${carId}`)
                                 }}
-                                className="px-4 py-2 text-xs font-bold uppercase tracking-wider border border-neutral-600 hover:border-neutral-400 cursor-pointer"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="px-4 py-2 text-xs font-bold uppercase tracking-wider border border-neutral-600 hover:border-neutral-400 cursor-pointer font-barlow"
                             >
                                 VỀ TRANG XE
                             </button>
@@ -364,8 +362,7 @@ export default function ConfiguratorPage() {
                                     setIsExitModalOpen(false)
                                     setIsSummaryOpen(true)
                                 }}
-                                className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-amber-400 text-black hover:bg-amber-300 cursor-pointer"
-                                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                                className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-lambo-primary text-lambo-bold-black hover:bg-lambo-hover active:bg-lambo-pressed cursor-pointer font-barlow"
                             >
                                 XUẤT BẢNG BÁO GIÁ
                             </button>

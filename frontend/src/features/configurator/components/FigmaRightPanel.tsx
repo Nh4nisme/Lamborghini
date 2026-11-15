@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import type {
   CarConfiguration,
   PaintColor,
@@ -57,7 +57,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
       className={`w-full lg:w-[380px] xl:w-[420px] shrink-0 border-l flex flex-col justify-between overflow-y-auto z-20 select-none transition-colors duration-200 ${
         isLight
           ? 'bg-[#ffffff] border-[#e5e7eb] text-[#111111]'
-          : 'bg-[#0e0f12] border-[#1e2126] text-[#ffffff]'
+          : 'bg-lambo-bold-black border-[#1e2126] text-[#ffffff]'
       }`}
     >
       <div className="p-6 md:p-8 space-y-6">
@@ -77,8 +77,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 </span>
               </div>
               <h2
-                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight font-barlow"
               >
                 MAKE IT YOURS.
               </h2>
@@ -88,8 +87,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             <div className="space-y-3.5 pt-2">
               <div className="flex items-center justify-between">
                 <span
-                  className="text-sm font-extrabold uppercase tracking-[0.16em]"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="text-sm font-extrabold uppercase tracking-[0.16em] font-barlow"
                 >
                   EXTERIOR PAINT
                 </span>
@@ -103,7 +101,6 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 className={`flex items-center gap-6 border-b text-xs font-bold uppercase tracking-[0.14em] pb-1 ${
                   isLight ? 'border-neutral-200' : 'border-neutral-800'
                 }`}
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
                 {filterTabs.map((tab) => {
                   const isActive = paintFilter === tab;
@@ -115,7 +112,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                         isActive
                           ? isLight
                             ? 'text-black'
-                            : 'text-amber-400'
+                            : 'text-lambo-primary'
                           : isLight
                           ? 'text-neutral-400 hover:text-black'
                           : 'text-neutral-500 hover:text-neutral-300'
@@ -123,7 +120,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                     >
                       {tab}
                       {isActive && (
-                        <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-amber-400" />
+                        <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-lambo-primary" />
                       )}
                     </button>
                   );
@@ -142,7 +139,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                       title={`${color.name} - ${color.finish}`}
                       className={`relative aspect-square w-full rounded-none transition-all cursor-pointer flex items-center justify-center p-0.5 ${
                         isSelected
-                          ? 'ring-2 ring-amber-400 ring-offset-2 ring-offset-black scale-[1.02]'
+                          ? 'ring-2 ring-lambo-primary ring-offset-2 ring-offset-black scale-[1.02]'
                           : isLight
                           ? 'border border-neutral-300 hover:border-neutral-500'
                           : 'border border-neutral-800 hover:border-neutral-600'
@@ -160,8 +157,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
               {/* Selected Color Name & Details */}
               <div className="pt-1">
                 <div
-                  className="text-base font-extrabold uppercase tracking-[0.14em]"
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="text-base font-extrabold uppercase tracking-[0.14em] font-barlow"
                 >
                   {config.exteriorColor.name}
                 </div>
@@ -176,8 +172,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* Section: Wheels Dropdown */}
             <div className="space-y-1.5 pt-2">
               <label
-                className="block text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-400"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="block text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-400 font-barlow"
               >
                 WHEELS
               </label>
@@ -213,7 +208,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                         }}
                         className={`w-full px-4 py-2.5 text-xs text-left font-medium transition-colors cursor-pointer flex items-center justify-between ${
                           config.rim.id === rim.id
-                            ? 'bg-amber-400 text-black font-bold'
+                            ? 'bg-lambo-primary text-lambo-bold-black font-bold'
                             : isLight
                             ? 'hover:bg-neutral-100 text-neutral-800'
                             : 'hover:bg-white/5 text-neutral-200'
@@ -231,8 +226,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* Section: Exterior Trim Dropdown */}
             <div className="space-y-1.5 pt-1">
               <label
-                className="block text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-400"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="block text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-400 font-barlow"
               >
                 EXTERIOR TRIM
               </label>
@@ -268,7 +262,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                         }}
                         className={`w-full px-4 py-2.5 text-xs text-left font-medium transition-colors cursor-pointer flex items-center justify-between ${
                           config.carbonLower === trim.id
-                            ? 'bg-amber-400 text-black font-bold'
+                            ? 'bg-lambo-primary text-lambo-bold-black font-bold'
                             : isLight
                             ? 'hover:bg-neutral-100 text-neutral-800'
                             : 'hover:bg-white/5 text-neutral-200'
@@ -286,8 +280,8 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* Guide / Callout Notice */}
             <div className="pt-3">
               <div
-                className={`p-3.5 border-l-2 border-amber-400 text-xs leading-relaxed ${
-                  isLight ? 'bg-amber-50/50 text-neutral-600' : 'bg-amber-400/5 text-neutral-300'
+                className={`p-3.5 border-l-2 border-lambo-primary text-xs leading-relaxed ${
+                  isLight ? 'bg-amber-50/50 text-neutral-600' : 'bg-lambo-primary/5 text-neutral-300'
                 }`}
               >
                 Continue to the interior to choose materials, colors and stitching.
@@ -311,8 +305,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 </span>
               </div>
               <h2
-                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight font-barlow"
               >
                 CRAFTED FOR DRIVERS.
               </h2>
@@ -321,8 +314,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* Interior Trims List */}
             <div className="space-y-3">
               <span
-                className="text-sm font-extrabold uppercase tracking-[0.16em] block"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-sm font-extrabold uppercase tracking-[0.16em] block font-barlow"
               >
                 UPHOLSTERY & SEATS
               </span>
@@ -335,7 +327,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                       onClick={() => onUpdateConfig({ interiorTrim: trim })}
                       className={`w-full p-3 text-left border transition-all cursor-pointer flex items-center justify-between ${
                         isSelected
-                          ? 'border-amber-400 bg-amber-400/10'
+                          ? 'border-lambo-primary bg-lambo-primary/10'
                           : isLight
                           ? 'border-neutral-200 hover:border-neutral-400 bg-neutral-50'
                           : 'border-neutral-800 hover:border-neutral-700 bg-[#14151a]'
@@ -359,7 +351,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                           </div>
                         </div>
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-amber-400" />}
+                      {isSelected && <Check className="w-4 h-4 text-lambo-primary" />}
                     </button>
                   );
                 })}
@@ -372,12 +364,11 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 onClick={() => onUpdateConfig({ doorsOpen: !config.doorsOpen })}
                 className={`w-full py-3 px-4 border text-xs font-bold uppercase tracking-[0.16em] flex items-center justify-center gap-2 cursor-pointer transition-colors ${
                   config.doorsOpen
-                    ? 'bg-amber-400 text-black border-amber-400 font-extrabold'
+                    ? 'bg-lambo-primary text-lambo-bold-black border-lambo-primary font-extrabold'
                     : isLight
                     ? 'border-neutral-300 text-neutral-800 hover:bg-neutral-100'
                     : 'border-neutral-700 text-neutral-200 hover:bg-white/5'
                 }`}
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
               >
                 <span>{config.doorsOpen ? 'CLOSE SCISSOR DOORS' : 'OPEN SCISSOR DOORS'}</span>
               </button>
@@ -400,8 +391,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 </span>
               </div>
               <h2
-                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight font-barlow"
               >
                 PERFORMANCE & TECH.
               </h2>
@@ -410,19 +400,19 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* Powertrain & Telemetry Highlights (From TenDuAn) */}
             <div className="grid grid-cols-2 gap-2.5">
               <div className={`p-3 border ${isLight ? 'bg-neutral-50 border-neutral-200' : 'bg-[#14151a] border-neutral-800'}`}>
-                <div className="text-xl font-black text-amber-400 leading-none">1015 CV</div>
+                <div className="text-xl font-black text-lambo-primary leading-none">1015 CV</div>
                 <div className="text-[10px] font-mono text-neutral-400 mt-1 uppercase">Combined Power</div>
               </div>
               <div className={`p-3 border ${isLight ? 'bg-neutral-50 border-neutral-200' : 'bg-[#14151a] border-neutral-800'}`}>
-                <div className="text-xl font-black text-amber-400 leading-none">2.5 s</div>
+                <div className="text-xl font-black text-lambo-primary leading-none">2.5 s</div>
                 <div className="text-[10px] font-mono text-neutral-400 mt-1 uppercase">0-100 KM/H</div>
               </div>
               <div className={`p-3 border ${isLight ? 'bg-neutral-50 border-neutral-200' : 'bg-[#14151a] border-neutral-800'}`}>
-                <div className="text-xl font-black text-amber-400 leading-none">&gt;350 KM/H</div>
+                <div className="text-xl font-black text-lambo-primary leading-none">&gt;350 KM/H</div>
                 <div className="text-[10px] font-mono text-neutral-400 mt-1 uppercase">Top Speed</div>
               </div>
               <div className={`p-3 border ${isLight ? 'bg-neutral-50 border-neutral-200' : 'bg-[#14151a] border-neutral-800'}`}>
-                <div className="text-xl font-black text-amber-400 leading-none">10,000 RPM</div>
+                <div className="text-xl font-black text-lambo-primary leading-none">10,000 RPM</div>
                 <div className="text-[10px] font-mono text-neutral-400 mt-1 uppercase">Engine Redline</div>
               </div>
             </div>
@@ -430,8 +420,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* V12 Sound Engine Controls */}
             <div className="space-y-2 pt-1">
               <span
-                className="text-sm font-extrabold uppercase tracking-[0.16em] block"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-sm font-extrabold uppercase tracking-[0.16em] block font-barlow"
               >
                 V12 ACOUSTIC SIMULATOR
               </span>
@@ -448,12 +437,11 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                   }}
                   className={`flex-1 py-2.5 px-3 border text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer ${
                     config.engineStarted
-                      ? 'bg-amber-400 text-black border-amber-400 font-extrabold'
+                      ? 'bg-lambo-primary text-lambo-bold-black border-lambo-primary font-extrabold'
                       : isLight
                       ? 'border-neutral-300 text-neutral-800 hover:bg-neutral-100'
                       : 'border-neutral-700 text-neutral-200 hover:bg-white/5'
                   }`}
-                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                 >
                   <Power className="w-3.5 h-3.5" />
                   <span>{config.engineStarted ? 'STOP V12' : 'IGNITION V12'}</span>
@@ -462,8 +450,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 {config.engineStarted && (
                   <button
                     onClick={() => revV12Engine()}
-                    className="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider cursor-pointer"
-                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                    className="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-wider cursor-pointer font-barlow"
                   >
                     REV 7800
                   </button>
@@ -481,10 +468,9 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                     : isLight
                     ? 'border-neutral-300 text-neutral-800'
                     : 'border-neutral-700 text-neutral-300'
-                }`}
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                } font-barlow`}
               >
-                <Eye className="w-3.5 h-3.5 text-amber-400" />
+                <Eye className="w-3.5 h-3.5 text-lambo-primary" />
                 <span>{config.lightsOn ? 'HEADLIGHTS ACTIVE (ON)' : 'HEADLIGHTS OFF'}</span>
               </button>
             </div>
@@ -506,8 +492,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 </span>
               </div>
               <h2
-                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-3xl font-black uppercase tracking-[0.08em] leading-tight font-barlow"
               >
                 YOUR SPECIFICATION.
               </h2>
@@ -533,7 +518,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
               </div>
               <div className="pt-2 border-t border-white/10 flex justify-between text-sm">
                 <span className="font-bold">Total Estimated</span>
-                <span className="font-bold font-mono text-amber-400">
+                <span className="font-bold font-mono text-lambo-primary">
                   {formatCurrency(breakdown.totalPrice, config.currency, config.language, true)}
                 </span>
               </div>
@@ -542,10 +527,9 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
             {/* Select Dealership (From TenDuAn) */}
             <div className="space-y-2">
               <span
-                className="text-sm font-extrabold uppercase tracking-[0.16em] flex items-center gap-1.5"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-sm font-extrabold uppercase tracking-[0.16em] flex items-center gap-1.5 font-barlow"
               >
-                <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                <MapPin className="w-3.5 h-3.5 text-lambo-primary" />
                 <span>SELECT SHOWROOM ADVISOR</span>
               </span>
               <div className="space-y-1.5">
@@ -555,7 +539,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                     onClick={() => setSelectedShowroom(s.id)}
                     className={`w-full p-2.5 text-left border text-xs flex items-center justify-between cursor-pointer transition-colors ${
                       selectedShowroom === s.id
-                        ? 'border-amber-400 bg-amber-400/10 font-bold'
+                        ? 'border-lambo-primary bg-lambo-primary/10 font-bold'
                         : isLight
                         ? 'border-neutral-200 hover:border-neutral-400 bg-white'
                         : 'border-neutral-800 hover:border-neutral-700 bg-[#121318]'
@@ -565,7 +549,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                       <div>{s.name}</div>
                       <div className="text-[10px] text-neutral-400">{s.city}</div>
                     </div>
-                    {selectedShowroom === s.id && <Check className="w-4 h-4 text-amber-400" />}
+                    {selectedShowroom === s.id && <Check className="w-4 h-4 text-lambo-primary" />}
                   </button>
                 ))}
               </div>

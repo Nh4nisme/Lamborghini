@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { ArrowUpRight, Flame } from 'lucide-react';
 import { type CarModelData, getModelFolder } from '../data';
 
@@ -30,7 +30,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
   ).filter(card => card.title && card.description);
 
   return (
-    <section id="powertrain" className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section id="powertrain" className="relative w-full bg-lambo-bold-black py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -70,8 +70,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
 
             {/* Headline */}
             <h3
-              className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight leading-tight mb-5"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight leading-tight mb-5 font-barlow"
             >
               {carData.powertrain.headline}
             </h3>
@@ -85,8 +84,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
             <div>
               <button
                 onClick={() => setShowArchitectureDetails(!showArchitectureDetails)}
-                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-lambo-primary hover:text-lambo-primary-light transition-colors cursor-pointer group"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-lambo-primary hover:text-lambo-primary-light transition-colors cursor-pointer group font-barlow"
               >
                 <span>EXPLORE POWERTRAIN</span>
                 <ArrowUpRight className="w-4 h-4 text-lambo-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -133,14 +131,13 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
               >
                 <div className="p-6 sm:p-8">
                   {/* Tag */}
-                  <div className="text-[10px] font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-4">
+                  <div className="text-[10px] font-semibold tracking-[0.24em] text-lambo-primary uppercase mb-4">
                     {card.tag || (idx === 0 ? '02 / TECHNOLOGY' : '03 / STRUCTURE')}
                   </div>
 
                   {/* Title từ API (ví dụ: LDVI 2.0 / SPACEFRAME / MONOFUSELAGE / CHASSIS) */}
                   <h4
-                    className="text-2xl sm:text-3xl font-black uppercase text-white tracking-tight leading-tight mb-4"
-                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                    className="text-2xl sm:text-3xl font-black uppercase text-white tracking-tight leading-tight mb-4 font-barlow"
                   >
                     {card.title}
                   </h4>
@@ -151,7 +148,7 @@ export const PowertrainSection: React.FC<PowertrainSectionProps> = ({ carData })
                   </p>
 
                   {/* Hover Accent Line */}
-                  <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#d4af37] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-[#D8A016] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </div>
             ))}

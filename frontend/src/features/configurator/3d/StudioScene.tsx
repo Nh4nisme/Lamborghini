@@ -620,8 +620,8 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     >
       {/* Drag & Drop Visual Overlay */}
       {isDraggingOver && (
-        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-[#08090b]/90 border-2 border-dashed border-amber-400 p-6 pointer-events-none">
-          <UploadCloud className="w-16 h-16 text-amber-400 animate-bounce mb-3" />
+        <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-lambo-bold-black/90 border-2 border-dashed border-lambo-primary p-6 pointer-events-none">
+          <UploadCloud className="w-16 h-16 text-lambo-primary animate-bounce mb-3" />
           <div className="text-xl font-bold text-white uppercase tracking-wider">
             Kéo thả file 3D (.glb / .gltf) vào đây
           </div>
@@ -633,8 +633,8 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
 
       {/* Loading Progress Notification */}
       {loadProgress && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0b0d11]/95 border border-amber-400/50 text-amber-400 text-xs font-mono shadow-2xl">
-          <CheckCircle2 className="w-4 h-4 animate-spin text-amber-400" />
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0b0d11]/95 border border-lambo-primary/50 text-lambo-primary text-xs font-mono shadow-2xl">
+          <CheckCircle2 className="w-4 h-4 animate-spin text-lambo-primary" />
           <span>{loadProgress}</span>
         </div>
       )}

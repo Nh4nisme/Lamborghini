@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { type CarModelData, getModelFolder } from '../data';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -46,7 +46,7 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
   const currentItem = items[activeIndex];
 
   return (
-    <section id="gallery" className="relative w-full bg-[#070707] py-12 border-b border-[#1c1810]">
+    <section id="gallery" className="relative w-full bg-lambo-bold-black py-12 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Number - Top Right */}
         <div className="flex justify-end mb-8">
@@ -56,7 +56,7 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
         </div>
 
         {/* Tag */}
-        <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-4">
+        <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-lambo-primary uppercase mb-4">
           06 / IN DETAIL
         </div>
 
@@ -65,12 +65,11 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
           {/* Top Bar inside Box: Title & Counter */}
           <div className="flex items-center justify-between pb-6 mb-6 border-b border-[#242017]">
             <h3
-              className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide"
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+              className="text-2xl sm:text-4xl font-black uppercase text-white tracking-wide font-barlow"
             >
               {carData.name} / IN DETAIL
             </h3>
-            <span className="font-mono text-xs sm:text-sm tracking-widest text-[#d4af37]">
+            <span className="font-mono text-xs sm:text-sm tracking-widest text-lambo-primary">
               0{activeIndex + 1} / 0{items.length}
             </span>
           </div>
@@ -99,7 +98,7 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
             {/* Left arrow */}
             <button
               onClick={prevSlide}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-[#d4af37] text-white hover:text-black flex items-center justify-center transition-colors cursor-pointer border border-[#3d3320] z-20"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-lambo-primary text-white hover:text-black flex items-center justify-center transition-colors cursor-pointer border border-[#3d3320] z-20"
               aria-label="Previous gallery image"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -108,14 +107,14 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
             {/* Right arrow */}
             <button
               onClick={nextSlide}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-[#d4af37] text-white hover:text-black flex items-center justify-center transition-colors cursor-pointer border border-[#3d3320] z-20"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-lambo-primary text-white hover:text-black flex items-center justify-center transition-colors cursor-pointer border border-[#3d3320] z-20"
               aria-label="Next gallery image"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
 
             {/* Active item label badge */}
-            <div className="absolute bottom-3 left-4 text-xs font-bold uppercase tracking-widest text-[#d4af37] bg-black/70 px-3 py-1 border border-[#3d3320] z-20">
+            <div className="absolute bottom-3 left-4 text-xs font-bold uppercase tracking-widest text-lambo-primary bg-black/70 px-3 py-1 border border-[#3d3320] z-20">
               {currentItem.title} — {currentItem.subtitle}
             </div>
           </div>
@@ -127,7 +126,7 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
                 key={item.id}
                 onClick={() => setActiveIndex(idx)}
                 className={`relative aspect-[16/9] overflow-hidden border transition-all cursor-pointer group text-left ${activeIndex === idx
-                    ? 'border-[#d4af37] ring-1 ring-[#d4af37]'
+                    ? 'border-lambo-primary ring-1 ring-lambo-primary'
                     : 'border-[#2e2619] opacity-70 hover:opacity-100 hover:border-[#8e7a46]'
                   }`}
               >
@@ -146,9 +145,9 @@ export const DetailGallerySection: React.FC<DetailGallerySectionProps> = ({ carD
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white pointer-events-none">
+                <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-white pointer-events-none font-barlow">
                   <span>{item.title}</span>
-                  <span className="text-[#d4af37] font-mono text-[9px]">{item.badge}</span>
+                  <span className="text-lambo-primary font-mono text-[9px]">{item.badge}</span>
                 </div>
               </button>
             ))}

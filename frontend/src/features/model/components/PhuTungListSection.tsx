@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import type { PhuTung } from '../types';
 
 interface PhuTungListSectionProps {
@@ -18,16 +18,15 @@ export const PhuTungListSection: React.FC<PhuTungListSectionProps> = ({
   if (remainingPhuTung.length === 0) return null;
 
   return (
-    <section className="relative w-full bg-[#070707] py-20 border-b border-[#1c1810]">
+    <section className="relative w-full bg-lambo-bold-black py-20 border-b border-[#1c1810]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Header */}
-        <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-[#d4af37] uppercase mb-3">
+        <div className="text-[11px] sm:text-xs font-semibold tracking-[0.24em] text-lambo-primary uppercase mb-3">
           ADDITIONAL FEATURES
         </div>
 
         <h2
-          className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-tight mb-12"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          className="text-3xl sm:text-5xl md:text-6xl font-black uppercase text-white tracking-tight leading-tight mb-12 font-barlow"
         >
           MORE ABOUT THIS MODEL
         </h2>
@@ -37,12 +36,11 @@ export const PhuTungListSection: React.FC<PhuTungListSectionProps> = ({
           {remainingPhuTung.map((phuTung) => (
             <div 
               key={phuTung.maPhuTung}
-              className="border border-[#383020] bg-[#0c0c0c] p-6 hover:border-[#d4af37] transition-all duration-300 group"
+              className="border border-[#383020] bg-[#0c0c0c] p-6 hover:border-lambo-primary transition-all duration-300 group"
             >
               {/* Title */}
               <h3 
-                className="text-xl sm:text-2xl font-bold uppercase text-white tracking-wide mb-4 group-hover:text-[#d4af37] transition-colors"
-                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-xl sm:text-2xl font-bold uppercase text-white tracking-wide mb-4 group-hover:text-lambo-primary transition-colors font-barlow"
               >
                 {phuTung.tenPhuTung}
               </h3>
