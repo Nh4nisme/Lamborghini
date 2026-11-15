@@ -10,6 +10,16 @@ const outlineButtonClass =
 const secondaryButtonClass =
   'inline-flex h-10 items-center gap-3 border border-lambo-primary bg-transparent px-5 text-sm font-semibold uppercase tracking-[0.04em] text-lambo-primary transition-colors hover:bg-lambo-primary hover:text-black focus:outline-none focus:ring-1 focus:ring-lambo-primary'
 
+const lightButtonClass =
+  'inline-flex h-10 shrink-0 items-center gap-3 bg-lambo-secondary px-5 font-barlow text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black transition-colors hover:bg-lambo-hover active:bg-lambo-pressed focus:outline-none focus:ring-1 focus:ring-lambo-hover'
+
+const variantClasses = {
+  primary: primaryButtonClass,
+  outline: outlineButtonClass,
+  secondary: secondaryButtonClass,
+  light: lightButtonClass,
+}
+
 interface BaseButtonProps {
   children: ReactNode
   className?: string
@@ -25,7 +35,7 @@ interface ButtonProps extends BaseButtonProps {
   href?: string
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   type?: 'button' | 'submit' | 'reset'
-  variant?: 'primary' | 'outline' | 'secondary'
+  variant?: keyof typeof variantClasses
   icon?: ReactNode
   iconPosition?: 'left' | 'right'
 }
@@ -49,8 +59,7 @@ export function Button({
   'aria-label': ariaLabel,
   ...props
 }: ButtonProps) {
-  const baseClass = variant === 'outline' ? outlineButtonClass : variant === 'secondary' ? secondaryButtonClass : primaryButtonClass
-  const combinedClass = `${baseClass} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
+  const combinedClass = `${variantClasses[variant]} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
   const iconElement = icon ? (
     <span className="flex-shrink-0" aria-hidden="true">{icon}</span>
