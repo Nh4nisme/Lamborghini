@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Search, Globe, Menu, X, ChevronDown } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-import { useDongXe } from '../features/model/hooks'
+import { useDongXe } from '../../features/model/hooks'
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

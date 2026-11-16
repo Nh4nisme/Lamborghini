@@ -2,7 +2,7 @@ import { ChevronRight, Home } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { http } from '../api/http'
+import { http } from '../../api/http'
 
 interface BreadcrumbItem {
     label: string
@@ -165,29 +165,29 @@ export default function Breadcrumb() {
 
     return (
         <nav
-            className="bg-lambo-bold-black border-b border-lambo-tertiary/30 py-3 animate-fadeIn"
+            className="relative z-50 py-5 animate-fadeIn"
             aria-label="Breadcrumb"
         >
-            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+            <div className="max-w-[1440px] mx-auto sm:px-6 lg:px-10">
                 {isLoading ? (
                     <div className="flex items-center gap-2">
-                        <div className="w-12 h-4 bg-gray-800 animate-pulse rounded"></div>
-                        <ChevronRight className="w-4 h-4 text-gray-600" />
-                        <div className="w-16 h-4 bg-gray-800 animate-pulse rounded"></div>
-                        <ChevronRight className="w-4 h-4 text-gray-600" />
-                        <div className="w-24 h-4 bg-gray-800 animate-pulse rounded"></div>
+                        <div className="w-12 h-4 bg-white/20 backdrop-blur-sm animate-pulse rounded"></div>
+                        <ChevronRight className="w-4 h-4 text-white/50 drop-shadow-md" />
+                        <div className="w-16 h-4 bg-white/20 backdrop-blur-sm animate-pulse rounded"></div>
+                        <ChevronRight className="w-4 h-4 text-white/50 drop-shadow-md" />
+                        <div className="w-24 h-4 bg-white/20 backdrop-blur-sm animate-pulse rounded"></div>
                     </div>
                 ) : (
                     <ol className="flex items-center gap-2 flex-wrap">
                         {breadcrumbs.map((item, index) => (
                             <li key={item.path} className="flex items-center gap-2">
                                 {index > 0 && (
-                                    <ChevronRight className="w-4 h-4 text-gray-600" aria-hidden="true" />
+                                    <ChevronRight className="w-4 h-4 text-white/50 drop-shadow-md" aria-hidden="true" />
                                 )}
 
                                 {item.isActive ? (
-                                    <span 
-                                        className="flex items-center gap-2 font-barlow text-sm font-semibold text-lambo-primary uppercase tracking-wider"
+                                    <span
+                                        className="flex items-center gap-2 font-barlow text-sm font-semibold text-white drop-shadow-lg uppercase tracking-wider"
                                         aria-current="page"
                                     >
                                         {index === 0 && <Home className="w-4 h-4" aria-hidden="true" />}
@@ -196,13 +196,13 @@ export default function Breadcrumb() {
                                 ) : (
                                     <Link
                                         to={item.path}
-                                        className="flex items-center gap-2 font-barlow text-sm font-medium text-gray-400 hover:text-white uppercase tracking-wider transition-colors duration-200 group"
+                                        className="flex items-center gap-2 font-barlow text-sm font-medium text-white/70 hover:text-white drop-shadow-md uppercase tracking-wider transition-colors duration-200 group"
                                         aria-label={`Navigate to ${item.label}`}
                                     >
                                         {index === 0 && (
-                                            <Home className="w-4 h-4 group-hover:text-lambo-primary transition-colors" aria-hidden="true" />
+                                            <Home className="w-4 h-4 group-hover:text-white drop-shadow-md transition-colors" aria-hidden="true" />
                                         )}
-                                        <span className="group-hover:text-lambo-primary transition-colors truncate max-w-xs lg:max-w-md">
+                                        <span className="group-hover:text-white drop-shadow-md transition-colors truncate max-w-xs lg:max-w-md">
                                             {item.label}
                                         </span>
                                     </Link>

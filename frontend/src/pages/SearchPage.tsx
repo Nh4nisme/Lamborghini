@@ -12,7 +12,7 @@ import {
     Check,
     Car,
 } from 'lucide-react'
-import { LoadingScreen } from '../components/LoadingScreen'
+import { LoadingScreen } from '../components/feedback'
 
 /* -------------------------------------------------------------------------- */
 /*  Types & Data Structures                                                   */

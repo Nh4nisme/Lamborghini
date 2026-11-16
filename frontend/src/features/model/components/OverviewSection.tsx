@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import type { CarModelData } from '../data';
-import { AnimatedSection } from '../../../components/AnimatedSection';
+import { AnimatedSection } from '../../../components/sections';
 import { useStaggerAnimation } from '../../../hooks/useScrollAnimation';
 
 interface OverviewSectionProps {

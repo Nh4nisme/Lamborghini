@@ -1,11 +1,10 @@
 import { useDongXe } from '../features/model/hooks'
-import { FeaturedModelsCarousel } from '../components/FeaturedModelsCarousel'
-import NextChapterCTA from '../components/NextChapterCTA'
+import { FeaturedModelsCarousel, NextChapterCTA } from '../components/sections'
 import { UrusSection } from '../features/model/components/UrusSection.tsx'
 import BeyondTheRangeSection from "../features/model/components/BeyondTheRangeSection.tsx";
 import BeyondTheLimitHeader from "../features/model/components/BeyondTheLimitHeader.tsx";
 import {useNavigate} from "react-router-dom";
-import { LoadingScreen } from '../components/LoadingScreen'
+import { LoadingScreen } from '../components/feedback'
 
 export default function ModelsPage() {
     const navigate = useNavigate()

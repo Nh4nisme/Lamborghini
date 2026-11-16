@@ -1,6 +1,6 @@
 import { SectionHeader } from './SectionHeader'
 import { TeamMemberCard } from './TeamMemberCard'
-import { InfoBanner } from '../../../components/InfoBanner'
+import { InfoBanner } from '../../../components/sections'
 
 const coreContributors = [
   { number: '01', caption: 'Creative direction' },
