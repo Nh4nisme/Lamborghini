@@ -229,7 +229,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
   };
 
   return (
-    <div className="bg-[#0b0a08] border border-[#2b2518] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden min-h-[340px] sm:min-h-[380px]">
+    <div className="bg-[#0b0a08] border border-[#2b2518] p-4 sm:p-5 flex flex-col justify-between relative z-0 isolate overflow-hidden min-h-[340px] sm:min-h-[380px]">
       {/* Map Sub-Header */}
       <div className="flex items-center justify-between z-10 pb-3 border-b border-[#1c1811] mb-2">
         <div className="flex items-center gap-3">
@@ -262,7 +262,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
                 
       {/* Main Map Body: Live Leaflet or Schematic */}
       {viewMode === 'live' ? (
-        <div className="relative w-full h-64 sm:h-72 my-1 overflow-hidden border border-[#201a11]">
+        <div className="relative z-0 isolate w-full h-64 sm:h-72 my-1 overflow-hidden border border-[#201a11]">
           {/* Leaflet DOM container */}
           <div ref={mapContainerRef} className="w-full h-full bg-[#080808]" />
 
