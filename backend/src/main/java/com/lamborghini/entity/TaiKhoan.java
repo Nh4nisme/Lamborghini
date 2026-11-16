@@ -32,6 +32,10 @@ public class TaiKhoan {
 
     private String sdt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "vai_tro")
+    private VaiTro vaiTro;
+
     @Column(name = "trang_thai")
     @Enumerated(EnumType.STRING)
     private TrangThaiTaiKhoan trangThai;
