@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { CalendarDays } from 'lucide-react'
-import ScrollToTop from '../components/ScrollToTop'
+import { ScrollToTop } from '../components/feedback'
 import { Button } from '../components/ui/Button'
 import { APPOINTMENT_TABS, SAMPLE_APPOINTMENTS } from '../features/appointment/data'
 import { useMyAppointments } from '../features/appointment/hooks'

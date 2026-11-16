@@ -1,4 +1,4 @@
-import ScrollToTop from '../components/ScrollToTop'
+import { ScrollToTop } from '../components/feedback'
 import { Eyebrow } from '../components/ui/Eyebrow'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { SavedConfigurationCard } from '../features/saved-configurations/components/SavedConfigurationCard'

@@ -20,7 +20,7 @@ import { ShowroomBoxMap } from '../features/showroom/components/ShowroomBoxMap';
 import { LocationCard } from '../features/showroom/components/LocationCard';
 import { useShowroom } from '../features/showroom/hooks';
 import { adaptShowroomToUI } from '../features/showroom/types';
-import ScrollToTop from '../components/ScrollToTop';
+import { ScrollToTop } from '../components/feedback';
 
 export default function ShowroomPage() {
   // API hook

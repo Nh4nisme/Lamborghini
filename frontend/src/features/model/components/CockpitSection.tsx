@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import type { CarModelData } from '../data';
-import { AnimatedSection } from '../../../components/AnimatedSection';
+import { AnimatedSection } from '../../../components/sections';
 
 interface CockpitSectionProps {
   carData: CarModelData;

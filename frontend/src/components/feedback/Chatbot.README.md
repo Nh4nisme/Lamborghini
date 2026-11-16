@@ -62,7 +62,7 @@ interface ChatbotProps {
 ## Sử dụng
 
 ```tsx
-import { Chatbot } from './components/Chatbot'
+import { Chatbot } from './components/feedback'
 
 function App() {
   return (

@@ -10,12 +10,11 @@ import DetailGallerySection from '../features/model/components/DetailGallerySect
 import TechnicalSpecsSection from '../features/model/components/TechnicalSpecsSection';
 import AdPersonamSection from '../features/model/components/AdPersonamSection';
 import JourneySection from '../features/model/components/JourneySection';
-import NextChapterCTA from '../components/NextChapterCTA';
-import ScrollToTop from '../components/ScrollToTop';
+import { NextChapterCTA } from '../components/sections';
+import { ScrollToTop, LoadingScreen } from '../components/feedback';
 import { defaultSupercarData } from '../features/model/data';
 import { useModelDetail } from '../features/model/hooks';
 import { adaptModelDetailToCarData } from '../features/model/types';
-import { LoadingScreen } from '../components/LoadingScreen';
 
 const ModelShowcasePage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

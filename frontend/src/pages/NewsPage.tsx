@@ -14,7 +14,7 @@ import {
     Shield,
     Sparkles,
 } from 'lucide-react'
-import { LoadingScreen } from '../components/LoadingScreen'
+import { LoadingScreen } from '../components/feedback'
 
 /* -------------------------------------------------------------------------- */
 /*  Data Structures & Catalog                                                 */

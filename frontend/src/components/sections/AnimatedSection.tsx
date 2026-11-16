@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { useScrollAnimation } from '../hooks/useScrollAnimation'
+import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 import {
   fadeInUp,
   fadeInLeft,
@@ -7,7 +7,7 @@ import {
   scaleIn,
   revealClip,
   imageReveal,
-} from '../utils/animations'
+} from '../../utils/animations'
 
 interface AnimatedSectionProps {
   children: ReactNode

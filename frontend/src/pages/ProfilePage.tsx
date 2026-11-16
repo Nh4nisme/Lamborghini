@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import ScrollToTop from '../components/ScrollToTop'
+import { ScrollToTop } from '../components/feedback'
 import { SAMPLE_PROFILE } from '../features/profile/data'
 import { useProfile } from '../features/profile/hooks'
 import { ProfileHeader } from '../features/profile/components/ProfileHeader'

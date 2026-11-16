@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { AnimatedSection } from '../../../components/AnimatedSection'
+import { AnimatedSection } from '../../../components/sections'
 
 export function VisionSection() {
   return (
