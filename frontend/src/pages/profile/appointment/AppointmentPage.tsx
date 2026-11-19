@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react'
 import { CalendarDays } from 'lucide-react'
-import { ScrollToTop } from '../components/feedback'
-import { Button } from '../components/ui/Button'
-import { APPOINTMENT_TABS, SAMPLE_APPOINTMENTS } from '../features/appointment/data'
-import { useMyAppointments } from '../features/appointment/hooks'
-import { AppointmentHeader } from '../features/appointment/components/AppointmentHeader'
-import { AppointmentListItem } from '../features/appointment/components/AppointmentListItem'
-import { AppointmentTabs } from '../features/appointment/components/AppointmentTabs'
-import { NextAppointmentCard } from '../features/appointment/components/NextAppointmentCard'
-import { adaptAppointment, type AppointmentTab } from '../features/appointment/types'
+import { ScrollToTop } from '../../../components/feedback'
+import { Button } from '../../../components/ui/Button'
+import { APPOINTMENT_TABS, SAMPLE_APPOINTMENTS } from '../../../features/profile/appointment/data'
+import { useMyAppointments } from '../../../features/profile/appointment/hooks'
+import { AppointmentHeader } from '../../../features/profile/appointment/components/AppointmentHeader'
+import { AppointmentListItem } from '../../../features/profile/appointment/components/AppointmentListItem'
+import { AppointmentTabs } from '../../../features/profile/appointment/components/AppointmentTabs'
+import { NextAppointmentCard } from '../../../features/profile/appointment/components/NextAppointmentCard'
+import { adaptAppointment, type AppointmentTab } from '../../../features/profile/appointment/types'
 
 export default function AppointmentPage() {
     const { data, isLoading, isError } = useMyAppointments()

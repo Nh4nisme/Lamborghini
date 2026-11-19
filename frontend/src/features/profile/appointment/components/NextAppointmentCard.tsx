@@ -1,5 +1,5 @@
-import { Button } from '../../../components/ui/Button'
-import { Eyebrow } from '../../../components/ui/Eyebrow'
+import { Button } from '../../../../components/ui/Button'
+import { Eyebrow } from '../../../../components/ui/Eyebrow'
 import type { Appointment } from '../types'
 import { AppointmentStatusBadge } from './AppointmentStatusBadge'
 

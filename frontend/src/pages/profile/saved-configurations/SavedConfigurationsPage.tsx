@@ -1,9 +1,9 @@
-import { ScrollToTop } from '../components/feedback'
-import { Eyebrow } from '../components/ui/Eyebrow'
-import { SectionHeading } from '../components/ui/SectionHeading'
-import { SavedConfigurationCard } from '../features/saved-configurations/components/SavedConfigurationCard'
-import { SAMPLE_SAVED_CONFIGURATIONS } from '../features/saved-configurations/data'
-import { useSavedConfigurations } from '../features/saved-configurations/hooks'
+import { ScrollToTop } from '../../../components/feedback'
+import { Eyebrow } from '../../../components/ui/Eyebrow'
+import { SectionHeading } from '../../../components/ui/SectionHeading'
+import { SavedConfigurationCard } from '../../../features/profile/saved-configurations/components/SavedConfigurationCard'
+import { SAMPLE_SAVED_CONFIGURATIONS } from '../../../features/profile/saved-configurations/data'
+import { useSavedConfigurations } from '../../../features/profile/saved-configurations/hooks'
 
 export default function SavedConfigurationsPage() {
     const { data, isLoading, isError } = useSavedConfigurations()

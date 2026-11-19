@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { ScrollToTop } from '../components/feedback/ScrollToTop'
-import { ConfigurationPreview } from '../features/configuration-export/components/ConfigurationPreview'
-import { ExportHeader } from '../features/configuration-export/components/ExportHeader'
-import { ExportSettingsPanel } from '../features/configuration-export/components/ExportSettingsPanel'
-import { EXPORT_FORMAT_OPTIONS, SAMPLE_EXPORT_CONFIGURATION } from '../features/configuration-export/data'
+import { ScrollToTop } from '../../../components/feedback/ScrollToTop'
+import { ConfigurationPreview } from '../../../features/profile/configuration-export/components/ConfigurationPreview'
+import { ExportHeader } from '../../../features/profile/configuration-export/components/ExportHeader'
+import { ExportSettingsPanel } from '../../../features/profile/configuration-export/components/ExportSettingsPanel'
+import { EXPORT_FORMAT_OPTIONS, SAMPLE_EXPORT_CONFIGURATION } from '../../../features/profile/configuration-export/data'
 
 export default function ConfigurationExportPage() {
     const [format, setFormat] = useState(EXPORT_FORMAT_OPTIONS[0].value)
