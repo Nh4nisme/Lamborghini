@@ -11,10 +11,12 @@ import AboutBrandPage from "./pages/AboutBrandPage.tsx";
 import ContactPage from "./pages/ContactPage.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
 import NewsPage from "./pages/NewsPage.tsx";
-import AppointmentPage from "./pages/AppointmentPage.tsx";
-import ProfilePage from "./pages/ProfilePage.tsx";
-import SavedConfigurationsPage from "./pages/SavedConfigurationsPage.tsx";
-import ConfigurationExportPage from "./pages/ConfigurationExportPage.tsx";
+import {
+    AppointmentPage,
+    ProfilePage,
+    SavedConfigurationsPage,
+    ConfigurationExportPage,
+} from './pages/profile'
 
 function App() {
     const location = useLocation()

@@ -1,5 +1,5 @@
-import { Eyebrow } from '../../../components/ui/Eyebrow'
-import { SectionHeading } from '../../../components/ui/SectionHeading'
+import { Eyebrow } from '../../../../components/ui/Eyebrow'
+import { SectionHeading } from '../../../../components/ui/SectionHeading'
 
 export function ExportHeader() {
     return (

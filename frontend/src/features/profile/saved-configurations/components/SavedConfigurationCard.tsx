@@ -1,7 +1,7 @@
 import { ArrowUpRight, Download } from 'lucide-react'
-import { Button } from '../../../components/ui/Button'
-import { Eyebrow } from '../../../components/ui/Eyebrow'
-import { SectionHeading } from '../../../components/ui/SectionHeading'
+import { Button } from '../../../../components/ui/Button'
+import { Eyebrow } from '../../../../components/ui/Eyebrow'
+import { SectionHeading } from '../../../../components/ui/SectionHeading'
 import type { SavedConfigurationDTO } from '../types'
 
 interface SavedConfigurationCardProps {
