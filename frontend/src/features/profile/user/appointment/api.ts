@@ -1,4 +1,4 @@
-import { http } from '../../../api/http'
+import { http } from '../../../../api/http'
 import type { AppointmentDTO } from './types'
 
 export const appointmentApi = {

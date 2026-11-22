@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { ScrollToTop } from '../../../components/feedback'
-import { SAMPLE_PROFILE } from '../../../features/profile/account/data'
-import { useProfile } from '../../../features/profile/account/hooks'
-import { ProfileHeader } from '../../../features/profile/account/components/ProfileHeader'
-import { ProfileTabs } from '../../../features/profile/account/components/ProfileTabs'
-import { ProfileForm } from '../../../features/profile/account/components/ProfileForm'
-import type { ProfileTab } from '../../../features/profile/account/types'
+import { SAMPLE_PROFILE } from '../../../features/profile/user/account/data'
+import { useProfile } from '../../../features/profile/user/account/hooks'
+import { ProfileHeader } from '../../../features/profile/user/account/components/ProfileHeader'
+import { ProfileTabs } from '../../../features/profile/user/account/components/ProfileTabs'
+import { ProfileForm } from '../../../features/profile/user/account/components/ProfileForm'
+import type { ProfileTab } from '../../../features/profile/user/account/types'
 
 export default function ProfilePage() {
     const { data, isLoading, isError } = useProfile()
