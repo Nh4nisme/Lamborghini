@@ -16,6 +16,8 @@ import {
     ProfilePage,
     SavedConfigurationsPage,
     ConfigurationExportPage,
+    DealerAppointmentsPage,
+    DealerAppointmentDetailPage,
 } from './pages/profile'
 
 function App() {
@@ -48,10 +50,12 @@ function App() {
                     <Route path="/news" element={<NewsPage />} />
                     <Route path="/news/:slug" element={<NewsPage />} />
                     <Route path="/newsroom" element={<NewsPage />} />
-                    <Route path="/appointments" element={<AppointmentPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="/saved-configurations" element={<SavedConfigurationsPage />} />
-                    <Route path="/profile/configuration-export" element={<ConfigurationExportPage />} />
+                    <Route path="/profile/user/appointments" element={<AppointmentPage />} />
+                    <Route path="/profile/user/information" element={<ProfilePage />} />
+                    <Route path="/profile/user/saved-configurations" element={<SavedConfigurationsPage />} />
+                    <Route path="/profile/user/configuration-export" element={<ConfigurationExportPage />} />
+                    <Route path="/profile/dealer/appointment" element={<DealerAppointmentsPage />} />
+                    <Route path="/profile/dealer/appointment/:id" element={<DealerAppointmentDetailPage />} />
                 </Routes>
             </main>
             <Footer />
