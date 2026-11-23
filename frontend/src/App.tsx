@@ -18,6 +18,9 @@ import {
     ConfigurationExportPage,
     DealerAppointmentsPage,
     DealerAppointmentDetailPage,
+    MyCustomerPage,
+    DealerInformationPage,
+    DealerAppointmentRefusePage,
 } from './pages/profile'
 
 function App() {
@@ -56,6 +59,9 @@ function App() {
                     <Route path="/profile/user/configuration-export" element={<ConfigurationExportPage />} />
                     <Route path="/profile/dealer/appointment" element={<DealerAppointmentsPage />} />
                     <Route path="/profile/dealer/appointment/:id" element={<DealerAppointmentDetailPage />} />
+                    <Route path="/profile/dealer/appointment/:id/refuse" element={<DealerAppointmentRefusePage />} />
+                    <Route path="/profile/dealer/my-customer" element={<MyCustomerPage />} />
+                    <Route path="/profile/dealer/information" element={<DealerInformationPage />} />
                 </Routes>
             </main>
             <Footer />

@@ -6,6 +6,7 @@ interface DealerAppointmentPaginationProps {
     totalPages: number
     pageSize: number
     total: number
+    itemLabel?: string
     onPageChange: (page: number) => void
 }
 
@@ -14,6 +15,7 @@ export function DealerAppointmentPagination({
     totalPages,
     pageSize,
     total,
+    itemLabel = 'lịch hẹn',
     onPageChange,
 }: DealerAppointmentPaginationProps) {
     const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1
@@ -23,7 +25,7 @@ export function DealerAppointmentPagination({
     return (
         <div className="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <p className="font-barlow text-sm text-lambo-hover">
-                Hiển thị {start}–{end} / {total} lịch hẹn
+                Hiển thị {start}–{end} / {total} {itemLabel}
             </p>
 
             <nav aria-label="Phân trang" className="flex items-center gap-2">
