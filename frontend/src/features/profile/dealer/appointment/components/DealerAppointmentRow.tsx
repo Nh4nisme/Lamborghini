@@ -48,7 +48,11 @@ export function DealerAppointmentRow({ appointment, striped }: DealerAppointment
                         Đã duyệt
                     </Button>
                 )}
-                <Button variant="light" className="h-10 px-4 text-[11px]">
+                <Button
+                    variant="light"
+                    className="h-10 px-4 text-[11px]"
+                    onClick={() => navigate(`/profile/dealer/appointment/${appointment.maLichHen}/refuse`)}
+                >
                     Từ chối
                 </Button>
             </div>

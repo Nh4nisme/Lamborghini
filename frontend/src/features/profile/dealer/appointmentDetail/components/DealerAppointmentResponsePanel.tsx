@@ -1,4 +1,5 @@
 import { Check, X } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '../../../../../components/ui/Button'
 import type { DealerAppointmentDetailDTO } from '../types'
 
@@ -7,6 +8,8 @@ interface DealerAppointmentResponsePanelProps {
 }
 
 export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResponsePanelProps) {
+    const navigate = useNavigate()
+
     return (
         <section className="flex flex-col border border-lambo-pressed bg-lambo-tertiary p-6">
             <h2 className="font-barlow-condensed text-[28px] font-semibold uppercase leading-8 text-lambo-secondary">
@@ -20,7 +23,13 @@ export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResp
                 <Button variant="primary" className="w-full justify-center" icon={<Check className="h-4 w-4" />} iconPosition="left">
                     Xác nhận lịch hẹn
                 </Button>
-                <Button variant="light" className="w-full justify-center" icon={<X className="h-4 w-4" />} iconPosition="left">
+                <Button
+                    variant="light"
+                    className="w-full justify-center"
+                    icon={<X className="h-4 w-4" />}
+                    iconPosition="left"
+                    onClick={() => navigate(`/profile/dealer/appointment/${detail.maLichHen}/refuse`)}
+                >
                     Từ chối lịch hẹn
                 </Button>
             </div>
