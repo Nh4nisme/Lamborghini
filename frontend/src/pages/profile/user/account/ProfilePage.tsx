@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { ScrollToTop } from '../../../../components/feedback'
-import { SAMPLE_PROFILE } from '../../../../features/profile/user/account/data'
 import { useProfile } from '../../../../features/profile/user/account/hooks'
 import { ProfileHeader } from '../../../../features/profile/user/account/components/ProfileHeader'
 import { ProfileTabs } from '../../../../features/profile/user/account/components/ProfileTabs'
@@ -11,8 +10,8 @@ export default function ProfilePage() {
     const { data, isLoading, isError } = useProfile()
     const [activeTab, setActiveTab] = useState<ProfileTab>('PERSONAL')
 
-    const profile = data ?? (import.meta.env.DEV && isError ? SAMPLE_PROFILE : undefined)
-    const hasError = isError && !profile
+    const profile = data
+    const hasError = isError
 
     return (
         <div className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">
