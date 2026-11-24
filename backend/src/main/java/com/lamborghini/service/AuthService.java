@@ -10,6 +10,7 @@ import com.lamborghini.entity.KhachHang;
 import com.lamborghini.entity.TaiKhoan;
 import com.lamborghini.enums.TrangThaiTaiKhoan;
 import com.lamborghini.enums.VaiTro;
+import com.lamborghini.exception.AccountLockedException;
 import com.lamborghini.exception.FieldValidationExcrption;
 import com.lamborghini.repository.KhachHangRepository;
 import com.lamborghini.repository.TaiKhoanRepository;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.security.auth.login.AccountLockedException;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -51,7 +52,7 @@ public class AuthService {
         this.dummyHash = passwordEncoder.encode("khong-ai-biet-mat-khau-nay");
     }
 
-    @Transactional(noRollbackFor = {ResponseStatusException.class, AccountLockedException.class})
+    @Transactional(noRollbackFor = {FieldValidationExcrption.class, AccountLockedException.class})
     public LoginResponse login(LoginRequest req) {
         String email = req.email().trim().toLowerCase();
         TaiKhoan tk = taiKhoanRepository.findByEmailIgnoreCase(email);
@@ -59,28 +60,26 @@ public class AuthService {
         if (tk == null) {
             // vẫn băm một lần cho tốn thời gian như thật, kẻ xấu không đoán được email có tồn tại qua độ chậm
             passwordEncoder.matches(req.matKhau(), dummyHash);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, SAI_THONG_TIN);
+            throw new FieldValidationExcrption("login", "Sai thông tin đăng nhập");
         }
 
         LocalDateTime now = LocalDateTime.now();
         // 1) đang khóa 60 giây: từ chối, kể cả khi mật khẩu đúng
         if (tk.getThoiGianMoKhoa() != null && tk.getThoiGianMoKhoa().isAfter(now)) {
             long con = (long) Math.ceil(Duration.between(now, tk.getThoiGianMoKhoa()).toMillis() / 1000.0);
-            throw new FieldValidationExcrption("login", "Tài khoản của bạn đang bị khóa, vui lòng đợi 60 giây để đăng nhập lại");
+            throw new AccountLockedException(con);
         }
 
         // 2) sai mật khẩu: +1; đủ 5 thì khóa
         if (!passwordEncoder.matches(req.matKhau(), tk.getMatKhau())) {
             taiKhoanRepository.tangSoLanSai(tk.getMaTaiKhoan());
-            if (taiKhoanRepository.khoaTamThoi(tk.getMaTaiKhoan(), now.plusSeconds(KHOA_GIAY), TOI_DA_SAI) > 0) {
-                throw new FieldValidationExcrption("login", "Bạn đã đăng nhập sai quá nhiều, tài khoản bị khóa 60 giây");
-            }
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, SAI_THONG_TIN);
+            if (taiKhoanRepository.khoaTamThoi(tk.getMaTaiKhoan(), now.plusSeconds(KHOA_GIAY), TOI_DA_SAI) > 0) throw new AccountLockedException(60);
+            throw new FieldValidationExcrption("login", "Sai thông tin đăng nhập");
         }
 
         // 3) mật khẩu đúng nhưng tài khoản bị quản trị khóa (UC033)
         if (tk.getTrangThai() == TrangThaiTaiKhoan.BI_KHOA) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+            throw new FieldValidationExcrption("locked",
                     "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên");
         }
 

@@ -16,13 +16,13 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
     // tìm tài khoản theo email
     TaiKhoan findByEmailIgnoreCase(String email);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE tai_khoan t\n" +
             "SET t.sl_nhap_sai = t.sl_nhap_sai + 1\n" +
             "WHERE t.ma_tk = :id\n", nativeQuery = true)
     int tangSoLanSai(@Param("id") Integer id);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE tai_khoan t\n" +
             "SET t.thoi_gian_mo_khoa = :den,\n" +
             "t.sl_nhap_sai = 0\n" +
@@ -30,7 +30,7 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
             "AND t.sl_nhap_sai >= :toiDa\n",nativeQuery = true)
     int khoaTamThoi(@Param("id") Integer id, @Param("den")LocalDateTime den,@Param("toiDa") Integer toiDa);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE tai_khoan t\n" +
             "SET t.sl_nhap_sai = 0,\n" +
             "t.thoi_gian_mo_khoa = null\n" +
