@@ -65,6 +65,7 @@ public class SecurityConfig {
                         .requestMatchers( // đăng ký và xác thực email
                                 "/api/auth/register",
                                 "/api/auth/login",
+                                "/api/auth/google",
                                 "/api/auth/email-verification/**"
                         ).permitAll()
                         .requestMatchers( // API công khai cho guest
