@@ -1,6 +1,8 @@
 import { Check, X } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../../../../../components/ui/Button'
+import { dealerDetailApi } from '../api'
 import type { DealerAppointmentDetailDTO } from '../types'
 
 interface DealerAppointmentResponsePanelProps {
@@ -9,6 +11,19 @@ interface DealerAppointmentResponsePanelProps {
 
 export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResponsePanelProps) {
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const handleConfirm = async () => {
+        setIsSubmitting(true)
+        try {
+            await dealerDetailApi.confirmAppointment(detail.maLichHen)
+            navigate('/profile/dealer/appointment')
+        } catch (error) {
+            console.error('Failed to confirm appointment:', error)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <section className="flex flex-col border border-lambo-pressed bg-lambo-tertiary p-6">
@@ -20,8 +35,15 @@ export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResp
             </p>
 
             <div className="mt-auto flex flex-col gap-4 pt-10">
-                <Button variant="primary" className="w-full justify-center" icon={<Check className="h-4 w-4" />} iconPosition="left">
-                    Xác nhận lịch hẹn
+                <Button
+                    variant="primary"
+                    className="w-full justify-center"
+                    icon={<Check className="h-4 w-4" />}
+                    iconPosition="left"
+                    onClick={handleConfirm}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Đang xử lý...' : 'Xác nhận lịch hẹn'}
                 </Button>
                 <Button
                     variant="light"
@@ -29,6 +51,7 @@ export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResp
                     icon={<X className="h-4 w-4" />}
                     iconPosition="left"
                     onClick={() => navigate(`/profile/dealer/appointment/${detail.maLichHen}/refuse`)}
+                    disabled={isSubmitting}
                 >
                     Từ chối lịch hẹn
                 </Button>
