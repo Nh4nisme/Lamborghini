@@ -1,5 +1,6 @@
 package com.lamborghini.service;
 
+import com.lamborghini.dto.request.UpdateProfileRequest;
 import com.lamborghini.dto.response.TaiKhoanResponse;
 import com.lamborghini.entity.TaiKhoan;
 import com.lamborghini.enums.VaiTro;
@@ -50,6 +51,36 @@ public class TaiKhoanService {
     public TaiKhoanResponse getDealerTheoMa(Integer maTaiKhoan) {
         TaiKhoan tk = taiKhoanRepository.findByMaTaiKhoanAndVaiTro(maTaiKhoan, VaiTro.DEALER)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản"));
+        return chuyenThanhResponse(tk);
+    }
+
+    public TaiKhoanResponse updateUser(Integer maTaiKhoan, UpdateProfileRequest request) {
+        TaiKhoan tk = taiKhoanRepository.findByMaTaiKhoanAndVaiTro(maTaiKhoan, VaiTro.CUSTOMER)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản USER"));
+        
+        if (request.hoTen() != null && !request.hoTen().isBlank()) {
+            tk.setHoTen(request.hoTen().trim());
+        }
+        if (request.sdt() != null && !request.sdt().isBlank()) {
+            tk.setSdt(request.sdt().trim());
+        }
+        
+        taiKhoanRepository.save(tk);
+        return chuyenThanhResponse(tk);
+    }
+
+    public TaiKhoanResponse updateDealer(Integer maTaiKhoan, UpdateProfileRequest request) {
+        TaiKhoan tk = taiKhoanRepository.findByMaTaiKhoanAndVaiTro(maTaiKhoan, VaiTro.DEALER)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Không tìm thấy tài khoản DEALER"));
+        
+        if (request.hoTen() != null && !request.hoTen().isBlank()) {
+            tk.setHoTen(request.hoTen().trim());
+        }
+        if (request.sdt() != null && !request.sdt().isBlank()) {
+            tk.setSdt(request.sdt().trim());
+        }
+        
+        taiKhoanRepository.save(tk);
         return chuyenThanhResponse(tk);
     }
 

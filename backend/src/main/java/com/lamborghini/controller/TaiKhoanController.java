@@ -1,12 +1,10 @@
 package com.lamborghini.controller;
 
+import com.lamborghini.dto.request.UpdateProfileRequest;
 import com.lamborghini.dto.response.TaiKhoanResponse;
 import com.lamborghini.service.TaiKhoanService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,5 +43,15 @@ public class TaiKhoanController {
     @GetMapping("/dealers/{maTaiKhoan}")
     public TaiKhoanResponse getDealerTheoMa(@PathVariable Integer maTaiKhoan) {
         return taiKhoanService.getDealerTheoMa(maTaiKhoan);
+    }
+
+    @PutMapping("/users/{id}")
+    public TaiKhoanResponse updateUser(@PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
+        return taiKhoanService.updateUser(id, request);
+    }
+
+    @PutMapping("/dealers/{id}")
+    public TaiKhoanResponse updateDealer(@PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
+        return taiKhoanService.updateDealer(id, request);
     }
 }

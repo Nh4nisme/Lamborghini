@@ -77,11 +77,16 @@ public class SecurityConfig {
                                 "/api/showroom/**",
                                 "/api/configurator/**",
                                 "/api/brand/**",
-                                "/api/appointment/**"
+                                "/api/appointment/**",
+                                "/api/customer/**"
                         ).permitAll()
                         .requestMatchers( // Công khai cho guest
                                 HttpMethod.POST,
                                 "/api/appointment"
+                        ).permitAll()
+                        .requestMatchers( // Công khai tạm thời cho appointment update
+                                HttpMethod.PUT,
+                                "/api/appointment/**"
                         ).permitAll()
                         // theo vai trò
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
