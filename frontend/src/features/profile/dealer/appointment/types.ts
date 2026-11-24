@@ -13,6 +13,7 @@ export interface DealerAppointmentDTO {
 }
 
 export function formatDealerSchedule(dto: DealerAppointmentDTO) {
-    const [, month, day] = dto.ngayHen.split('-')
+    const dateStr = dto.ngayHen ? dto.ngayHen.slice(0, 10) : '2026-11-24'
+    const [, month = '11', day = '24'] = dateStr.split('-')
     return `${day}/${month} · ${dto.gioBatDau}`
 }

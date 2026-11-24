@@ -29,8 +29,11 @@ export const profileApi = {
     },
 
     updateProfile: (payload: CustomerProfileDTO) =>
-        http<CustomerProfileDTO>('/customer/profile', {
+        http<TaiKhoanResponse>(`/taikhoan/users/${payload.maKhachHang}`, {
             method: 'PUT',
-            body: JSON.stringify(payload),
+            body: JSON.stringify({
+                hoTen: `${payload.ho} ${payload.ten}`.trim(),
+                sdt: payload.soDienThoai,
+            }),
         }),
 }

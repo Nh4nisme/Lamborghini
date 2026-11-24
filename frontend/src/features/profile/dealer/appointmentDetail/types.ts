@@ -20,11 +20,13 @@ export interface DealerAppointmentDetailDTO {
 }
 
 export function formatDetailSchedule(dto: DealerAppointmentDetailDTO) {
-    const [year, month, day] = dto.ngayHen.split('-')
+    const dateStr = dto.ngayHen ? dto.ngayHen.slice(0, 10) : '2026-11-24'
+    const [year = '2026', month = '11', day = '24'] = dateStr.split('-')
     return `${day}/${month}/${year} · ${dto.khungGio}`
 }
 
 export function formatReceivedDate(dto: DealerAppointmentDetailDTO) {
-    const [year, month, day] = dto.ngayTiepNhan.split('-')
+    const dateStr = dto.ngayTiepNhan ? dto.ngayTiepNhan.slice(0, 10) : '2026-11-24'
+    const [year = '2026', month = '11', day = '24'] = dateStr.split('-')
     return `${day}.${month}.${year}`
 }

@@ -44,4 +44,6 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
     List<TaiKhoan> findAllByVaiTro(VaiTro vaiTro);
 
     Optional<TaiKhoan> findByMaTaiKhoanAndVaiTro(Integer maTaiKhoan, VaiTro vaiTro);
+
+    Optional<TaiKhoan> findByEmail(String email);
 }

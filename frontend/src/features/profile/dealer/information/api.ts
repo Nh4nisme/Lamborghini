@@ -25,9 +25,14 @@ export const dealerProfileApi = {
         } as DealerProfileDTO
     },
 
-    updateDealerProfile: (payload: DealerProfileDTO) =>
-        http<DealerProfileDTO>('/dealer/profile', {
+    updateDealerProfile: (payload: DealerProfileDTO) => {
+        const id = payload.maDealer.replace('DL-', '') || '4'
+        return http<TaiKhoanResponse>(`/taikhoan/dealers/${id}`, {
             method: 'PUT',
-            body: JSON.stringify(payload),
-        }),
+            body: JSON.stringify({
+                hoTen: payload.hoTen,
+                sdt: payload.soDienThoai,
+            }),
+        })
+    },
 }

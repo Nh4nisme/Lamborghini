@@ -9,6 +9,7 @@ export interface DealerCustomerDTO {
 }
 
 export function formatCustomerDate(dto: DealerCustomerDTO) {
-    const [year, month, day] = dto.lanGanNhat.split('-')
+    const dateStr = dto.lanGanNhat ? dto.lanGanNhat.slice(0, 10) : '2026-11-24'
+    const [year = '2026', month = '11', day = '24'] = dateStr.split('-')
     return `${day}/${month}/${year}`
 }
