@@ -67,6 +67,9 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/email-verification/**"
                         ).permitAll()
+                        .requestMatchers( // Công khai tạm thời cho taiKhoan (tất cả methods: GET, POST, PUT, DELETE,...)
+                                "/api/taikhoan/**"
+                        ).permitAll()
                         .requestMatchers( // API công khai cho guest
                                 HttpMethod.GET,
                                 "/api/home/**",
