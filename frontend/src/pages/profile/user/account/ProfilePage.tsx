@@ -4,6 +4,7 @@ import { useProfile } from '../../../../features/profile/user/account/hooks'
 import { ProfileHeader } from '../../../../features/profile/user/account/components/ProfileHeader'
 import { ProfileTabs } from '../../../../features/profile/user/account/components/ProfileTabs'
 import { ProfileForm } from '../../../../features/profile/user/account/components/ProfileForm'
+import { DealerSecurityForm } from '../../../../features/profile/dealer/information/components/DealerSecurityForm'
 import type { ProfileTab } from '../../../../features/profile/user/account/types'
 
 export default function ProfilePage() {
@@ -36,7 +37,9 @@ export default function ProfilePage() {
                         <ProfileForm key={profile.maKhachHang} initialValues={profile} />
                     )}
 
-                    {!isLoading && activeTab !== 'PERSONAL' && (
+                    {!isLoading && activeTab === 'SECURITY' && <DealerSecurityForm />}
+
+                    {!isLoading && activeTab === 'PRIVACY' && (
                         <div className="border border-lambo-pressed bg-lambo-tertiary p-6 text-sm text-lambo-hover">
                             Nội dung đang được cập nhật.
                         </div>

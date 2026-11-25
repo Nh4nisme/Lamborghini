@@ -37,7 +37,7 @@ export const dealerProfileApi = {
     },
 
     changeDealerPassword: (payload: ChangePasswordPayload) =>
-        http('/dealer/profile/password', {
+        http('/auth/profile/password', {
             method: 'PUT',
             body: JSON.stringify(payload),
         }),
