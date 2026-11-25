@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import type {
   CarConfiguration,
   PaintColor,
+  RimOption,
+  InteriorTrim,
+  CaliperOption,
 } from '../types';
 import {
   PAINT_COLORS,
@@ -20,6 +23,10 @@ interface FigmaRightPanelProps {
   onUpdateConfig: (partial: Partial<CarConfiguration>) => void;
   onSelectColor: (color: PaintColor) => void;
   theme: 'light' | 'dark';
+  paintColors?: PaintColor[];
+  rims?: RimOption[];
+  interiorTrims?: InteriorTrim[];
+  calipers?: CaliperOption[];
 }
 
 type PaintFinishFilter = 'METALLIC' | 'SOLID' | 'MATT';
@@ -30,6 +37,10 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   onUpdateConfig,
   onSelectColor,
   theme,
+  paintColors,
+  rims,
+  interiorTrims,
+  calipers: _calipers,
 }) => {
   const isLight = theme === 'light';
   const [paintFilter, setPaintFilter] = useState<PaintFinishFilter>('METALLIC');
@@ -37,8 +48,20 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   const [isTrimOpen, setIsTrimOpen] = useState(false);
   const [selectedShowroom, setSelectedShowroom] = useState('bologna');
 
-  // The 8 prominent colors matching the Figma design grid
-  const figmaColors = PAINT_COLORS.slice(0, 8);
+  const availablePaintColors = paintColors ?? PAINT_COLORS
+  const availableRims = rims ?? RIMS
+  const availableInteriorTrims = interiorTrims ?? INTERIOR_TRIMS
+  
+  const filteredPaintColors = availablePaintColors.filter((color) => {
+    if (paintFilter === 'METALLIC') return color.finish === 'shiny'
+    if (paintFilter === 'SOLID') return color.finish === 'pearl'
+    if (paintFilter === 'MATT') return color.finish === 'matt'
+    return true
+  })
+
+  const metallicCount = availablePaintColors.filter((c) => c.finish === 'shiny').length
+  const solidCount = availablePaintColors.filter((c) => c.finish === 'pearl').length
+  const mattCount = availablePaintColors.filter((c) => c.finish === 'matt').length
 
   const filterTabs: PaintFinishFilter[] = ['METALLIC', 'SOLID', 'MATT'];
 
@@ -92,18 +115,18 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                   EXTERIOR PAINT
                 </span>
                 <span className="text-[11px] font-mono text-neutral-400">
-                  08 COLORS
+                  {String(filteredPaintColors.length).padStart(2, '0')} COLORS
                 </span>
               </div>
 
-              {/* Sub-tabs: Metallic, Solid, Matt */}
               <div
                 className={`flex items-center gap-6 border-b text-xs font-bold uppercase tracking-[0.14em] pb-1 ${
                   isLight ? 'border-neutral-200' : 'border-neutral-800'
                 }`}
               >
                 {filterTabs.map((tab) => {
-                  const isActive = paintFilter === tab;
+                  const isActive = paintFilter === tab
+                  const count = tab === 'METALLIC' ? metallicCount : tab === 'SOLID' ? solidCount : mattCount
                   return (
                     <button
                       key={tab}
@@ -118,19 +141,18 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                           : 'text-neutral-500 hover:text-neutral-300'
                       }`}
                     >
-                      {tab}
+                      {tab} ({count})
                       {isActive && (
                         <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-lambo-primary" />
                       )}
                     </button>
-                  );
+                  )
                 })}
               </div>
 
-              {/* 4x2 Swatches Grid */}
               <div className="grid grid-cols-4 gap-3 pt-1">
-                {figmaColors.map((color) => {
-                  const isSelected = config.exteriorColor.id === color.id;
+                {filteredPaintColors.slice(0, 8).map((color) => {
+                  const isSelected = config.exteriorColor.id === color.id
                   return (
                     <button
                       key={color.id}
@@ -150,7 +172,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                         <Check className="w-4 h-4 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] stroke-[2.5]" />
                       )}
                     </button>
-                  );
+                  )
                 })}
               </div>
 
@@ -199,7 +221,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                       isLight ? 'bg-white border-neutral-300' : 'bg-[#16171d] border-neutral-700'
                     }`}
                   >
-                    {RIMS.map((rim) => (
+                    {availableRims.map((rim) => (
                       <button
                         key={rim.id}
                         onClick={() => {
@@ -311,7 +333,6 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
               </h2>
             </div>
 
-            {/* Interior Trims List */}
             <div className="space-y-3">
               <span
                 className="text-sm font-extrabold uppercase tracking-[0.16em] block font-barlow"
@@ -319,8 +340,8 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 UPHOLSTERY & SEATS
               </span>
               <div className="space-y-2">
-                {INTERIOR_TRIMS.map((trim) => {
-                  const isSelected = config.interiorTrim.id === trim.id;
+                {availableInteriorTrims.map((trim) => {
+                  const isSelected = config.interiorTrim.id === trim.id
                   return (
                     <button
                       key={trim.id}
@@ -353,7 +374,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                       </div>
                       {isSelected && <Check className="w-4 h-4 text-lambo-primary" />}
                     </button>
-                  );
+                  )
                 })}
               </div>
             </div>

@@ -8,10 +8,9 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import type { ShowroomStudy } from '../data';
-import { OFFICIAL_LAMBORGHINI_DEALERSHIPS } from '../data';
 
 interface ShowroomBoxMapProps {
-  showrooms?: ShowroomStudy[];
+  showrooms: ShowroomStudy[];
   selectedShowroomId: string;
   onSelectShowroom: (showroom: ShowroomStudy) => void;
   onRequestAppointment?: (showroom: ShowroomStudy) => void;
@@ -25,11 +24,6 @@ function createLamborghiniShieldIcon(isSelected: boolean, city: string, code?: s
 
   const html = `
     <div class="relative group cursor-pointer flex flex-col items-center select-none" style="transform: translate(-50%, -100%);">
-      ${
-        isSelected
-          ? `<div class="absolute -inset-2.5 rounded-full border-2 border-[#D8A016] animate-ping opacity-75 pointer-events-none"></div>`
-          : ''
-      }
       <div style="width: ${size}px; height: ${size + 6}px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.9));">
         <svg viewBox="0 0 100 115" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Outer Shield Border -->
@@ -77,16 +71,8 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
   const [mapStyle, setMapStyle] = useState<'dark' | 'satellite'>('dark');
   const [viewMode, setViewMode] = useState<'live' | 'schematic'>('live');
 
-  // Showrooms to display: use passed showrooms if available, otherwise fallback to official dealerships
-  const activeShowrooms = (showrooms && showrooms.length > 0) ? showrooms : OFFICIAL_LAMBORGHINI_DEALERSHIPS;
-
-  // Find currently selected showroom
-  const currentShowroom =
-    activeShowrooms.find((s) => s.id === selectedShowroomId) ||
-    activeShowrooms[0] ||
-    OFFICIAL_LAMBORGHINI_DEALERSHIPS[0];
-
-  const isVietnam = activeShowrooms.some((s) => s.country === 'Vietnam');
+  const currentShowroom = showrooms.find((s) => s.id === selectedShowroomId) || showrooms[0];
+  const isVietnam = showrooms.some((s) => s.country === 'Vietnam');
 
   // Initialize Map
   useEffect(() => {
@@ -157,7 +143,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current.clear();
 
-    activeShowrooms.forEach((showroom) => {
+    showrooms.forEach((showroom) => {
       if (!showroom.lat || !showroom.lng) return;
 
       const isSelected = showroom.id === selectedShowroomId;
@@ -168,7 +154,6 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
         zIndexOffset: isSelected ? 1000 : 100,
       }).addTo(map);
 
-      // Popup with official details
       const popupHtml = `
         <div class="bg-[#0a0a0a] border border-[#D8A016] p-3 text-white font-sans max-w-[240px] shadow-2xl">
           <div class="text-[9px] font-bold text-[#D8A016] tracking-[0.16em] uppercase">OFFICIAL SHOWROOM</div>
@@ -185,7 +170,8 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
       marker.bindPopup(popupHtml, {
         className: 'lambo-leaflet-popup',
         closeButton: false,
-        offset: [0, -32],
+        offset: [0, -14],
+        autoPanPaddingTopLeft: [20, 48],
       });
 
       marker.on('click', () => {
@@ -198,7 +184,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
 
       markersRef.current.set(showroom.id, marker);
     });
-  }, [activeShowrooms, selectedShowroomId, viewMode]);
+  }, [showrooms, selectedShowroomId, viewMode]);
 
   // Smooth flyTo when selectedShowroomId changes
   useEffect(() => {
@@ -363,7 +349,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
                 strokeDasharray="4 4"
               />
 
-              {activeShowrooms.map((showroom, idx) => {
+              {showrooms.map((showroom, idx) => {
                 // Determine node positions along north-central-south axis
                 const isSelected = showroom.id === selectedShowroomId;
                 let cx = 250;
@@ -465,7 +451,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
                 tabIndex={0}
                 className="cursor-pointer group"
                 onClick={() => {
-                  const modena = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'bologna');
+                  const modena = showrooms.find((s) => s.id === 'bologna');
                   if (modena) onSelectShowroom(modena);
                 }}
               >
@@ -481,7 +467,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
                 tabIndex={0}
                 className="cursor-pointer group"
                 onClick={() => {
-                  const bologna = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'bologna');
+                  const bologna = showrooms.find((s) => s.id === 'bologna');
                   if (bologna) onSelectShowroom(bologna);
                 }}
               >
@@ -497,7 +483,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
                 tabIndex={0}
                 className="cursor-pointer group"
                 onClick={() => {
-                  const verona = OFFICIAL_LAMBORGHINI_DEALERSHIPS.find((s) => s.id === 'verona');
+                  const verona = showrooms.find((s) => s.id === 'verona');
                   if (verona) onSelectShowroom(verona);
                 }}
               >
@@ -519,7 +505,7 @@ export const ShowroomBoxMap: React.FC<ShowroomBoxMapProps> = ({
             : 'Illustrative sample locations. No live map data or distance estimates.'}
         </span>
         <span className="text-[#8e826b] font-medium hidden sm:inline">
-          {activeShowrooms.length} locations
+          {showrooms.length} locations
         </span>
       </div>
     </div>

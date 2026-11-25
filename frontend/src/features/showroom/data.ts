@@ -315,15 +315,19 @@ export function filterShowrooms(
   // Filter by category
   let list = showrooms.filter((s) => s.category === category || !s.category);
 
-  // If specific city is requested
-  if (city && city !== 'All') {
-    const byCity = list.filter((s) => s.city.toLowerCase() === city.toLowerCase());
-    if (byCity.length > 0) return byCity;
+  // Filter by country
+  if (country && country !== 'All') {
+    list = list.filter((s) => s.country.toLowerCase() === country.toLowerCase());
   }
 
-  // If text query is provided
+  // Filter by city
+  if (city && city !== 'All') {
+    list = list.filter((s) => s.city.toLowerCase() === city.toLowerCase());
+  }
+
+  // Filter by text query
   if (q) {
-    const matched = list.filter((showroom) => {
+    list = list.filter((showroom) => {
       return (
         showroom.name.toLowerCase().includes(q) ||
         showroom.city.toLowerCase().includes(q) ||
@@ -332,13 +336,6 @@ export function filterShowrooms(
         showroom.code.toLowerCase().includes(q)
       );
     });
-    if (matched.length > 0) return matched;
-  }
-
-  // If country is specified
-  if (country && country !== 'All') {
-    const byCountry = list.filter((s) => s.country.toLowerCase() === country.toLowerCase());
-    if (byCountry.length > 0) return byCountry;
   }
 
   return list;

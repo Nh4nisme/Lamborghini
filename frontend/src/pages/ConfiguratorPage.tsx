@@ -26,8 +26,14 @@ import {
     startV12Engine,
     stopV12Engine,
 } from '../features/configurator/audio/engineAudio'
-import { useXeConfigurator } from '../features/configurator/hooks'
-import { Check, X, ShieldAlert } from 'lucide-react'
+import { useXeConfigurator, useTuyChonTheoNhom } from '../features/configurator/hooks'
+import {
+    mapTuyChonToPaintColors,
+    mapTuyChonToRims,
+    mapTuyChonToInteriorTrims,
+    mapTuyChonToCalipers,
+} from '../features/configurator/utils/apiMappers'
+import { X, ShieldAlert } from 'lucide-react'
 
 export default function ConfiguratorPage() {
     const { maXe } = useParams<{ maXe?: string }>()
@@ -42,15 +48,22 @@ export default function ConfiguratorPage() {
     const [isExitModalOpen, setIsExitModalOpen] = useState(false)
     const [isAudioMutedState, setIsAudioMutedState] = useState(false)
 
-    // 1. Fetch car data from backend API
     const { data: carData } = useXeConfigurator(carId)
+    const { data: rawPaintOptions = [] } = useTuyChonTheoNhom(carId, 1)
+    const { data: rawRimOptions = [] } = useTuyChonTheoNhom(carId, 2)
+    const { data: rawInteriorOptions = [] } = useTuyChonTheoNhom(carId, 3)
+    const { data: rawCaliperOptions = [] } = useTuyChonTheoNhom(carId, 4)
 
-    // Car configuration state
+    const apiPaintColors = mapTuyChonToPaintColors(rawPaintOptions)
+    const apiRims = mapTuyChonToRims(rawRimOptions)
+    const apiInteriorTrims = mapTuyChonToInteriorTrims(rawInteriorOptions)
+    const apiCalipers = mapTuyChonToCalipers(rawCaliperOptions)
+
     const [config, setConfig] = useState<CarConfiguration>(() => ({
         model: 'Revuelto HPEV',
-        exteriorColor: PAINT_COLORS[0], // Arancio Borealis default
-        rim: RIMS[0], // Multi-spoke / gloss black
-        caliper: CALIPERS[0], // Giallo
+        exteriorColor: PAINT_COLORS[0],
+        rim: RIMS[0],
+        caliper: CALIPERS[0],
         carbonLower: 'body',
         carbonUpper: 'body',
         exhaust: 'matt_black',
@@ -68,10 +81,9 @@ export default function ConfiguratorPage() {
         activeTab: 'colors',
         viewMode: 'exterior',
         customModelUrl: '/models/lamborghini_sc18_draco.glb',
-        customModelName: 'Lamborghini SC18 Alston (Draco 3MB)',
+        customModelName: 'Lamborghini Revuelto (3D Studio)',
     }))
 
-    // Sync car model name from backend API if loaded
     useEffect(() => {
         if (carData?.tenPhienBan) {
             setConfig((prev) => ({
@@ -80,6 +92,30 @@ export default function ConfiguratorPage() {
             }))
         }
     }, [carData])
+
+    useEffect(() => {
+        if (apiPaintColors.length > 0 && config.exteriorColor === PAINT_COLORS[0]) {
+            setConfig((prev) => ({ ...prev, exteriorColor: apiPaintColors[0] }))
+        }
+    }, [apiPaintColors])
+
+    useEffect(() => {
+        if (apiRims.length > 0 && config.rim === RIMS[0]) {
+            setConfig((prev) => ({ ...prev, rim: apiRims[0] }))
+        }
+    }, [apiRims])
+
+    useEffect(() => {
+        if (apiInteriorTrims.length > 0 && config.interiorTrim === INTERIOR_TRIMS[0]) {
+            setConfig((prev) => ({ ...prev, interiorTrim: apiInteriorTrims[0] }))
+        }
+    }, [apiInteriorTrims])
+
+    useEffect(() => {
+        if (apiCalipers.length > 0 && config.caliper === CALIPERS[0]) {
+            setConfig((prev) => ({ ...prev, caliper: apiCalipers[0] }))
+        }
+    }, [apiCalipers])
 
     // Map active angle to Camera Preset for 3D Viewport
     const getCameraPreset = (): CameraPreset => {
@@ -252,51 +288,18 @@ export default function ConfiguratorPage() {
                     />
 
                     {/* Model Switcher Pill (Top left under title) */}
-                    <div className="absolute top-24 left-6 md:left-8 z-20 hidden sm:flex items-center gap-1.5 p-1 rounded bg-black/60 backdrop-blur-md border border-white/10 text-xs">
-                        <button
-                            onClick={() => {
-                                setConfig((prev) => ({
-                                    ...prev,
-                                    customModelUrl: '/models/lamborghini_sc18_draco.glb',
-                                    customModelName: 'Lamborghini SC18 Alston (Draco 3MB)',
-                                }))
-                            }}
-                            className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 font-semibold ${
-                                config.customModelUrl
-                                    ? 'bg-lambo-primary text-lambo-bold-black shadow-sm'
-                                    : 'text-neutral-300 hover:text-white'
-                            }`}
-                        >
-                            {config.customModelUrl && <Check className="w-3 h-3" />}
-                            <span>SC18 GLB</span>
-                        </button>
-                        <button
-                            onClick={() => {
-                                setConfig((prev) => ({
-                                    ...prev,
-                                    customModelUrl: null,
-                                    customModelName: null,
-                                }))
-                            }}
-                            className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 font-semibold ${
-                                !config.customModelUrl
-                                    ? 'bg-lambo-primary text-lambo-bold-black shadow-sm'
-                                    : 'text-neutral-300 hover:text-white'
-                            }`}
-                        >
-                            {!config.customModelUrl && <Check className="w-3 h-3" />}
-                            <span>Revuelto 3D</span>
-                        </button>
-                    </div>
                 </div>
 
-                {/* 2B. Right Configuration Sidebar Panel */}
                 <FigmaRightPanel
                     currentStep={currentStep}
                     config={config}
                     onUpdateConfig={handleUpdateConfig}
                     onSelectColor={handleSelectColor}
                     theme={theme}
+                    paintColors={apiPaintColors.length > 0 ? apiPaintColors : undefined}
+                    rims={apiRims.length > 0 ? apiRims : undefined}
+                    interiorTrims={apiInteriorTrims.length > 0 ? apiInteriorTrims : undefined}
+                    calipers={apiCalipers.length > 0 ? apiCalipers : undefined}
                 />
             </div>
 

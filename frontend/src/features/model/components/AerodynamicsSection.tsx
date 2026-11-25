@@ -1,6 +1,5 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
-import type { CarModelData, Hotspot } from '../data';
-import { Plus, X, Wind } from 'lucide-react';
+﻿import React, { useRef, useEffect } from 'react';
+import type { CarModelData } from '../data';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -11,12 +10,10 @@ interface AerodynamicsSectionProps {
 }
 
 export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carData }) => {
-  const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const aeroData = carData.aerodynamics;
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const hotspotButtonsRef = useRef<HTMLDivElement>(null);
   const storyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -48,22 +45,6 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
           scrollTrigger: {
             trigger: imageRef.current,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
-          },
-        });
-      }
-
-      // Animate hotspot buttons with stagger
-      if (hotspotButtonsRef.current) {
-        gsap.from(hotspotButtonsRef.current.children, {
-          y: 20,
-          opacity: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: hotspotButtonsRef.current,
-            start: 'top 85%',
             toggleActions: 'play none none reverse',
           },
         });
@@ -119,51 +100,6 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
             className="w-full h-auto object-cover filter brightness-95"
             loading="lazy"
           />
-
-          {/* Interactive Aerodynamic Hotspot Pins on the Image */}
-          {aeroData.hotspots.map((spot) => (
-            <button
-              key={spot.id}
-              onClick={() => setSelectedHotspot(selectedHotspot?.id === spot.id ? null : spot)}
-              style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 z-20 ${
-                selectedHotspot?.id === spot.id
-                  ? 'bg-lambo-primary text-black scale-125 ring-4 ring-lambo-primary/40'
-                  : 'bg-black/80 border border-lambo-primary text-lambo-primary hover:scale-110 hover:bg-lambo-primary hover:text-black'
-              }`}
-              aria-label={`Inspect ${spot.name}`}
-            >
-              <span className="text-xs font-bold leading-none">+</span>
-            </button>
-          ))}
-
-          {/* Active Hotspot Popover Tooltip */}
-          {selectedHotspot && (
-            <div
-              className="absolute z-30 max-w-xs sm:max-w-sm bg-[#111111]/95 border border-lambo-primary p-4 text-xs shadow-2xl backdrop-blur-md animate-fadeIn transition-all"
-              style={{
-                left: `${Math.min(75, Math.max(20, selectedHotspot.x))}%`,
-                top: `${selectedHotspot.y > 50 ? selectedHotspot.y - 35 : selectedHotspot.y + 12}%`,
-                transform: 'translateX(-50%)',
-              }}
-            >
-              <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#292318]">
-                <div className="flex items-center gap-1.5 text-lambo-primary font-bold uppercase tracking-wider text-[11px]">
-                  <Wind className="w-3.5 h-3.5" />
-                  <span>{selectedHotspot.title}</span>
-                </div>
-                <button
-                  onClick={() => setSelectedHotspot(null)}
-                  className="text-[#888] hover:text-white"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-              <p className="text-[#cccccc] text-[11px] leading-relaxed">
-                {selectedHotspot.description}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Caption below image */}
@@ -171,24 +107,6 @@ export const AerodynamicsSection: React.FC<AerodynamicsSectionProps> = ({ carDat
           <p className="text-[11px] text-[#737373] tracking-wide">
             Original concept study / exterior – static aerodynamic exploration
           </p>
-        </div>
-
-        {/* Hotspot Toggle Buttons Bar matching the exact screenshot */}
-        <div ref={hotspotButtonsRef} className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2 pb-6 border-b border-[#1c1810]">
-          {aeroData.hotspots.map((spot) => (
-            <button
-              key={spot.id}
-              onClick={() => setSelectedHotspot(selectedHotspot?.id === spot.id ? null : spot)}
-              className={`flex items-center gap-1.5 text-xs sm:text-sm uppercase tracking-[0.14em] font-medium transition-colors cursor-pointer ${
-                selectedHotspot?.id === spot.id
-                  ? 'text-lambo-primary font-bold'
-                  : 'text-[#9c937f] hover:text-lambo-primary'
-              }`}
-            >
-              <Plus className="w-3.5 h-3.5 text-lambo-primary" />
-              <span>{spot.name}</span>
-            </button>
-          ))}
         </div>
 
         {/* Exterior Story */}
