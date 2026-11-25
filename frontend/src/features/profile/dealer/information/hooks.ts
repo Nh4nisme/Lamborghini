@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { dealerProfileApi } from './api'
-import type { DealerProfileDTO } from './types'
+import type { ChangePasswordPayload, DealerProfileDTO } from './types'
 
 export const useDealerProfile = () =>
     useQuery({
@@ -18,3 +18,8 @@ export const useUpdateDealerProfile = () => {
         },
     })
 }
+
+export const useChangeDealerPassword = () =>
+    useMutation({
+        mutationFn: (payload: ChangePasswordPayload) => dealerProfileApi.changeDealerPassword(payload),
+    })

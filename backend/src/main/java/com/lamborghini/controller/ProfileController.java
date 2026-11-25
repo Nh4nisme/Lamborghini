@@ -9,48 +9,61 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/taikhoan")
+@RequestMapping("/api")
 @RequiredArgsConstructor
-public class TaiKhoanController {
+public class ProfileController {
 
     private final TaiKhoanService taiKhoanService;
 
-    @GetMapping
+    @GetMapping("/profile")
+    public TaiKhoanResponse getProfile(@RequestParam(required = false, defaultValue = "10") Integer id) {
+        return taiKhoanService.getUserTheoMa(id);
+    }
+
+    @PutMapping("/profile")
+    public TaiKhoanResponse updateProfile(
+            @RequestParam(required = false, defaultValue = "10") Integer id,
+            @RequestBody UpdateProfileRequest request
+    ) {
+        return taiKhoanService.updateUser(id, request);
+    }
+
+    @GetMapping("/taikhoan")
     public List<TaiKhoanResponse> getDanhSachTaiKhoan() {
         return taiKhoanService.getDanhSachTaiKhoan();
     }
 
-    @GetMapping("/{maTaiKhoan}")
+    @GetMapping("/taikhoan/{maTaiKhoan}")
     public TaiKhoanResponse getTaiKhoanTheoMa(@PathVariable Integer maTaiKhoan) {
         return taiKhoanService.getTaiKhoanTheoMa(maTaiKhoan);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/taikhoan/users")
     public List<TaiKhoanResponse> getDanhSachUser() {
         return taiKhoanService.getDanhSachUser();
     }
 
-    @GetMapping("/users/{maTaiKhoan}")
+    @GetMapping("/taikhoan/users/{maTaiKhoan}")
     public TaiKhoanResponse getUserTheoMa(@PathVariable Integer maTaiKhoan) {
         return taiKhoanService.getUserTheoMa(maTaiKhoan);
     }
 
-    @GetMapping("/dealers")
+    @GetMapping("/taikhoan/dealers")
     public List<TaiKhoanResponse> getDanhSachDealer() {
         return taiKhoanService.getDanhSachDealer();
     }
 
-    @GetMapping("/dealers/{maTaiKhoan}")
+    @GetMapping("/taikhoan/dealers/{maTaiKhoan}")
     public TaiKhoanResponse getDealerTheoMa(@PathVariable Integer maTaiKhoan) {
         return taiKhoanService.getDealerTheoMa(maTaiKhoan);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/taikhoan/users/{id}")
     public TaiKhoanResponse updateUser(@PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
         return taiKhoanService.updateUser(id, request);
     }
 
-    @PutMapping("/dealers/{id}")
+    @PutMapping("/taikhoan/dealers/{id}")
     public TaiKhoanResponse updateDealer(@PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
         return taiKhoanService.updateDealer(id, request);
     }

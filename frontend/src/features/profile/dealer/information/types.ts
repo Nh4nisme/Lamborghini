@@ -9,3 +9,8 @@ export interface DealerProfileDTO {
     showroom: string
     gioiThieuNgan: string
 }
+
+export interface ChangePasswordPayload {
+    currentPassword: string
+    newPassword: string
+}

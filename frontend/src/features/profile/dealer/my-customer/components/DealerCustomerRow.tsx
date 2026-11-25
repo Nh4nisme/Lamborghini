@@ -14,7 +14,7 @@ export function DealerCustomerRow({ customer, striped, onSelect }: DealerCustome
         >
             <div className="min-w-0">
                 <h3 className="truncate font-barlow text-lg font-semibold text-lambo-secondary">{customer.hoTen}</h3>
-                <p className="mt-1 font-barlow text-xs text-lambo-primary">{customer.maHoSo}</p>
+                {customer.maHoSo && <p className="mt-1 font-barlow text-xs text-lambo-primary">{customer.maHoSo}</p>}
             </div>
 
             <div className="min-w-0">

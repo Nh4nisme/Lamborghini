@@ -3,12 +3,14 @@ import { ScrollToTop } from '../../../../components/feedback'
 import { DealerInformationForm } from '../../../../features/profile/dealer/information/components/DealerInformationForm'
 import { DealerInformationHeader } from '../../../../features/profile/dealer/information/components/DealerInformationHeader'
 import { DealerInformationTabs } from '../../../../features/profile/dealer/information/components/DealerInformationTabs'
-import { useDealerProfile } from '../../../../features/profile/dealer/information/hooks'
+import { DealerSecurityForm } from '../../../../features/profile/dealer/information/components/DealerSecurityForm'
+import { useChangeDealerPassword, useDealerProfile } from '../../../../features/profile/dealer/information/hooks'
 import type { DealerInformationTab } from '../../../../features/profile/dealer/information/types'
 
 export default function DealerInformationPage() {
     const { data, isLoading, isError } = useDealerProfile()
     const [activeTab, setActiveTab] = useState<DealerInformationTab>('PERSONAL')
+    const changePasswordMutation = useChangeDealerPassword()
 
     const profile = data
     const hasError = isError
@@ -36,7 +38,14 @@ export default function DealerInformationPage() {
                         <DealerInformationForm key={profile.maDealer} initialValues={profile} />
                     )}
 
-                    {!isLoading && activeTab !== 'PERSONAL' && (
+                    {!isLoading && activeTab === 'SECURITY' && (
+                        <DealerSecurityForm
+                            onSubmit={(payload) => changePasswordMutation.mutate(payload)}
+                            isSubmitting={changePasswordMutation.isPending}
+                        />
+                    )}
+
+                    {!isLoading && activeTab === 'SHOWROOM' && (
                         <div className="border border-lambo-pressed bg-lambo-tertiary p-6 text-sm text-lambo-hover">
                             Nội dung đang được cập nhật.
                         </div>
