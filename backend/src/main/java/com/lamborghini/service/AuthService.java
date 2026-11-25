@@ -5,6 +5,9 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.lamborghini.dto.event.DangKyThanhCongEvent;
+import com.lamborghini.dto.event.DoiMatKhauEvent;
+import com.lamborghini.dto.profile.request.ChangePasswordRequest;
+import com.lamborghini.dto.profile.response.ChangePasswordResponse;
 import com.lamborghini.dto.request.RegisterRequest;
 import com.lamborghini.dto.response.RegisterResponse;
 import com.lamborghini.dto.response.login.request.GoogleLoginRequest;
@@ -216,6 +219,44 @@ public class AuthService {
                 redirectTheoVaiTro(tk.getVaiTro())
         );
 
+
+    }
+    // UC đổi mật khẩu cho dealer
+    @Transactional(noRollbackFor = {FieldValidationExcrption.class, AccountLockedException.class})
+    public ChangePasswordResponse doiatKhauChoDealer(ChangePasswordRequest req, Integer maTK) {
+
+        TaiKhoan tk = taiKhoanRepository.findByMaTaiKhoan(maTK);
+        LocalDateTime now = LocalDateTime.now();
+
+        // 1) đang khóa 60 giây: từ chối, kể cả khi mật khẩu đúng
+        if (tk.getThoiGianMoKhoa() != null && tk.getThoiGianMoKhoa().isAfter(now)) {
+            long con = (long) Math.ceil(Duration.between(now, tk.getThoiGianMoKhoa()).toMillis() / 1000.0);
+            throw new AccountLockedException(con);
+        }
+
+        // 2) sai mật khẩu: +1; đủ 5 thì khóa
+        if (!passwordEncoder.matches(req.matKhauHienTai(), tk.getMatKhau())) {
+            taiKhoanRepository.tangSoLanSai(tk.getMaTaiKhoan());
+            if (taiKhoanRepository.khoaTamThoi(tk.getMaTaiKhoan(), now.plusSeconds(KHOA_GIAY), TOI_DA_SAI) > 0) throw new AccountLockedException(60);
+            throw new FieldValidationExcrption("message", "Mật khẩu hiện tại không khớp");
+        }
+
+
+        if(!req.xacNhanMatKhauMoi().equalsIgnoreCase(req.matKhauMoi())) {
+            throw new FieldValidationExcrption("message", "Mật khẩu xác nhận không khớp");
+        }
+
+        if(passwordEncoder.matches(req.matKhauMoi(), tk.getMatKhau())) {
+            throw new FieldValidationExcrption("message", "Mật khẩu mới phải khác mật khẩu cũ");
+        }
+
+        tk.setMatKhau(passwordEncoder.encode(req.matKhauMoi()));
+        tk.setSlNhapSai(0);
+        tk.setThoiGianMoKhoa(null);
+        taiKhoanRepository.save(tk);
+
+        eventPublisher.publishEvent(new DoiMatKhauEvent(tk.getEmail(), tk.getHoTen()));
+        return new ChangePasswordResponse("Đổi mật khẩu thành công");
 
     }
 
