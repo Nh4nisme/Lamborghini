@@ -59,6 +59,39 @@ export default function ConfiguratorPage() {
     const apiInteriorTrims = mapTuyChonToInteriorTrims(rawInteriorOptions)
     const apiCalipers = mapTuyChonToCalipers(rawCaliperOptions)
 
+    // Map carId to correct GLB model
+    const getModelForCarId = (id: number): { url: string; name: string } => {
+        switch (id) {
+            case 1: // Revuelto
+                return {
+                    url: '/models/revuelto_30tm-v8.glb',
+                    name: 'Lamborghini Revuelto (3D Studio)',
+                }
+            case 2: // Temerario
+                return {
+                    url: '/models/lamborghini_sc18_draco.glb',
+                    name: 'Lamborghini Temerario (3D Studio)',
+                }
+            case 3: // Huracan
+                return {
+                    url: '/models/huracan_eagletm-v1.glb',
+                    name: 'Lamborghini Huracan (3D Studio)',
+                }
+            case 4: // Urus
+                return {
+                    url: '/models/urus_absoluttm-v5.glb',
+                    name: 'Lamborghini Urus (3D Studio)',
+                }
+            default:
+                return {
+                    url: '/models/revuelto_30tm-v8.glb',
+                    name: 'Lamborghini Revuelto (3D Studio)',
+                }
+        }
+    }
+
+    const initialModel = getModelForCarId(carId)
+
     const [config, setConfig] = useState<CarConfiguration>(() => ({
         model: 'Revuelto HPEV',
         exteriorColor: PAINT_COLORS[0],
@@ -80,18 +113,21 @@ export default function ConfiguratorPage() {
         loungeMode: false,
         activeTab: 'colors',
         viewMode: 'exterior',
-        customModelUrl: '/models/lamborghini_sc18_draco.glb',
-        customModelName: 'Lamborghini Revuelto (3D Studio)',
+        customModelUrl: initialModel.url,
+        customModelName: initialModel.name,
     }))
 
     useEffect(() => {
         if (carData?.tenPhienBan) {
+            const modelData = getModelForCarId(carId)
             setConfig((prev) => ({
                 ...prev,
                 model: carData.tenPhienBan,
+                customModelUrl: modelData.url,
+                customModelName: modelData.name,
             }))
         }
-    }, [carData])
+    }, [carData, carId])
 
     useEffect(() => {
         if (apiPaintColors.length > 0 && config.exteriorColor === PAINT_COLORS[0]) {
