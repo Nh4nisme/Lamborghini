@@ -27,7 +27,7 @@ public interface LichHenRepository extends JpaRepository<LichHen, Integer> {
             "    ds.ho_ten_lien_he,\n" +
             "    ds.email_lien_he,\n" +
             "    ds.sdt_lien_he,\n" +
-            "    ds.ma_xe,\n" +
+            "    x.ten_phien_ban AS tenXe,\n" +
             "    ds.thoi_gian_hen\n" +
             "FROM (\n" +
             "    SELECT\n" +
@@ -60,6 +60,7 @@ public interface LichHenRepository extends JpaRepository<LichHen, Integer> {
             "    FROM lich_hen lh\n" +
             "    WHERE lh.ma_nv = :maNV\n" +
             ") AS ds\n" +
+            "LEFT JOIN xe x ON ds.ma_xe = x.ma_xe\n" +
             "WHERE ds.rn = 1\n" +
             "ORDER BY ds.thoi_gian_hen ASC;", nativeQuery = true)
     List<KhachHangLichHen> getDanhSachKhachHangCuaDealer(@Param("maNV") Integer maNV);
