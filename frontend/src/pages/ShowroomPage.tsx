@@ -1,4 +1,5 @@
 ﻿import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ArrowUpRight,
   Search,
@@ -8,11 +9,9 @@ import {
   Check,
   X,
   ChevronDown,
-  ExternalLink,
 } from 'lucide-react';
 import type { ShowroomStudy } from '../features/showroom/data';
 import {
-  OFFICIAL_LAMBORGHINI_DEALERSHIPS,
   filterShowrooms,
   validateAppointmentForm,
 } from '../features/showroom/data';
@@ -23,7 +22,8 @@ import { adaptShowroomToUI } from '../features/showroom/types';
 import { ScrollToTop } from '../components/feedback';
 
 export default function ShowroomPage() {
-  // API hook
+  const navigate = useNavigate();
+  
   const { data: apiShowrooms, isLoading, isError } = useShowroom();
 
   // Filter state
@@ -37,7 +37,7 @@ export default function ShowroomPage() {
 
   // Appointment section state
   const [appointmentService, setAppointmentService] = useState('Sales consultation');
-  const [appointmentDate, setAppointmentDate] = useState('2026-11-20');
+  const [appointmentDate, setAppointmentDate] = useState('');
   const [appointmentEmail, setAppointmentEmail] = useState('');
   const [appointmentErrors, setAppointmentErrors] = useState<Record<string, string>>({});
   const [appointmentSuccess, setAppointmentSuccess] = useState(false);
@@ -51,51 +51,40 @@ export default function ShowroomPage() {
     return apiShowrooms ? apiShowrooms.map(adaptShowroomToUI) : [];
   }, [apiShowrooms]);
 
-  // Active showrooms source: prefer API data if available, fallback to default dataset
-  const activeShowrooms = useMemo(() => {
-    return apiShowroomsUI.length > 0 ? apiShowroomsUI : OFFICIAL_LAMBORGHINI_DEALERSHIPS;
+  const availableCities = useMemo(() => {
+    return Array.from(new Set(apiShowroomsUI.map((s) => s.city))).filter(Boolean);
   }, [apiShowroomsUI]);
 
-  // Auto select first showroom when dataset loads
-  useEffect(() => {
-    if (activeShowrooms.length > 0) {
-      const exists = activeShowrooms.some((s) => s.id === selectedShowroomId);
-      if (!exists) {
-        setSelectedShowroomId(activeShowrooms[0].id);
-      }
-    }
-  }, [activeShowrooms, selectedShowroomId]);
-
-  // Available cities & countries from active dataset
-  const availableCities = useMemo(() => {
-    return Array.from(new Set(activeShowrooms.map((s) => s.city))).filter(Boolean);
-  }, [activeShowrooms]);
-
   const availableCountries = useMemo(() => {
-    return Array.from(new Set(activeShowrooms.map((s) => s.country))).filter(Boolean);
-  }, [activeShowrooms]);
+    return Array.from(new Set(apiShowroomsUI.map((s) => s.country))).filter(Boolean);
+  }, [apiShowroomsUI]);
 
-  // Filtered showrooms from active dataset
   const filteredList = useMemo(() => {
     return filterShowrooms(
-      activeShowrooms,
+      apiShowroomsUI,
       searchLocation,
       selectedCountry,
       selectedCity === 'All' ? 'All' : selectedCity
     );
-  }, [activeShowrooms, searchLocation, selectedCountry, selectedCity]);
+  }, [apiShowroomsUI, searchLocation, selectedCountry, selectedCity]);
 
-  const displayShowrooms = filteredList.length > 0 ? filteredList : activeShowrooms;
+  const displayShowrooms = filteredList;
 
-  // Selected showroom object
   const currentSelectedShowroom = useMemo(() => {
     return (
-      activeShowrooms.find((s) => s.id === selectedShowroomId) ||
-      displayShowrooms[0] ||
-      activeShowrooms[0] ||
-      OFFICIAL_LAMBORGHINI_DEALERSHIPS[0]
+      apiShowroomsUI.find((s) => s.id === selectedShowroomId) ||
+      displayShowrooms[0]
     );
-  }, [activeShowrooms, selectedShowroomId, displayShowrooms]);
+  }, [apiShowroomsUI, selectedShowroomId, displayShowrooms]);
+
+  useEffect(() => {
+    if (apiShowroomsUI.length > 0) {
+      const exists = apiShowroomsUI.some((s) => s.id === selectedShowroomId);
+      if (!exists) {
+        setSelectedShowroomId(apiShowroomsUI[0].id);
+      }
+    }
+  }, [apiShowroomsUI, selectedShowroomId]);
 
   const handleSearchClick = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,8 +94,8 @@ export default function ShowroomPage() {
   };
 
   const handleUseMyLocation = () => {
-    if (activeShowrooms.length > 0) {
-      const target = activeShowrooms[0];
+    if (apiShowroomsUI.length > 0) {
+      const target = apiShowroomsUI[0];
       setSearchLocation(target.city);
       setSelectedCountry(target.country);
       setSelectedCity(target.city);
@@ -226,8 +215,6 @@ export default function ShowroomPage() {
                         {c}
                       </option>
                     ))}
-                    {!availableCountries.includes('Vietnam') && <option value="Vietnam">Vietnam</option>}
-                    {!availableCountries.includes('Italy') && <option value="Italy">Italy</option>}
                   </select>
                   <ChevronDown className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
@@ -249,7 +236,7 @@ export default function ShowroomPage() {
                       setSelectedCity(val);
                       if (val !== 'All') {
                         setSearchLocation(val);
-                        const match = activeShowrooms.find(
+                        const match = apiShowroomsUI.find(
                           (d) => d.city.toLowerCase() === val.toLowerCase()
                         );
                         if (match) setSelectedShowroomId(match.id);
@@ -292,22 +279,10 @@ export default function ShowroomPage() {
                   <ArrowUpRight className="w-4 h-4 text-lambo-primary" />
                 </button>
               </div>
-
-              {/* Direct link to user's requested URL: https://www.lamborghini.com/en-en/dealerships#showroom,63540 */}
-              <a
-                href="https://www.lamborghini.com/en-en/dealerships#showroom,63540"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-[#8e826b] hover:text-lambo-primary flex items-center gap-1.5 transition-colors"
-              >
-                <span>Official Locator: lamborghini.com (#63540)</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
             </div>
 
             <p className="text-[11px] text-[#6b6455] leading-relaxed pt-1">
               Design adaptation: the live locator and its results were not independently verified.
-              All showroom records below are clearly marked placeholders.
             </p>
           </form>
         </section>
@@ -343,7 +318,9 @@ export default function ShowroomPage() {
           <div
             className="font-barlow pb-3 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-[#8e826b]"
           >
-            {activeTab === 'map' ? `${displayShowrooms.length} SHOWROOMS FOUND` : `${displayShowrooms.length} LOCATIONS`}
+            {activeTab === 'map'
+              ? `${displayShowrooms.length} ${displayShowrooms.length === 1 ? 'SHOWROOM' : 'SHOWROOMS'} FOUND`
+              : `${displayShowrooms.length} ${displayShowrooms.length === 1 ? 'LOCATION' : 'LOCATIONS'}`}
           </div>
         </div>
 
@@ -355,23 +332,38 @@ export default function ShowroomPage() {
             ========================================================================= */}
         {activeTab === 'map' ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
-            {/* Left Column (7 cols): Showroom Map + Architecture Photo */}
             <div className="lg:col-span-7 flex flex-col gap-6">
-              {/* The Map Box: displaying all active showrooms with live coordinates */}
-              <ShowroomBoxMap
-                showrooms={activeShowrooms}
-                selectedShowroomId={currentSelectedShowroom.id}
-                onSelectShowroom={handleSelectShowroom}
-                onRequestAppointment={(showroom) => {
-                  handleSelectShowroom(showroom);
-                  scrollToAppointment();
-                }}
-              />
+              {isLoading && (
+                <div className="flex items-center justify-center p-10 bg-[#0b0a08] border border-[#2b2518]">
+                  <div className="w-12 h-12 border-4 border-lambo-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+              
+              {isError && (
+                <div className="p-6 bg-[#1a0a0a] border border-red-900 text-red-400 text-center">
+                  <p>Không lấy được danh sách showroom</p>
+                </div>
+              )}
 
+              {!isLoading && !isError && apiShowroomsUI.length === 0 && (
+                <div className="p-6 bg-[#0b0a08] border border-[#2b2518] text-[#999] text-center">
+                  <p>Không có dữ liệu showroom</p>
+                </div>
+              )}
 
+              {!isLoading && !isError && apiShowroomsUI.length > 0 && (
+                <ShowroomBoxMap
+                  showrooms={apiShowroomsUI}
+                  selectedShowroomId={currentSelectedShowroom?.id || ''}
+                  onSelectShowroom={handleSelectShowroom}
+                  onRequestAppointment={(showroom) => {
+                    handleSelectShowroom(showroom);
+                    scrollToAppointment();
+                  }}
+                />
+              )}
             </div>
 
-            {/* Right Column (5 cols): Showroom Cards with Scroll */}
             <div className="lg:col-span-5 flex flex-col">
               {isLoading && (
                 <div className="flex items-center justify-center p-10">
@@ -381,7 +373,19 @@ export default function ShowroomPage() {
               
               {isError && (
                 <div className="p-6 bg-[#1a0a0a] border border-red-900 text-red-400 text-center">
-                  <p>Không thể tải danh sách showroom</p>
+                  <p>Không lấy được danh sách showroom</p>
+                </div>
+              )}
+
+              {!isLoading && !isError && apiShowroomsUI.length === 0 && (
+                <div className="p-6 bg-[#0b0a08] border border-[#2b2518] text-[#999] text-center">
+                  <p>Không có dữ liệu showroom</p>
+                </div>
+              )}
+
+              {!isLoading && !isError && displayShowrooms.length === 0 && apiShowroomsUI.length > 0 && (
+                <div className="p-6 bg-[#0b0a08] border border-[#2b2518] text-[#999] text-center">
+                  <p>Không có showroom phù hợp</p>
                 </div>
               )}
 
@@ -461,7 +465,7 @@ export default function ShowroomPage() {
         >
           {/* Sub-tag */}
           <div className="text-[11px] sm:text-xs font-bold tracking-[0.24em] text-lambo-primary uppercase mb-3">
-            SELECTED LOCATION / {currentSelectedShowroom.city.toUpperCase()} — SAMPLE
+            SELECTED LOCATION / {currentSelectedShowroom?.city.toUpperCase() || 'N/A'}
           </div>
 
           {/* Headline */}
@@ -475,7 +479,6 @@ export default function ShowroomPage() {
           <p className="text-sm text-[#999] max-w-3xl leading-relaxed mb-8">
             Discuss the range, explore Ad Personam materials or ask about ownership and service.
             Address, opening hours and contact details will be confirmed by the selected showroom.
-            No phone number is fabricated for this study.
           </p>
 
           {/* Form Rows */}
@@ -561,10 +564,10 @@ export default function ShowroomPage() {
             {appointmentSuccess && (
               <div className="p-4 bg-lambo-dark-light border border-lambo-primary flex items-center gap-3 animate-fadeIn">
                 <Check className="w-5 h-5 text-lambo-primary shrink-0" />
-                <p className="text-xs text-white">
+                  <p className="text-xs text-white">
                   Thank you. Your consultation request for{' '}
                   <span className="text-lambo-primary font-semibold">
-                    {currentSelectedShowroom.name}
+                    {currentSelectedShowroom?.name}
                   </span>{' '}
                   ({appointmentService}) on {appointmentDate} has been recorded.
                 </p>
@@ -583,7 +586,7 @@ export default function ShowroomPage() {
 
               <button
                 type="button"
-                onClick={() => alert('Chức năng đang phát triển')}
+                onClick={() => navigate('/contact')}
                 className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-white border border-[#3d331f] hover:border-lambo-primary bg-black hover:bg-lambo-primary/10 transition-colors flex items-center gap-2 cursor-pointer font-barlow"
               >
                 <span>CONTACT CUSTOMER CARE</span>
@@ -592,7 +595,7 @@ export default function ShowroomPage() {
             </div>
 
             <p className="text-[11px] text-[#6b6455] leading-relaxed pt-1">
-              Static appointment design. No booking is made and no personal information is sent.
+              Static appointment design. No booking is made.
             </p>
           </form>
         </section>
@@ -607,7 +610,7 @@ export default function ShowroomPage() {
           <div className="relative min-h-[380px] sm:min-h-[460px] flex flex-col justify-between p-8 sm:p-14 border border-[#2b2518]">
             {/* Background Image & Gradient */}
             <img
-              src="/images/showroom-architecture.jpg"
+              src="/about-brand/closing-campaign.jpg"
               alt="Showroom Twilight Concept"
               className="absolute inset-0 w-full h-full object-cover object-center z-0 brightness-75"
             />
@@ -629,7 +632,7 @@ export default function ShowroomPage() {
               </h2>
 
               <button
-                onClick={() => alert('Chức năng đang phát triển')}
+                onClick={() => navigate('/contact')}
                 className="py-3 px-6 text-xs font-bold uppercase tracking-[0.18em] text-lambo-bold-black bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed transition-colors flex items-center gap-2 cursor-pointer font-barlow"
               >
                 <span>MAKE AN ENQUIRY</span>
@@ -644,8 +647,8 @@ export default function ShowroomPage() {
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer"
               >
-                <span>SCROLL TO EXPLORE</span>
-                <span>↓</span>
+                <span>BACK TO TOP</span>
+                <span>↑</span>
               </button>
             </div>
           </div>
@@ -656,8 +659,14 @@ export default function ShowroomPage() {
           8. SHOWROOM DETAILS MODAL
           ========================================================================= */}
       {detailsModalOpen && detailShowroom && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-[#0e0d0b] border border-[#383020] p-6 sm:p-8">
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 animate-fadeIn"
+          onClick={() => setDetailsModalOpen(false)}
+        >
+          <div 
+            className="relative w-full max-w-lg bg-[#0e0d0b] border border-[#383020] p-6 sm:p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-4 border-b border-[#242017] mb-6">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-wider text-lambo-primary">
@@ -739,9 +748,10 @@ export default function ShowroomPage() {
                   setDetailsModalOpen(false);
                   scrollToAppointment();
                 }}
-                className="flex-1 py-3 bg-lambo-primary text-black font-bold uppercase text-xs tracking-wider text-center cursor-pointer hover:bg-lambo-hover active:bg-lambo-pressed transition-colors font-barlow"
+                className="flex-1 py-3 bg-lambo-primary text-black font-bold uppercase text-xs tracking-wider text-center cursor-pointer hover:bg-lambo-hover active:bg-lambo-pressed transition-colors font-barlow flex items-center justify-center gap-1.5"
               >
-                REQUEST APPOINTMENT ↗
+                <span>REQUEST APPOINTMENT</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setDetailsModalOpen(false)}

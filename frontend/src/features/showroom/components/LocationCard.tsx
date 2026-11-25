@@ -37,7 +37,7 @@ export const LocationCard: React.FC<LocationCardProps> = ({
       <div className="space-y-2.5">
         {/* 1. Category / Sub-tag */}
         <div className="text-[10px] sm:text-[11px] font-bold tracking-[0.22em] text-lambo-primary uppercase font-barlow">
-          {isSelected ? 'SELECTED / SAMPLE LOCATION' : 'SAMPLE LOCATION'}
+          {isSelected ? 'SELECTED SHOWROOM' : 'OFFICIAL SHOWROOM'}
         </div>
 
         {/* 2. Showroom Title */}
@@ -47,13 +47,15 @@ export const LocationCard: React.FC<LocationCardProps> = ({
 
         {/* 3. Address / Description (Clean plain text, không emoji) */}
         <p className="text-xs text-[#a09d96] leading-relaxed font-light">
-          {showroom.address || showroom.description || 'Showroom address — to be confirmed. This is a placeholder location, not an official dealership listing.'}
+          {showroom.address || showroom.description}
         </p>
 
         {/* 4. Services line */}
-        <div className="text-xs text-lambo-primary font-medium tracking-wide">
-          {showroom.services || 'Sales consultation · Personalization · Service enquiry'}
-        </div>
+        {showroom.services && (
+          <div className="text-xs text-lambo-primary font-medium tracking-wide">
+            {showroom.services}
+          </div>
+        )}
       </div>
 
       {/* 5. Action Button (Bám sát thiết kế: nút nền đen, viền vàng, chữ vàng, kích thước vừa vặn) */}
