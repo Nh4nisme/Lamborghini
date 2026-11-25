@@ -68,8 +68,9 @@ public class SecurityConfig {
                                 "/api/auth/google",
                                 "/api/auth/email-verification/**"
                         ).permitAll()
-                        .requestMatchers( // Công khai tạm thời cho taiKhoan (tất cả methods: GET, POST, PUT, DELETE,...)
-                                "/api/taikhoan/**"
+                        .requestMatchers( // Công khai tạm thời cho taiKhoan & profile
+                                "/api/taikhoan/**",
+                                "/api/profile/**"
                         ).permitAll()
                         .requestMatchers( // API công khai cho guest
                                 HttpMethod.GET,
@@ -79,6 +80,8 @@ public class SecurityConfig {
                                 "/api/configurator/**",
                                 "/api/brand/**",
                                 "/api/appointment/**",
+                                "/api/appointments/**",
+                                "/api/dealer/appointments/**",
                                 "/api/customer/**"
                         ).permitAll()
                         .requestMatchers( // Công khai cho guest
@@ -87,7 +90,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers( // Công khai tạm thời cho appointment update
                                 HttpMethod.PUT,
-                                "/api/appointment/**"
+                                "/api/appointment/**",
+                                "/api/appointments/**"
                         ).permitAll()
                         // theo vai trò
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
