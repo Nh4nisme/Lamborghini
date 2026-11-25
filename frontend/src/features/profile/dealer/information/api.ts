@@ -1,5 +1,5 @@
 import { http } from '../../../../api/http'
-import type { DealerProfileDTO } from './types'
+import type { ChangePasswordPayload, DealerProfileDTO } from './types'
 
 interface TaiKhoanResponse {
     maTaiKhoan: number
@@ -35,4 +35,10 @@ export const dealerProfileApi = {
             }),
         })
     },
+
+    changeDealerPassword: (payload: ChangePasswordPayload) =>
+        http('/dealer/profile/password', {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+        }),
 }

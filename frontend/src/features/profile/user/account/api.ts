@@ -13,7 +13,7 @@ interface TaiKhoanResponse {
 
 export const profileApi = {
     getProfile: async () => {
-        const response = await http<TaiKhoanResponse>('/taikhoan/users/10')
+        const response = await http<TaiKhoanResponse>('/profile')
         const [ho, ...tenParts] = response.hoTen.split(' ')
         return {
             maKhachHang: response.maTaiKhoan,
@@ -29,7 +29,7 @@ export const profileApi = {
     },
 
     updateProfile: (payload: CustomerProfileDTO) =>
-        http<TaiKhoanResponse>(`/taikhoan/users/${payload.maKhachHang}`, {
+        http<TaiKhoanResponse>(`/profile?id=${payload.maKhachHang}`, {
             method: 'PUT',
             body: JSON.stringify({
                 hoTen: `${payload.ho} ${payload.ten}`.trim(),

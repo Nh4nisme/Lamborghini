@@ -1,3 +1,11 @@
+export interface KhachHangLichHenResponse {
+    hoTenLienHe: string
+    emailLienHe: string
+    sdtLienHe: string
+    tenXe: string | null
+    thoiGianHen: string
+}
+
 export interface DealerCustomerDTO {
     maKhachHang: number
     maHoSo: string
