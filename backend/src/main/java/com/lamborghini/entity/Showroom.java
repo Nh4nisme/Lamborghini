@@ -49,5 +49,10 @@ public class Showroom {
     @JsonIgnore
     private List<LichHen> danhSachLichHen;
 
+    @OneToMany(mappedBy = "showroom")
+    @JsonIgnore
+    private List<NhanVien> danhSachNhanVien;
+
+
 
 }

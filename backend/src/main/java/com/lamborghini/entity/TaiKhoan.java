@@ -53,4 +53,8 @@ public class TaiKhoan {
     @JsonIgnore
     private KhachHang khachHang;
 
+    @OneToOne(mappedBy = "taiKhoan")
+    @JsonIgnore
+    private NhanVien nhanVien;
+
 }
