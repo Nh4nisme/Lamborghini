@@ -57,6 +57,58 @@
   }
 }
 
+/* ─── PRINT: Isolate spec sheet — hide everything, show only print area ─── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 15mm 16mm 15mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-family: Barlow, 'Noto Sans', Arial, sans-serif !important;
+  }
+
+  /* Hide the entire document except our print area */
+  body > * {
+    display: none !important;
+  }
+
+  /* Show only the React root, then hide its children except print area */
+  body > #root {
+    display: block !important;
+  }
+
+  body > #root > * {
+    display: none !important;
+  }
+
+  /* The dedicated print container rendered by SummaryModal */
+  #lambo-print-area {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    font-family: Barlow, 'Noto Sans', Arial, sans-serif !important;
+  }
+
+  /* Condensed headings */
+  #lambo-print-area .print-condensed {
+    font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif !important;
+  }
+
+  /* Suppress TanStack Devtools and any stray buttons */
+  .tsqd-parent-container,
+  button[aria-label*="TanStack"],
+  button[aria-label*="React Query"],
+  [data-tanstack-query-devtools] {
+    display: none !important;
+  }
+}
+
 /* Perspective utilities for 3D effects */
 .perspective-1000 {
   perspective: 1000px;

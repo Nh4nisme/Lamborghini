@@ -169,7 +169,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                       style={{ backgroundColor: color.hex }}
                     >
                       {isSelected && (
-                        <Check className="w-4 h-4 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] stroke-[2.5]" />
+                        <Check className="w-4 h-4 text-white stroke-[2.5]" />
                       )}
                     </button>
                   )
@@ -368,7 +368,11 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                         <div>
                           <div className="text-xs font-bold">{trim.name}</div>
                           <div className="text-[11px] text-neutral-400">
-                            {formatCurrency(trim.priceUSD, config.currency, config.language)}
+                            {formatCurrency(
+                              config.currency === 'VND' ? trim.priceVND : trim.priceUSD,
+                              config.currency,
+                              config.language
+                            )}
                           </div>
                         </div>
                       </div>

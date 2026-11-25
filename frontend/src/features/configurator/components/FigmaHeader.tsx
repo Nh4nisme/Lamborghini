@@ -27,26 +27,26 @@ export const FigmaHeader: React.FC<FigmaHeaderProps> = ({
 
   return (
     <header
-      className={`h-16 w-full flex items-center justify-between px-6 border-b transition-colors duration-200 select-none z-30 ${
+      className={`h-16 w-full flex items-center justify-between gap-4 px-4 lg:px-6 border-b transition-colors duration-200 select-none z-30 ${
         isLight
           ? 'bg-[#ffffff] border-[#e5e7eb] text-[#111111]'
           : 'bg-[#0a0b0d] border-[#1e2126] text-[#ffffff]'
       }`}
     >
       {/* Brand & Configurator Wordmark */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
         <div className="w-5 h-5 flex items-center justify-center text-lambo-primary">
           <Shield className="w-5 h-5 fill-lambo-primary/20 stroke-lambo-primary stroke-[1.8]" />
         </div>
         <div
-          className="text-lg font-extrabold uppercase tracking-[0.16em] font-barlow"
+          className="text-base lg:text-lg font-extrabold uppercase tracking-[0.16em] font-barlow"
         >
           REVUELTO <span className={isLight ? 'text-neutral-400 font-light' : 'text-neutral-600 font-light'}>/</span> CONFIGURATOR
         </div>
       </div>
 
       {/* Center 4 Stepper Tabs */}
-      <nav className="hidden md:flex items-center gap-8 lg:gap-12 text-xs font-bold uppercase tracking-[0.16em]">
+      <nav className="hidden md:flex items-center gap-4 lg:gap-8 xl:gap-12 text-xs font-bold uppercase tracking-[0.14em] lg:tracking-[0.16em] whitespace-nowrap">
         {steps.map((step) => {
           const isActive = currentStep === step;
           return (

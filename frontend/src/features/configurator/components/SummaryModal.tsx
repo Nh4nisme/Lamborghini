@@ -1,14 +1,202 @@
 import React, { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import type { CarConfiguration } from '../types'
 import { calculatePriceBreakdown, formatCurrency, generateConfigCode } from '../utils/pricing'
 import { playUiClick } from '../audio/engineAudio'
-import { X, Check, Copy, Printer, MapPin, Gauge, Zap, Award, Phone, Shield } from 'lucide-react'
+import { X, Check, Copy, Printer, MapPin, Phone } from 'lucide-react'
 
 interface SummaryModalProps {
     config: CarConfiguration
     isOpen: boolean
     onClose: () => void
+}
+
+interface SpecRow {
+    label: string
+    detail: string
+    price: number
+    zeroLabel: string
+    swatchHex?: string
+}
+
+// ─── Dedicated Print Document (rendered via portal, shown only @media print) ───
+const PrintArea: React.FC<{
+    config: CarConfiguration
+    specRows: SpecRow[]
+    breakdown: ReturnType<typeof calculatePriceBreakdown>
+    configCode: string
+    optionsTotal: number
+    issueDate: string
+    isVN: boolean
+}> = ({ config, specRows, breakdown, configCode, optionsTotal, issueDate, isVN }) => {
+    const left = specRows.filter((_, i) => i % 2 === 0)
+    const right = specRows.filter((_, i) => i % 2 !== 0)
+
+    return createPortal(
+        <div
+            id="lambo-print-area"
+            style={{
+                display: 'none',
+                fontFamily: "Barlow, Arial, sans-serif",
+                color: '#111',
+                background: '#fff',
+                width: '100%',
+            }}
+        >
+            {/* Force Barlow font available for print */}
+            <style>{`
+                #lambo-print-area { font-family: Barlow, Arial, sans-serif !important; }
+                #lambo-print-area .pc { font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif !important; }
+            `}</style>
+            {/* ── Header ── */}
+            <div style={{ borderBottom: '2px solid #D8A016', paddingBottom: 10, marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div>
+                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#6b7280', marginBottom: 4 }}>
+                        AUTOMOBILI LAMBORGHINI S.P.A.
+                    </div>
+                    <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: '0.03em', textTransform: 'uppercase', fontFamily: "Barlow Condensed, 'Arial Narrow', Arial, sans-serif", lineHeight: 1.1 }}>
+                        {isVN ? `BẢNG ĐẶC TẢ CẤU HÌNH · ${config.model.toUpperCase()}` : `CONFIGURATION SPECIFICATION · ${config.model.toUpperCase()}`}
+                    </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#6b7280' }}>
+                        {isVN ? 'NGÀY LẬP PHIẾU' : 'ISSUE DATE'}
+                    </div>
+                    <div style={{ fontSize: 11, fontWeight: 600, fontFamily: 'monospace', marginTop: 2 }}>{issueDate}</div>
+                </div>
+            </div>
+
+            {/* ── Performance Strip ── */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0 20px', paddingBottom: 12, marginBottom: 12, borderBottom: '1px solid #d1d5db' }}>
+                {[
+                    { label: isVN ? 'CÔNG SUẤT TỐI ĐA' : 'MAX. POWER', value: '1015 CV', sub: '6.5L V12 + 3 e-Motors' },
+                    { label: isVN ? 'TĂNG TỐC 0–100 KM/H' : 'ACCELERATION 0–100', value: '2.5 s', sub: 'Launch Control Corsa' },
+                    { label: isVN ? 'TỐC ĐỘ TỐI ĐA' : 'TOP SPEED', value: '> 350 km/h', sub: '217 mph aero mode' },
+                    { label: isVN ? 'HỘP SỐ TRUYỀN ĐỘNG' : 'TRANSMISSION', value: '8-Speed DCT', sub: isVN ? 'Ly hợp kép 8 cấp' : 'Dual-clutch transverse' },
+                ].map((m) => (
+                    <div key={m.label}>
+                        <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#6b7280', marginBottom: 3 }}>{m.label}</div>
+                        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "Barlow Condensed, 'Arial Narrow', Arial, sans-serif", lineHeight: 1 }}>{m.value}</div>
+                        <div style={{ fontSize: 9, color: '#6b7280', marginTop: 2 }}>{m.sub}</div>
+                    </div>
+                ))}
+            </div>
+
+            {/* ── Config Code ── */}
+            <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', padding: '8px 12px', marginBottom: 14 }}>
+                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#6b7280', marginBottom: 3 }}>
+                    {isVN ? 'MÃ CẤU HÌNH ĐẶC TẢ (LAMBORGHINI CODE)' : 'LAMBORGHINI CONFIGURATION CODE'}
+                </div>
+                <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, letterSpacing: '0.08em' }}>{configCode}</div>
+            </div>
+
+            {/* ── Spec Table Header ── */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6, marginBottom: 2, borderBottom: '1px solid #111' }}>
+                <div style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase' }}>
+                    {isVN ? 'CHI TIẾT TRANG BỊ & TÙY CHỌN' : 'SELECTED SPECIFICATIONS & OPTIONS'}
+                </div>
+                <div style={{ fontSize: 9, fontFamily: 'monospace', color: '#6b7280', textTransform: 'uppercase' }}>
+                    {isVN ? `${specRows.length} HẠNG MỤC` : `${specRows.length} ITEMS`}
+                </div>
+            </div>
+
+            {/* ── Spec Rows: 2-col table ── */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 12 }}>
+                <tbody>
+                    {Array.from({ length: Math.max(left.length, right.length) }).map((_, i) => {
+                        const l = left[i]
+                        const r = right[i]
+                        return (
+                            <tr key={i} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                                {/* left cell */}
+                                <td style={{ width: '50%', padding: '7px 10px 7px 0', verticalAlign: 'middle', borderRight: '1px solid #e5e7eb' }}>
+                                    {l && (
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                                                {l.swatchHex && (
+                                                    <span style={{ width: 11, height: 11, flexShrink: 0, backgroundColor: l.swatchHex, border: '1px solid #9ca3af', display: 'inline-block' }} />
+                                                )}
+                                                <div>
+                                                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{l.label}</div>
+                                                    <div style={{ fontSize: 8.5, color: '#6b7280', marginTop: 1 }}>{l.detail}</div>
+                                                </div>
+                                            </div>
+                                            <div style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: l.price > 0 ? 700 : 400, color: l.price > 0 ? '#111' : '#6b7280', whiteSpace: 'nowrap', paddingLeft: 8 }}>
+                                                {l.price === 0 ? l.zeroLabel : `+${formatCurrency(l.price, config.currency, config.language)}`}
+                                            </div>
+                                        </div>
+                                    )}
+                                </td>
+                                {/* right cell */}
+                                <td style={{ width: '50%', padding: '7px 0 7px 12px', verticalAlign: 'middle' }}>
+                                    {r && (
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                                                {r.swatchHex && (
+                                                    <span style={{ width: 11, height: 11, flexShrink: 0, backgroundColor: r.swatchHex, border: '1px solid #9ca3af', display: 'inline-block' }} />
+                                                )}
+                                                <div>
+                                                    <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{r.label}</div>
+                                                    <div style={{ fontSize: 8.5, color: '#6b7280', marginTop: 1 }}>{r.detail}</div>
+                                                </div>
+                                            </div>
+                                            <div style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: r.price > 0 ? 700 : 400, color: r.price > 0 ? '#111' : '#6b7280', whiteSpace: 'nowrap', paddingLeft: 8 }}>
+                                                {r.price === 0 ? r.zeroLabel : `+${formatCurrency(r.price, config.currency, config.language)}`}
+                                            </div>
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+
+            {/* ── Price Summary ── */}
+            <div style={{ borderTop: '1px solid #d1d5db', paddingTop: 10, marginBottom: 14 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280', marginBottom: 5 }}>
+                    <span style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>{isVN ? 'Giá tiêu chuẩn xe (Base MSRP)' : 'Base Vehicle MSRP'}</span>
+                    <span style={{ fontFamily: 'monospace' }}>{formatCurrency(breakdown.basePrice, config.currency, config.language)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#6b7280', marginBottom: 10 }}>
+                    <span style={{ textTransform: 'uppercase', letterSpacing: '0.1em' }}>{isVN ? 'Tổng trang bị tùy chọn (Options Total)' : 'Options Total'}</span>
+                    <span style={{ fontFamily: 'monospace' }}>+{formatCurrency(optionsTotal, config.currency, config.language)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '2px solid #111', paddingTop: 8 }}>
+                    <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "Barlow Condensed, 'Arial Narrow', Arial, sans-serif" }}>
+                        {isVN ? 'TỔNG GIÁ TRỊ DỰ KIẾN' : 'TOTAL ESTIMATED PRICE'}
+                    </span>
+                    <span style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 800 }}>
+                        {formatCurrency(breakdown.totalPrice, config.currency, config.language)}
+                    </span>
+                </div>
+            </div>
+
+            {/* ── Footer / Dealership ── */}
+            <div style={{ borderTop: '1px solid #d1d5db', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                    <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 2 }}>
+                        {isVN ? '⊕ ĐẠI LÝ ỦY QUYỀN CHÍNH THỨC LAMBORGHINI VIỆT NAM' : '⊕ OFFICIAL LAMBORGHINI AUTHORIZED DEALERSHIP'}
+                    </div>
+                    <div style={{ fontSize: 8.5, color: '#6b7280' }}>
+                        {isVN
+                            ? 'Showroom TP. Hồ Chí Minh · Quận 7  /  Showroom Hà Nội · Quận Hoàn Kiếm'
+                            : 'Via Modena 12, Sant\'Agata Bolognese (BO), Italy'}
+                    </div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 8, color: '#9ca3af', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                        {isVN ? 'Giá tham khảo, chưa bao gồm thuế và phí' : 'Estimated price, taxes & fees not included'}
+                    </div>
+                    <div style={{ fontSize: 8, color: '#9ca3af', marginTop: 2 }}>
+                        automobili-lamborghini.com
+                    </div>
+                </div>
+            </div>
+        </div>,
+        document.body
+    )
 }
 
 export const SummaryModal: React.FC<SummaryModalProps> = ({
@@ -23,6 +211,7 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
 
     const breakdown = calculatePriceBreakdown(config)
     const configCode = generateConfigCode(config)
+    const isVN = config.currency === 'VND' || config.language === 'VIE'
 
     const copyConfigCode = () => {
         navigator.clipboard.writeText(configCode)
@@ -35,370 +224,305 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
         window.print()
     }
 
-    const isVN = config.currency === 'VND' || config.language === 'VIE'
+    const specRows: SpecRow[] = [
+        {
+            label: isVN ? 'Màu sơn ngoại thất' : 'Exterior Paint',
+            detail: `${config.exteriorColor.name} · ${config.exteriorColor.finish.toUpperCase()}`,
+            price: breakdown.exteriorColorPrice,
+            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+            swatchHex: config.exteriorColor.hex,
+        },
+        {
+            label: isVN ? 'Mâm xe' : 'Wheels',
+            detail: `${config.rim.name} · ${config.rim.size}`,
+            price: breakdown.rimPrice,
+            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+        },
+        {
+            label: isVN ? 'Kẹp phanh' : 'Brake Calipers',
+            detail: config.caliper.name,
+            price: breakdown.caliperPrice,
+            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+            swatchHex: config.caliper.hex,
+        },
+        {
+            label: isVN ? 'Gói khí động học dưới' : 'Lower Aerodynamic Package',
+            detail: config.carbonLower.replace('_', ' ').toUpperCase(),
+            price: breakdown.carbonLowerPrice,
+            zeroLabel: isVN ? 'Đã bao gồm' : 'Included',
+        },
+        {
+            label: isVN ? 'Mui & gương Carbon' : 'Upper Carbon Roof & Mirrors',
+            detail: config.carbonUpper.replace('_', ' ').toUpperCase(),
+            price: breakdown.carbonUpperPrice,
+            zeroLabel: isVN ? 'Đã bao gồm' : 'Included',
+        },
+        {
+            label: isVN ? 'Hệ thống ống xả' : 'Exhaust Tailpipes',
+            detail: config.exhaust.replace('_', ' ').toUpperCase(),
+            price: breakdown.exhaustPrice,
+            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+        },
+        {
+            label: isVN ? 'Chất liệu & đường chỉ nội thất' : 'Cockpit Leather & Stitching',
+            detail: config.interiorTrim.name,
+            price: breakdown.interiorTrimPrice,
+            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+        },
+        {
+            label: isVN ? 'Vô lăng & táp-lô Carbon' : 'Carbon Steering & Corsa Dash',
+            detail: config.carbonInterior
+                ? (isVN ? 'Tích hợp đèn chuyển số F1' : 'F1 Shift LEDs Equipped')
+                : (isVN ? 'Tiêu chuẩn' : 'Standard'),
+            price: breakdown.carbonInteriorPrice,
+            zeroLabel: isVN ? 'Không' : 'No',
+        },
+    ]
+
+    const optionsTotal = breakdown.totalPrice - breakdown.basePrice
+    const issueDate = new Date().toLocaleDateString(isVN ? 'vi-VN' : 'en-GB')
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-md select-none overflow-y-auto">
-            {/* Modal Container: Angular, Sharp, Dark Luxury */}
-            <div className="relative w-full max-w-4xl bg-lambo-bold-black border border-white/15 shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden my-auto text-white rounded-none">
-                {/* 1. Header Bar: Official Lamborghini Title */}
-                <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-lambo-dark-light">
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center justify-center w-8 h-8 border border-lambo-primary/40 bg-lambo-primary/10 text-lambo-primary">
-                            <Shield className="w-4 h-4 fill-lambo-primary/20" />
-                        </div>
+        <>
+            {/* ── Dedicated print-only layout (portal → document.body) ── */}
+            <PrintArea
+                config={config}
+                specRows={specRows}
+                breakdown={breakdown}
+                configCode={configCode}
+                optionsTotal={optionsTotal}
+                issueDate={issueDate}
+                isVN={isVN}
+            />
+
+            {/* ── On-screen modal (unchanged dark UI) ── */}
+            <div
+                role="dialog"
+                aria-modal="true"
+                className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 select-none overflow-y-auto"
+                onClick={onClose}
+            >
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="relative w-full max-w-4xl bg-[#101110] border border-[#2d302b] overflow-hidden my-auto text-[#f5f5f1]"
+                >
+                    {/* 1. Header */}
+                    <div className="flex items-start justify-between px-6 sm:px-8 py-6 border-b border-[#242623]">
                         <div>
-                            <span className="block text-[10px] font-extrabold uppercase tracking-[0.25em] text-neutral-400 font-barlow">
+                            <span className="block text-[11px] font-semibold uppercase tracking-[0.22em] text-[#9ea39b]">
                                 AUTOMOBILI LAMBORGHINI S.P.A.
                             </span>
-                            <h2
-                                className="text-xl md:text-2xl font-black uppercase tracking-[0.06em] text-white font-barlow leading-none mt-0.5"
-                            >
+                            <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-[0.04em] text-[#f5f5f1] font-barlow leading-tight mt-1">
                                 {isVN
                                     ? `BẢNG ĐẶC TẢ CẤU HÌNH · ${config.model.toUpperCase()}`
-                                    : `OFFICIAL CONFIGURATION SHEET · ${config.model.toUpperCase()}`}
+                                    : `CONFIGURATION SPECIFICATION · ${config.model.toUpperCase()}`}
                             </h2>
                         </div>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                onClose()
+                                playUiClick()
+                            }}
+                            className="p-2 text-[#9ea39b] hover:text-white transition-colors cursor-pointer"
+                            aria-label={isVN ? 'Đóng' : 'Close'}
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={() => {
-                            onClose()
-                            playUiClick()
-                        }}
-                        className="p-2 border border-white/10 text-neutral-400 hover:text-white hover:border-lambo-primary hover:bg-white/5 transition-colors cursor-pointer"
-                        aria-label="Close"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* 2. Modal Body */}
-                <div className="p-6 md:p-8 flex flex-col gap-6 max-h-[78vh] overflow-y-auto">
-                    {/* Performance Metrics Matrix (Cockpit Corsa Grid) */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 border border-white/10 bg-[#0d0f14]">
-                        <div className="p-4 border-b lg:border-b-0 border-r border-white/10 flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Gauge className="w-3.5 h-3.5 text-lambo-primary" />
-                                <span>{isVN ? 'CÔNG SUẤT TỐI ĐA' : 'MAX. POWER'}</span>
-                            </div>
-                            <div className="text-2xl font-black text-white font-barlow mt-1.5 tracking-tight">
-                                1015 CV
-                            </div>
-                            <div className="text-[10px] text-neutral-400 font-light mt-0.5">
-                                6.5L V12 + 3 e-Motors (HPEV)
-                            </div>
-                        </div>
-
-                        <div className="p-4 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Zap className="w-3.5 h-3.5 text-lambo-primary" />
-                                <span>{isVN ? 'TĂNG TỐC 0-100 KM/H' : 'ACCELERATION'}</span>
-                            </div>
-                            <div className="text-2xl font-black text-lambo-primary font-barlow mt-1.5 tracking-tight">
-                                2.5 s
-                            </div>
-                            <div className="text-[10px] text-neutral-400 font-light mt-0.5">
-                                Launch Control Corsa
-                            </div>
-                        </div>
-
-                        <div className="p-4 border-r border-white/10 flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Award className="w-3.5 h-3.5 text-lambo-primary" />
-                                <span>{isVN ? 'TỐC ĐỘ TỐI ĐA' : 'TOP SPEED'}</span>
-                            </div>
-                            <div className="text-2xl font-black text-white font-barlow mt-1.5 tracking-tight">
-                                &gt; 350 km/h
-                            </div>
-                            <div className="text-[10px] text-neutral-400 font-light mt-0.5">
-                                217 mph aero mode
-                            </div>
-                        </div>
-
-                        <div className="p-4 flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 font-barlow">
-                                <Award className="w-3.5 h-3.5 text-lambo-primary" />
-                                <span>{isVN ? 'HỘP SỐ TRUYỀN ĐỘNG' : 'TRANSMISSION'}</span>
-                            </div>
-                            <div className="text-xl font-black text-white font-barlow mt-1.5 tracking-tight">
-                                8-Speed DCT
-                            </div>
-                            <div className="text-[10px] text-neutral-400 font-light mt-0.5">
-                                Ly hợp kép 8 cấp ngang
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Lamborghini Code Bar */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 bg-[#111217] border border-white/10">
-                        <div>
-                            <span className="block text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400 font-barlow">
-                                {isVN ? 'MÃ CẤU HÌNH ĐẶC TẢ (LAMBORGHINI CODE)' : 'BESPOKE CONFIGURATION CODE'}
-                            </span>
-                            <span className="font-mono text-base md:text-lg font-bold text-lambo-primary tracking-wider">
-                                {configCode}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <button
-                                type="button"
-                                onClick={copyConfigCode}
-                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 border border-white/20 hover:border-lambo-primary hover:bg-white/5 text-xs font-bold uppercase tracking-wider text-neutral-200 transition-colors cursor-pointer font-barlow"
-                            >
-                                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                                <span>{copied ? (isVN ? 'ĐÃ SAO CHÉP' : 'COPIED') : (isVN ? 'SAO CHÉP MÃ' : 'COPY CODE')}</span>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={printSpecSheet}
-                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 border border-white/20 hover:border-white text-xs font-bold uppercase tracking-wider text-neutral-300 transition-colors cursor-pointer font-barlow"
-                            >
-                                <Printer className="w-3.5 h-3.5" />
-                                <span>{isVN ? 'IN BẢNG BÁO GIÁ' : 'PRINT SHEET'}</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Detailed Options Table */}
-                    <div className="flex flex-col gap-3">
-                        <div className="flex items-center justify-between pb-2 border-b border-lambo-primary/30">
-                            <h3
-                                className="text-xs md:text-sm font-extrabold uppercase tracking-[0.16em] text-white font-barlow"
-                            >
-                                {isVN ? 'CHI TIẾT TRANG BỊ VÀ TÙY CHỌN BỔ SUNG' : 'SELECTED SPECIFICATIONS & OPTIONS'}
-                            </h3>
-                            <span className="text-[10px] font-mono text-neutral-400 uppercase">
-                                8 SELECTED ITEMS
-                            </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                            {/* Exterior Color */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div
-                                        className="w-4 h-4 rounded-full border border-white/50 shrink-0"
-                                        style={{ backgroundColor: config.exteriorColor.hex }}
-                                    />
-                                    <div>
-                                        <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                            {config.exteriorColor.name}
-                                        </div>
-                                        <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                            {config.exteriorColor.finish} · {config.exteriorColor.category}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.exteriorColorPrice === 0
-                                        ? (isVN ? 'Tiêu chuẩn' : 'Standard')
-                                        : formatCurrency(breakdown.exteriorColorPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Rims */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div>
-                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                        {config.rim.name}
-                                    </div>
-                                    <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                        {config.rim.size} · {config.rim.finish}
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {formatCurrency(breakdown.rimPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Calipers */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div
-                                        className="w-3.5 h-3.5 border border-white/40 shrink-0"
-                                        style={{ backgroundColor: config.caliper.hex }}
-                                    />
-                                    <div>
-                                        <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                            Carbon Ceramic Calipers
-                                        </div>
-                                        <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                            {config.caliper.name}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.caliperPrice === 0
-                                        ? (isVN ? 'Tiêu chuẩn' : 'Standard')
-                                        : formatCurrency(breakdown.caliperPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Lower Carbon */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div>
-                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                        Lower Aerodynamic Package
-                                    </div>
-                                    <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                        {config.carbonLower.replace('_', ' ').toUpperCase()}
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.carbonLowerPrice === 0
-                                        ? (isVN ? 'Đã bao gồm' : 'Included')
-                                        : formatCurrency(breakdown.carbonLowerPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Upper Carbon */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div>
-                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                        Upper Carbon Roof & Mirrors
-                                    </div>
-                                    <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                        {config.carbonUpper.replace('_', ' ').toUpperCase()}
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.carbonUpperPrice === 0
-                                        ? (isVN ? 'Đã bao gồm' : 'Included')
-                                        : formatCurrency(breakdown.carbonUpperPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Exhaust */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div>
-                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                        Exhaust Tailpipes
-                                    </div>
-                                    <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                        {config.exhaust.replace('_', ' ').toUpperCase()}
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.exhaustPrice === 0
-                                        ? (isVN ? 'Tiêu chuẩn' : 'Standard')
-                                        : formatCurrency(breakdown.exhaustPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Interior Trim */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div>
-                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                        Cockpit Leather & Stitching
-                                    </div>
-                                    <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                        {config.interiorTrim.name}
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.interiorTrimPrice === 0
-                                        ? (isVN ? 'Tiêu chuẩn' : 'Standard')
-                                        : formatCurrency(breakdown.interiorTrimPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-
-                            {/* Carbon Interior */}
-                            <div className="flex items-center justify-between p-3 bg-lambo-dark-light border border-white/10 hover:border-white/20 transition-colors">
-                                <div>
-                                    <div className="font-bold text-white uppercase tracking-wider font-barlow">
-                                        Carbon Steering & Corsa Dash
-                                    </div>
-                                    <div className="text-[10px] text-neutral-400 uppercase tracking-wide">
-                                        {config.carbonInterior ? 'F1 Shift LEDs Equipped' : (isVN ? 'Tiêu chuẩn' : 'Standard')}
-                                    </div>
-                                </div>
-                                <div className="font-mono font-bold text-lambo-primary whitespace-nowrap ml-2">
-                                    {breakdown.carbonInteriorPrice === 0
-                                        ? (isVN ? 'Không' : 'No')
-                                        : formatCurrency(breakdown.carbonInteriorPrice, config.currency, config.language)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Pricing Breakdown Summary */}
-                    <div className="p-5 bg-lambo-dark-light border border-white/10 flex flex-col gap-2.5">
-                        <div className="flex items-center justify-between text-xs text-neutral-400">
-                            <span className="uppercase tracking-wider">
-                                {isVN ? 'Giá Tiêu Chuẩn Xe (Base MSRP)' : 'Base Vehicle MSRP'}
-                            </span>
-                            <span className="font-mono text-neutral-200 font-semibold">
-                                {formatCurrency(breakdown.basePrice, config.currency, config.language)}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs text-neutral-400">
-                            <span className="uppercase tracking-wider">
-                                {isVN ? 'Tổng Trang Bị Tùy Chọn (Options Total)' : 'Custom Equipment & Options'}
-                            </span>
-                            <span className="font-mono text-lambo-primary font-semibold">
-                                +{formatCurrency(breakdown.totalPrice - breakdown.basePrice, config.currency, config.language)}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-3 border-t border-white/15">
-                            <span
-                                className="text-sm md:text-base font-black text-white uppercase tracking-[0.14em] font-barlow"
-                            >
-                                {isVN ? 'TỔNG GIÁ TRỊ DỰ KIẾN (TOTAL MSRP)' : 'TOTAL ESTIMATED PRICE'}
-                            </span>
-                            <span className="font-mono text-lambo-primary text-xl md:text-2xl font-black">
-                                {formatCurrency(breakdown.totalPrice, config.currency, config.language)}
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Authorized Retailer Banner & Action Buttons */}
-                    <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 p-5 bg-lambo-dark-light border border-lambo-primary/30">
-                        <div className="flex items-start gap-3">
-                            <MapPin className="w-5 h-5 text-lambo-primary shrink-0 mt-0.5" />
+                    {/* 2. Body */}
+                    <div className="px-6 sm:px-8 py-6 flex flex-col gap-7 max-h-[80vh] overflow-y-auto">
+                        {/* Performance Metrics Strip */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 py-4 border-b border-[#242623]">
                             <div>
-                                <div className="font-bold text-white uppercase tracking-wider text-xs font-barlow">
-                                    {isVN
-                                        ? 'ĐẠI LÝ ỦY QUYỀN CHÍNH THỨC LAMBORGHINI VIỆT NAM'
-                                        : 'OFFICIAL LAMBORGHINI AUTHORIZED DEALERSHIP'}
+                                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9ea39b]">
+                                    {isVN ? 'CÔNG SUẤT TỐI ĐA' : 'MAX. POWER'}
                                 </div>
-                                <div className="text-[11px] text-neutral-400 mt-0.5 leading-relaxed">
-                                    {isVN
-                                        ? 'Showroom TP. Hồ Chí Minh · Quận 7 / Showroom Hà Nội · Quận Hoàn Kiếm'
-                                        : 'Via Modena 12, Sant\'Agata Bolognese (BO), Italy / Global Concierge Network'}
+                                <div className="text-2xl font-bold text-[#f5f5f1] font-barlow mt-1">1015 CV</div>
+                                <div className="text-xs text-[#737770] mt-0.5">6.5L V12 + 3 e-Motors</div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9ea39b]">
+                                    {isVN ? 'TĂNG TỐC 0–100 KM/H' : 'ACCELERATION 0–100'}
+                                </div>
+                                <div className="text-2xl font-bold text-[#f5f5f1] font-barlow mt-1">2.5 s</div>
+                                <div className="text-xs text-[#737770] mt-0.5">Launch Control Corsa</div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9ea39b]">
+                                    {isVN ? 'TỐC ĐỘ TỐI ĐA' : 'TOP SPEED'}
+                                </div>
+                                <div className="text-2xl font-bold text-[#f5f5f1] font-barlow mt-1">&gt; 350 km/h</div>
+                                <div className="text-xs text-[#737770] mt-0.5">217 mph aero mode</div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9ea39b]">
+                                    {isVN ? 'HỘP SỐ' : 'TRANSMISSION'}
+                                </div>
+                                <div className="text-2xl font-bold text-[#f5f5f1] font-barlow mt-1">8-Speed DCT</div>
+                                <div className="text-xs text-[#737770] mt-0.5">
+                                    {isVN ? 'Ly hợp kép 8 cấp' : 'Dual-clutch transverse'}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 shrink-0">
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    onClose()
-                                    navigate('/showroom')
-                                }}
-                                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-5 py-3 border border-lambo-primary/50 hover:border-lambo-primary text-lambo-primary hover:bg-lambo-primary/10 text-xs font-extrabold uppercase tracking-[0.16em] transition-colors cursor-pointer font-barlow"
-                            >
-                                <MapPin className="w-3.5 h-3.5" />
-                                <span>{isVN ? 'XEM SHOWROOM' : 'FIND SHOWROOM'}</span>
-                            </button>
+                        {/* Configuration Code Row */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 bg-[#161816] border border-[#242623]">
+                            <div>
+                                <span className="block text-[11px] uppercase font-semibold tracking-[0.18em] text-[#9ea39b]">
+                                    {isVN ? 'MÃ CẤU HÌNH ĐẶC TẢ' : 'LAMBORGHINI CONFIGURATION CODE'}
+                                </span>
+                                <span className="font-mono text-base md:text-lg font-semibold text-lambo-primary tracking-wider mt-0.5 block">
+                                    {configCode}
+                                </span>
+                            </div>
 
-                            <a
-                                href="tel:+842838221888"
-                                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-6 py-3 bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-black text-xs font-black uppercase tracking-[0.16em] transition-all cursor-pointer shadow-lg active:scale-[0.98] font-barlow"
-                            >
-                                <Phone className="w-3.5 h-3.5" />
-                                <span>{isVN ? 'LIÊN HỆ ĐẶT XE' : 'CONTACT DEALER'}</span>
-                            </a>
+                            <div className="flex items-center gap-2.5">
+                                <button
+                                    type="button"
+                                    onClick={copyConfigCode}
+                                    className="flex items-center justify-center gap-2 px-4 py-2 border border-[#343831] hover:border-[#6b7068] text-xs font-semibold uppercase tracking-[0.12em] text-[#f5f5f1] transition-colors cursor-pointer"
+                                >
+                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                    <span>{copied ? (isVN ? 'ĐÃ SAO CHÉP' : 'COPIED') : (isVN ? 'SAO CHÉP MÃ' : 'COPY CODE')}</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={printSpecSheet}
+                                    className="flex items-center justify-center gap-2 px-4 py-2 border border-[#343831] hover:border-[#6b7068] text-xs font-semibold uppercase tracking-[0.12em] text-[#f5f5f1] transition-colors cursor-pointer"
+                                >
+                                    <Printer className="w-3.5 h-3.5" />
+                                    <span>{isVN ? 'IN BẢNG BÁO GIÁ' : 'PRINT SHEET'}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Specification Table */}
+                        <div>
+                            <div className="flex items-center justify-between pb-3 border-b border-[#2d302b]">
+                                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#f5f5f1]">
+                                    {isVN ? 'CHI TIẾT TRANG BỊ & TÙY CHỌN' : 'SELECTED SPECIFICATIONS & OPTIONS'}
+                                </h3>
+                                <span className="text-[11px] font-mono text-[#9ea39b] uppercase">
+                                    {isVN ? `${specRows.length} HẠNG MỤC` : `${specRows.length} ITEMS`}
+                                </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                                {specRows.map((row) => (
+                                    <div
+                                        key={row.label}
+                                        className="flex items-center justify-between py-3.5 border-b border-[#1f211e]"
+                                    >
+                                        <div className="flex items-center gap-3 min-w-0 pr-3">
+                                            {row.swatchHex && (
+                                                <span
+                                                    className="w-3.5 h-3.5 shrink-0 border border-white/30"
+                                                    style={{ backgroundColor: row.swatchHex }}
+                                                />
+                                            )}
+                                            <div className="min-w-0">
+                                                <div className="text-xs font-semibold text-[#f5f5f1] uppercase tracking-[0.06em] truncate">
+                                                    {row.label}
+                                                </div>
+                                                <div className="text-[11px] text-[#9ea39b] truncate mt-0.5">
+                                                    {row.detail}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            className={`font-mono text-xs whitespace-nowrap shrink-0 ${
+                                                row.price > 0
+                                                    ? 'font-semibold text-[#f5f5f1]'
+                                                    : 'text-[#737770]'
+                                            }`}
+                                        >
+                                            {row.price === 0
+                                                ? row.zeroLabel
+                                                : `+${formatCurrency(row.price, config.currency, config.language)}`}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Price Breakdown */}
+                        <div className="pt-2 flex flex-col gap-2.5">
+                            <div className="flex items-center justify-between text-xs text-[#9ea39b]">
+                                <span className="uppercase tracking-[0.12em]">
+                                    {isVN ? 'Giá tiêu chuẩn xe' : 'Base Vehicle MSRP'}
+                                </span>
+                                <span className="font-mono">
+                                    {formatCurrency(breakdown.basePrice, config.currency, config.language)}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-xs text-[#9ea39b]">
+                                <span className="uppercase tracking-[0.12em]">
+                                    {isVN ? 'Tổng trang bị tùy chọn' : 'Options Total'}
+                                </span>
+                                <span className="font-mono">
+                                    +{formatCurrency(optionsTotal, config.currency, config.language)}
+                                </span>
+                            </div>
+
+                            <div className="flex items-baseline justify-between pt-4 mt-1 border-t border-[#2d302b]">
+                                <span className="text-sm font-bold text-[#f5f5f1] uppercase tracking-[0.16em] font-barlow">
+                                    {isVN ? 'TỔNG GIÁ TRỊ DỰ KIẾN' : 'TOTAL ESTIMATED PRICE'}
+                                </span>
+                                <span className="font-mono text-lambo-primary text-2xl font-bold">
+                                    {formatCurrency(breakdown.totalPrice, config.currency, config.language)}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Retailer Info & CTA */}
+                        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pt-5 border-t border-[#242623]">
+                            <div className="flex items-start gap-3">
+                                <MapPin className="w-4 h-4 text-[#9ea39b] shrink-0 mt-0.5" />
+                                <div>
+                                    <div className="font-semibold text-[#f5f5f1] uppercase tracking-[0.08em] text-xs">
+                                        {isVN
+                                            ? 'ĐẠI LÝ ỦY QUYỀN CHÍNH THỨC LAMBORGHINI VIỆT NAM'
+                                            : 'OFFICIAL LAMBORGHINI AUTHORIZED DEALERSHIP'}
+                                    </div>
+                                    <div className="text-[11px] text-[#9ea39b] mt-0.5">
+                                        {isVN
+                                            ? 'Showroom TP. Hồ Chí Minh · Quận 7 / Showroom Hà Nội · Quận Hoàn Kiếm'
+                                            : 'Via Modena 12, Sant\'Agata Bolognese (BO), Italy'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 shrink-0">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        onClose()
+                                        navigate('/showroom')
+                                    }}
+                                    className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 border border-[#343831] hover:border-lambo-primary text-[#f5f5f1] hover:text-lambo-primary text-xs font-semibold uppercase tracking-[0.14em] transition-colors cursor-pointer"
+                                >
+                                    <MapPin className="w-3.5 h-3.5" />
+                                    <span>{isVN ? 'XEM SHOWROOM' : 'FIND SHOWROOM'}</span>
+                                </button>
+
+                                <a
+                                    href="tel:+842838221888"
+                                    className="flex-1 lg:flex-initial flex items-center justify-center gap-2 px-6 py-2.5 bg-lambo-primary hover:bg-lambo-hover text-[#101110] text-xs font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer"
+                                >
+                                    <Phone className="w-3.5 h-3.5" />
+                                    <span>{isVN ? 'LIÊN HỆ ĐẶT XE' : 'CONTACT DEALER'}</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

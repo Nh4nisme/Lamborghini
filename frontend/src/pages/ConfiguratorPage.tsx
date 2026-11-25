@@ -224,26 +224,28 @@ export default function ConfiguratorPage() {
 
     return (
         <div
-            className={`relative w-screen h-screen overflow-hidden flex flex-col justify-between transition-colors duration-200 select-none ${
+            className={`relative w-screen h-screen overflow-hidden flex flex-col justify-between transition-colors duration-200 select-none print:w-full print:h-auto print:overflow-visible print:bg-white print:text-black ${
                 isLight ? 'bg-[#f4f4f6] text-[#111111]' : 'bg-lambo-bold-black text-[#ffffff]'
             }`}
         >
             {/* 1. Top Header Bar */}
-            <FigmaHeader
-                currentStep={currentStep}
-                onSelectStep={(step) => {
-                    playUiClick()
-                    setCurrentStep(step)
-                }}
-                theme={theme}
-                onToggleTheme={handleToggleTheme}
-                isAudioMuted={isAudioMutedState}
-                onToggleAudio={handleToggleAudio}
-                onExit={() => setIsExitModalOpen(true)}
-            />
+            <div className="print:hidden">
+                <FigmaHeader
+                    currentStep={currentStep}
+                    onSelectStep={(step) => {
+                        playUiClick()
+                        setCurrentStep(step)
+                    }}
+                    theme={theme}
+                    onToggleTheme={handleToggleTheme}
+                    isAudioMuted={isAudioMutedState}
+                    onToggleAudio={handleToggleAudio}
+                    onExit={() => setIsExitModalOpen(true)}
+                />
+            </div>
 
             {/* 2. Main Middle Section: Left 3D Canvas + Right Configuration Panel */}
-            <div className="relative flex-1 flex flex-col lg:flex-row overflow-hidden w-full">
+            <div className="relative flex-1 flex flex-col lg:flex-row overflow-hidden w-full print:hidden">
                 {/* 2A. Left 3D Viewport Area */}
                 <div className="relative flex-1 h-full min-h-[350px] overflow-hidden">
                     {/* Three.js 3D Studio Scene */}
@@ -304,14 +306,16 @@ export default function ConfiguratorPage() {
             </div>
 
             {/* 3. Bottom Sticky Action Bar */}
-            <FigmaBottomBar
-                config={config}
-                currentStep={currentStep}
-                onNextStep={handleNextStep}
-                onSave={() => setIsSummaryOpen(true)}
-                onReset={handleResetConfig}
-                theme={theme}
-            />
+            <div className="print:hidden">
+                <FigmaBottomBar
+                    config={config}
+                    currentStep={currentStep}
+                    onNextStep={handleNextStep}
+                    onSave={() => setIsSummaryOpen(true)}
+                    onReset={handleResetConfig}
+                    theme={theme}
+                />
+            </div>
 
             {/* 4. Specification Sheet Modal */}
             <SummaryModal
@@ -322,12 +326,18 @@ export default function ConfiguratorPage() {
 
             {/* 5. Exit Confirmation Modal */}
             {isExitModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm select-none">
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 select-none"
+                    onClick={() => setIsExitModalOpen(false)}
+                >
                     <div
-                        className={`w-full max-w-md p-6 border shadow-2xl relative ${
+                        onClick={(e) => e.stopPropagation()}
+                        className={`w-full max-w-md p-6 border relative ${
                             isLight
-                                ? 'bg-white border-neutral-300 text-black'
-                                : 'bg-lambo-dark-light border-neutral-800 text-white'
+                                ? 'bg-white border-[#d9ddd4] text-[#171817]'
+                                : 'bg-[#101110] border-[#343831] text-[#f5f5f1]'
                         }`}
                     >
                         <button
