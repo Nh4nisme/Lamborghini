@@ -1,16 +1,34 @@
 import { Info, X } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '../../../../../components/ui/Button'
 import { Eyebrow } from '../../../../../components/ui/Eyebrow'
+import { dealerDetailApi } from '../../appointmentDetail/api'
 import type { DealerAppointmentDetailDTO } from '../../appointmentDetail/types'
 
 interface DealerAppointmentRefuseConfirmationProps {
     detail: DealerAppointmentDetailDTO
+    lyDoTuChoi: string
 }
 
-export function DealerAppointmentRefuseConfirmation({ detail }: DealerAppointmentRefuseConfirmationProps) {
+export function DealerAppointmentRefuseConfirmation({ detail, lyDoTuChoi }: DealerAppointmentRefuseConfirmationProps) {
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const goBackToDetail = () => navigate(`/profile/dealer/appointment/${detail.maLichHen}`)
+
+    const handleReject = async () => {
+        if (!lyDoTuChoi.trim()) return
+        
+        setIsSubmitting(true)
+        try {
+            await dealerDetailApi.rejectAppointment(detail.maLichHen, lyDoTuChoi)
+            navigate('/profile/dealer/appointment')
+        } catch (error) {
+            console.error('Failed to reject appointment:', error)
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <section className="mx-auto mt-10 flex w-full max-w-[472px] flex-col border border-lambo-primary bg-lambo-tertiary p-8">
@@ -42,10 +60,10 @@ export function DealerAppointmentRefuseConfirmation({ detail }: DealerAppointmen
             </div>
 
             <div className="mt-6 flex flex-col gap-4 border-t border-lambo-primary pt-6">
-                <Button variant="primary" className="w-full justify-center">
-                    Xác nhận từ chối
+                <Button variant="primary" className="w-full justify-center" onClick={handleReject} disabled={isSubmitting}>
+                    {isSubmitting ? 'Đang xử lý...' : 'Xác nhận từ chối'}
                 </Button>
-                <Button variant="light" className="w-full justify-center" onClick={goBackToDetail}>
+                <Button variant="light" className="w-full justify-center" onClick={goBackToDetail} disabled={isSubmitting}>
                     Giữ lịch hẹn
                 </Button>
             </div>

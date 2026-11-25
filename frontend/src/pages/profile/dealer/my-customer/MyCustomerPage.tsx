@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react'
 import { ScrollToTop } from '../../../../components/feedback'
 import { Eyebrow } from '../../../../components/ui/Eyebrow'
 import { DealerAppointmentPagination } from '../../../../features/profile/dealer/appointment/components/DealerAppointmentPagination'
-import { SAMPLE_DEALER_CUSTOMERS } from '../../../../features/profile/dealer/my-customer/data'
 import { useDealerCustomers } from '../../../../features/profile/dealer/my-customer/hooks'
 import { DealerCustomerHeader } from '../../../../features/profile/dealer/my-customer/components/DealerCustomerHeader'
 import { DealerCustomerRow } from '../../../../features/profile/dealer/my-customer/components/DealerCustomerRow'
 import { DealerCustomerToolbar } from '../../../../features/profile/dealer/my-customer/components/DealerCustomerToolbar'
+import { CustomerDetailModal } from '../../../../features/profile/dealer/my-customer/components/CustomerDetailModal'
+import type { DealerCustomerDTO } from '../../../../features/profile/dealer/my-customer/types'
 
 const PAGE_SIZE = 5
 
@@ -14,11 +15,11 @@ export default function MyCustomerPage() {
     const { data, isLoading, isError } = useDealerCustomers()
     const [query, setQuery] = useState('')
     const [page, setPage] = useState(1)
+    const [selectedCustomer, setSelectedCustomer] = useState<DealerCustomerDTO | null>(null)
 
     const customers = useMemo(() => {
-        const useSample = import.meta.env.DEV && (isError || !data?.length)
-        return useSample ? SAMPLE_DEALER_CUSTOMERS : (data ?? [])
-    }, [data, isError])
+        return data ?? []
+    }, [data])
 
     const filtered = useMemo(() => {
         const keyword = query.trim().toLowerCase()
@@ -34,7 +35,6 @@ export default function MyCustomerPage() {
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
     const currentPage = Math.min(page, totalPages)
     const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
-    const hasError = isError && customers.length === 0
 
     return (
         <div data-node-id="2021:5443" className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">
@@ -57,13 +57,13 @@ export default function MyCustomerPage() {
                     </div>
                 )}
 
-                {!isLoading && hasError && (
+                {!isLoading && isError && (
                     <div className="border border-red-800 bg-red-950/40 p-6 text-sm text-red-300">
-                        Không thể tải danh sách khách hàng. Vui lòng thử lại sau.
+                        Không lấy được danh sách khách hàng. Vui lòng thử lại sau.
                     </div>
                 )}
 
-                {!isLoading && !hasError && (
+                {!isLoading && !isError && (
                     <>
                         <div className="hidden grid-cols-[minmax(0,1.3fr)_minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_148px] gap-6 border border-lambo-pressed bg-lambo-tertiary px-4 py-3 font-barlow text-sm font-medium tracking-[0.04em] text-lambo-hover md:grid">
                             <span>Khách hàng</span>
@@ -75,12 +75,17 @@ export default function MyCustomerPage() {
 
                         {pageItems.length === 0 ? (
                             <div className="mt-4 border border-lambo-pressed bg-lambo-tertiary p-6 text-sm text-lambo-hover">
-                                Không có khách hàng phù hợp.
+                                Không có data
                             </div>
                         ) : (
                             <div className="flex flex-col">
                                 {pageItems.map((item, index) => (
-                                    <DealerCustomerRow key={item.maKhachHang} customer={item} striped={index % 2 === 1} />
+                                    <DealerCustomerRow
+                                        key={item.maKhachHang}
+                                        customer={item}
+                                        striped={index % 2 === 1}
+                                        onSelect={setSelectedCustomer}
+                                    />
                                 ))}
                             </div>
                         )}
@@ -96,6 +101,14 @@ export default function MyCustomerPage() {
                     </>
                 )}
             </div>
+
+            <CustomerDetailModal
+                isOpen={!!selectedCustomer}
+                onClose={() => setSelectedCustomer(null)}
+                customerId={selectedCustomer?.maKhachHang ?? null}
+                dongXeQuanTam={selectedCustomer?.dongXeQuanTam}
+                maHoSo={selectedCustomer?.maHoSo}
+            />
 
             <ScrollToTop />
         </div>

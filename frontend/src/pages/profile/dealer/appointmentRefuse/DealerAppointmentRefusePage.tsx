@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ScrollToTop } from '../../../../components/feedback'
-import { SAMPLE_DEALER_APPOINTMENT_DETAIL } from '../../../../features/profile/dealer/appointmentDetail/data'
+
 import { useDealerAppointmentDetail } from '../../../../features/profile/dealer/appointmentDetail/hooks'
 import { DealerAppointmentRefuseConfirmation } from '../../../../features/profile/dealer/appointmentRefuse/components/DealerAppointmentRefuseConfirmation'
 import { DealerAppointmentRefuseForm } from '../../../../features/profile/dealer/appointmentRefuse/components/DealerAppointmentRefuseForm'
@@ -9,8 +10,7 @@ import { DealerAppointmentRefuseHeader } from '../../../../features/profile/deal
 export default function DealerAppointmentRefusePage() {
     const { id = '' } = useParams()
     const { data, isLoading, isError } = useDealerAppointmentDetail(id)
-
-    const detail = import.meta.env.DEV && isError ? SAMPLE_DEALER_APPOINTMENT_DETAIL : data
+    const [lyDoTuChoi, setLyDoTuChoi] = useState('')
 
     return (
         <div data-node-id="2024:5445" className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">
@@ -21,17 +21,23 @@ export default function DealerAppointmentRefusePage() {
                     </div>
                 )}
 
-                {!isLoading && !detail && (
+                {!isLoading && isError && (
                     <div className="border border-red-800 bg-red-950/40 p-6 text-sm text-red-300">
-                        Không thể tải thông tin lịch hẹn. Vui lòng thử lại sau.
+                        Không lấy được thông tin lịch hẹn. Vui lòng thử lại sau.
                     </div>
                 )}
 
-                {!isLoading && detail && (
+                {!isLoading && !isError && !data && (
+                    <div className="border border-lambo-pressed bg-lambo-tertiary p-6 text-sm text-lambo-hover">
+                        Không có data
+                    </div>
+                )}
+
+                {!isLoading && !isError && data && (
                     <>
-                        <DealerAppointmentRefuseHeader detail={detail} />
-                        <DealerAppointmentRefuseForm />
-                        <DealerAppointmentRefuseConfirmation detail={detail} />
+                        <DealerAppointmentRefuseHeader detail={data} />
+                        <DealerAppointmentRefuseForm value={lyDoTuChoi} onChange={setLyDoTuChoi} />
+                        <DealerAppointmentRefuseConfirmation detail={data} lyDoTuChoi={lyDoTuChoi} />
                     </>
                 )}
             </div>

@@ -35,18 +35,19 @@ const TAB_BY_STATUS: Record<AppointmentStatus, AppointmentTab> = {
 }
 
 export function adaptAppointment(dto: AppointmentDTO): Appointment {
-    const [year, month, day] = dto.ngayHen.split('-')
+    const dateStr = dto.ngayHen ? dto.ngayHen.slice(0, 10) : '2026-11-24'
+    const [year = '2026', month = '11', day = '24'] = dateStr.split('-')
 
     return {
         id: dto.maLichHen,
         code: dto.maYeuCau,
         title: dto.tieuDe,
         status: dto.trangThai,
-        tab: TAB_BY_STATUS[dto.trangThai],
+        tab: TAB_BY_STATUS[dto.trangThai] || 'UPCOMING',
         dayLabel: `${day} tháng ${Number(month)}`,
         dateLabel: `${day}/${month}/${year}`,
         timeLabel: `${dto.gioBatDau} – ${dto.gioKetThuc}`,
-        venue: `${dto.tenShowroom} / ${dto.tenDealer}`,
-        startsAt: `${dto.ngayHen}T${dto.gioBatDau}`,
+        venue: `${dto.tenShowroom || 'Lamborghini Showroom'} / ${dto.tenDealer || 'Dealer'}`,
+        startsAt: `${dateStr}T${dto.gioBatDau}`,
     }
 }

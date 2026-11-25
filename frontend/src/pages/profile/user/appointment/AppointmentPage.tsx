@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { CalendarDays } from 'lucide-react'
 import { ScrollToTop } from '../../../../components/feedback'
 import { Button } from '../../../../components/ui/Button'
-import { APPOINTMENT_TABS, SAMPLE_APPOINTMENTS } from '../../../../features/profile/user/appointment/data'
+import { APPOINTMENT_TABS } from '../../../../features/profile/user/appointment/data'
 import { useMyAppointments } from '../../../../features/profile/user/appointment/hooks'
 import { AppointmentHeader } from '../../../../features/profile/user/appointment/components/AppointmentHeader'
 import { AppointmentListItem } from '../../../../features/profile/user/appointment/components/AppointmentListItem'
@@ -15,9 +15,8 @@ export default function AppointmentPage() {
     const [activeTab, setActiveTab] = useState<AppointmentTab>('UPCOMING')
 
     const appointments = useMemo<Appointment[]>(() => {
-        const useSample = import.meta.env.DEV && (isError || !data?.length)
-        return (useSample ? SAMPLE_APPOINTMENTS : (data ?? [])).map(adaptAppointment)
-    }, [data, isError])
+        return (data ?? []).map(adaptAppointment)
+    }, [data])
 
     const counts = useMemo(() => {
         const result: Record<AppointmentTab, number> = { UPCOMING: 0, COMPLETED: 0, CANCELLED: 0 }
@@ -36,7 +35,6 @@ export default function AppointmentPage() {
     }, [activeTab, visibleAppointments])
 
     const activeTabConfig = APPOINTMENT_TABS.find((tab) => tab.value === activeTab)
-    const hasError = isError && appointments.length === 0
 
     return (
         <div className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">
@@ -56,19 +54,19 @@ export default function AppointmentPage() {
                     </div>
                 )}
 
-                {!isLoading && hasError && (
+                {!isLoading && isError && (
                     <div className="border border-red-800 bg-red-950/40 p-6 text-sm text-red-300">
-                        Không thể tải danh sách lịch hẹn. Vui lòng thử lại sau.
+                        Không lấy được dữ liệu lịch hẹn. Vui lòng thử lại sau.
                     </div>
                 )}
 
-                {!isLoading && !hasError && visibleAppointments.length === 0 && (
+                {!isLoading && !isError && visibleAppointments.length === 0 && (
                     <div className="border border-lambo-pressed bg-lambo-tertiary p-6 text-sm text-lambo-hover">
-                        Chưa có lịch hẹn nào.
+                        Không có data
                     </div>
                 )}
 
-                {!isLoading && !hasError && visibleAppointments.length > 0 && (
+                {!isLoading && !isError && visibleAppointments.length > 0 && (
                     <>
                         {nextAppointment && <NextAppointmentCard appointment={nextAppointment} />}
 

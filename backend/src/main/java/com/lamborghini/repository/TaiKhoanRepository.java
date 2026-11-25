@@ -1,6 +1,7 @@
 package com.lamborghini.repository;
 
 import com.lamborghini.entity.TaiKhoan;
+import com.lamborghini.enums.VaiTro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
     // dùng để kiểm tra xem db đã có email này chưa (check tồn tại)
@@ -37,4 +40,10 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
             "WHERE t.ma_tk = :id\n" +
             "\n", nativeQuery = true)
     int datLaiKhiDangNhapDung(@Param("id") Integer id);
+
+    List<TaiKhoan> findAllByVaiTro(VaiTro vaiTro);
+
+    Optional<TaiKhoan> findByMaTaiKhoanAndVaiTro(Integer maTaiKhoan, VaiTro vaiTro);
+
+    Optional<TaiKhoan> findByEmail(String email);
 }

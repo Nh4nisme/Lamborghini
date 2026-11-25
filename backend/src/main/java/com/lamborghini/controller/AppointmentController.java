@@ -1,14 +1,12 @@
 package com.lamborghini.controller;
 
-
-import com.lamborghini.dto.response.AppointmentRequest;
-import com.lamborghini.dto.response.AppointmentResponse;
+import com.lamborghini.dto.request.RejectAppointmentRequest;
+import com.lamborghini.dto.response.*;
 import com.lamborghini.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/appointment")
@@ -19,5 +17,35 @@ public class AppointmentController {
     @PostMapping
     public AppointmentResponse datLich(@RequestBody AppointmentRequest request) {
         return appointmentService.datLich(request);
+    }
+
+    @GetMapping("/my")
+    public List<AppointmentListDTO> getMyAppointments() {
+        return appointmentService.getMyAppointments();
+    }
+
+    @GetMapping("/dealer")
+    public List<DealerAppointmentListDTO> getDealerAppointments() {
+        return appointmentService.getDealerAppointments();
+    }
+
+    @GetMapping("/dealer/{id}")
+    public AppointmentDetailDTO getDealerAppointmentDetail(@PathVariable Integer id) {
+        return appointmentService.getDealerAppointmentDetail(id);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public AppointmentDetailDTO cancelAppointment(@PathVariable Integer id) {
+        return appointmentService.cancelAppointment(id);
+    }
+
+    @PutMapping("/dealer/{id}/confirm")
+    public AppointmentDetailDTO confirmAppointment(@PathVariable Integer id) {
+        return appointmentService.confirmAppointment(id);
+    }
+
+    @PutMapping("/dealer/{id}/reject")
+    public AppointmentDetailDTO rejectAppointment(@PathVariable Integer id, @RequestBody RejectAppointmentRequest request) {
+        return appointmentService.rejectAppointment(id, request);
     }
 }

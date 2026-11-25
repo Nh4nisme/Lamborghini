@@ -3,7 +3,6 @@ import { ScrollToTop } from '../../../../components/feedback'
 import { DealerInformationForm } from '../../../../features/profile/dealer/information/components/DealerInformationForm'
 import { DealerInformationHeader } from '../../../../features/profile/dealer/information/components/DealerInformationHeader'
 import { DealerInformationTabs } from '../../../../features/profile/dealer/information/components/DealerInformationTabs'
-import { SAMPLE_DEALER_PROFILE } from '../../../../features/profile/dealer/information/data'
 import { useDealerProfile } from '../../../../features/profile/dealer/information/hooks'
 import type { DealerInformationTab } from '../../../../features/profile/dealer/information/types'
 
@@ -11,8 +10,8 @@ export default function DealerInformationPage() {
     const { data, isLoading, isError } = useDealerProfile()
     const [activeTab, setActiveTab] = useState<DealerInformationTab>('PERSONAL')
 
-    const profile = data ?? (import.meta.env.DEV && isError ? SAMPLE_DEALER_PROFILE : undefined)
-    const hasError = isError && !profile
+    const profile = data
+    const hasError = isError
 
     return (
         <div data-node-id="2022:5444" className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ScrollToTop } from '../../../../components/feedback'
-import { SAMPLE_DEALER_APPOINTMENTS } from '../../../../features/profile/dealer/appointment/data'
+
 import { useDealerAppointments } from '../../../../features/profile/dealer/appointment/hooks'
 import { DealerAppointmentHeader } from '../../../../features/profile/dealer/appointment/components/DealerAppointmentHeader'
 import { DealerAppointmentPagination } from '../../../../features/profile/dealer/appointment/components/DealerAppointmentPagination'
@@ -25,9 +25,8 @@ export default function DealerAppointmentsPage() {
     const [page, setPage] = useState(1)
 
     const appointments = useMemo(() => {
-        const useSample = import.meta.env.DEV && (isError || !data?.length)
-        return useSample ? SAMPLE_DEALER_APPOINTMENTS : (data ?? [])
-    }, [data, isError])
+        return data ?? []
+    }, [data])
 
     const metrics = useMemo(() => {
         const today = todayISO()
@@ -56,7 +55,6 @@ export default function DealerAppointmentsPage() {
     const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
     const currentPage = Math.min(page, totalPages)
     const pageItems = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
-    const hasError = isError && appointments.length === 0
 
     return (
         <div data-node-id="2017:5864" className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">
@@ -88,13 +86,13 @@ export default function DealerAppointmentsPage() {
                     </div>
                 )}
 
-                {!isLoading && hasError && (
+                {!isLoading && isError && (
                     <div className="border border-red-800 bg-red-950/40 p-6 text-sm text-red-300">
-                        Không thể tải danh sách lịch hẹn. Vui lòng thử lại sau.
+                        Không lấy được dữ liệu lịch hẹn đại lý. Vui lòng thử lại sau.
                     </div>
                 )}
 
-                {!isLoading && !hasError && (
+                {!isLoading && !isError && (
                     <>
                         <div className="hidden grid-cols-[110px_minmax(0,1.4fr)_minmax(0,1fr)_140px_auto] gap-6 border border-lambo-pressed bg-lambo-tertiary px-4 py-3 font-barlow text-sm font-medium tracking-[0.04em] text-lambo-hover md:grid">
                             <span>Mã lịch</span>
@@ -106,7 +104,7 @@ export default function DealerAppointmentsPage() {
 
                         {pageItems.length === 0 ? (
                             <div className="mt-4 border border-lambo-pressed bg-lambo-tertiary p-6 text-sm text-lambo-hover">
-                                Không có lịch hẹn phù hợp.
+                                Không có data
                             </div>
                         ) : (
                             <div className="flex flex-col">
