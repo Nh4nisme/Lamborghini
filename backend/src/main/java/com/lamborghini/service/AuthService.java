@@ -1,8 +1,13 @@
 package com.lamborghini.service;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.lamborghini.dto.event.DangKyThanhCongEvent;
 import com.lamborghini.dto.request.RegisterRequest;
 import com.lamborghini.dto.response.RegisterResponse;
+import com.lamborghini.dto.response.login.request.GoogleLoginRequest;
 import com.lamborghini.dto.response.login.request.LoginRequest;
 import com.lamborghini.dto.response.login.response.LoginResponse;
 import com.lamborghini.dto.response.login.response.UserInfo;
@@ -17,6 +22,7 @@ import com.lamborghini.repository.TaiKhoanRepository;
 import com.lamborghini.service.login.JwtService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,10 +30,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
+import java.util.UUID;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +52,8 @@ public class AuthService {
     private String dummyHash;
     private static final int TOI_DA_SAI = 5;
     private static final int KHOA_GIAY = 60;
-    private static final String SAI_THONG_TIN = "Email hoặc mật khẩu không đúng";
+    @Value("${app.google.client-id}")
+    private String googleClientId;
 
     @PostConstruct
     void khoiTaoDummyHash() {
@@ -140,8 +148,73 @@ public class AuthService {
         eventPublisher.publishEvent(new DangKyThanhCongEvent(email, tk.getHoTen()));
         return new RegisterResponse(tk.getMaTaiKhoan(), email, tk.getHoTen(), "Đăng ký thành công. Vui lòng đăng nhập.");
 
+    }
+    @Transactional
+    public LoginResponse loginWithGoogle(GoogleLoginRequest req) {
 
+        //  khởi tạo bộ xác thực Google Token Verifier
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                new NetHttpTransport(),
+                GsonFactory.getDefaultInstance()
+        )
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+        GoogleIdToken idToken;
+        try {
+            // xác thực token với Google (kiểm tra hạn dùng, chữ ký, clientId)
+            idToken = verifier.verify(req.idToken());
+        } catch (Exception e) {
+            throw new FieldValidationExcrption("google", "Xác thực tài khoản Google thất bại");
+        }
+        if (idToken == null) {
+            throw new FieldValidationExcrption("google", "Token Google không hợp lệ hoặc đã hết hạn");
+        }
 
+        // lấy thông tin người dùng từ Payload của Google
+        GoogleIdToken.Payload payload = idToken.getPayload();
+        String email = payload.getEmail().trim().toLowerCase();
+        String name = (String) payload.get("name");
+        if (name == null || name.isBlank()) {
+            name = email.split("@")[0]; // fallback nếu tài khoản google không có tên
+        }
+
+        // tìm tài khoản trong cơ sở dữ liệu theo email
+        TaiKhoan tk = taiKhoanRepository.findByEmailIgnoreCase(email);
+        if (tk == null) {
+            // nếu người dùng mới -> đăng ký tài khoản mới
+            tk = new TaiKhoan();
+            tk.setHoTen(name);
+            tk.setEmail(email);
+            // băm một chuỗi ngẫu nhiên làm mật khẩu để thỏa mãn ràng buộc not null của db
+            tk.setMatKhau(passwordEncoder.encode(UUID.randomUUID().toString()));
+            tk.setSdt("");
+            tk.setVaiTro(VaiTro.CUSTOMER);
+            tk.setTrangThai(TrangThaiTaiKhoan.HOAT_DONG);
+            tk.setSlNhapSai(0);
+            tk.setNgayTao(LocalDateTime.now());
+            taiKhoanRepository.saveAndFlush(tk);
+            // tạo bản ghi KhachHang liên kết
+            KhachHang khachHang = new KhachHang();
+            khachHang.setTaiKhoan(tk);
+            khachHangRepository.save(khachHang);
+        } else {
+            // đã có tài khoản -> kiểm tra trạng thái khóa
+            if (tk.getTrangThai() == TrangThaiTaiKhoan.BI_KHOA) {
+                throw new FieldValidationExcrption("locked",
+                        "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+            }
+
+            taiKhoanRepository.datLaiKhiDangNhapDung(tk.getMaTaiKhoan());
+        }
+        // cấp JWT token
+        JwtService.Token token = jwtService.taoToken(tk);
+        return new LoginResponse(
+                token.value(),
+                "Bearer",
+                token.hetHanSauGiay(),
+                new UserInfo(tk.getMaTaiKhoan(), tk.getHoTen(), tk.getEmail(), tk.getVaiTro().name()),
+                redirectTheoVaiTro(tk.getVaiTro())
+        );
 
 
     }

@@ -6,6 +6,7 @@ import com.lamborghini.dto.request.SendCodeRequest;
 import com.lamborghini.dto.response.MessageResponse;
 import com.lamborghini.dto.response.RegisterResponse;
 import com.lamborghini.dto.response.VerifyEmailResponse;
+import com.lamborghini.dto.response.login.request.GoogleLoginRequest;
 import com.lamborghini.dto.response.login.request.LoginRequest;
 import com.lamborghini.dto.response.login.response.LoginResponse;
 import com.lamborghini.service.AuthService;
@@ -49,5 +50,9 @@ public class AuthController {
         return Map.of("maTK", jwt.getSubject(),
                 "email", jwt.getClaimAsString("email"),
                 "vaiTro", jwt.getClaimAsString("role"));
+    }
+    @PostMapping("/google")
+    public LoginResponse loginWithGoogle(@RequestBody GoogleLoginRequest req) {
+        return authService.loginWithGoogle(req);
     }
 }
