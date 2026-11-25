@@ -1,6 +1,7 @@
 package com.lamborghini.service;
 
 import com.lamborghini.dto.event.DangKyThanhCongEvent;
+import com.lamborghini.dto.event.DoiMatKhauEvent;
 import com.lamborghini.dto.event.MaXacThucEmailEvent;
 import com.lamborghini.dto.response.EmailXacNhan;
 import com.lamborghini.repository.LichHenRepository;
@@ -125,6 +126,33 @@ public class EmailService {
                Trân trọng,
                Lamborghini
                """.formatted(e.hoTen(), e.email());
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void guiThongBaoDoiMatKhau(DoiMatKhauEvent e) {
+        try {
+            SimpleMailMessage m = new SimpleMailMessage();
+            m.setFrom(from);
+            m.setTo(e.email());
+            m.setSubject("[Lamborghini] Mật khẩu của bạn vừa được thay đổi");
+            m.setText(noiDungDoiMatKhau(e));
+            mailSender.send(m);
+        } catch (Exception ex) {
+            // Không ném lỗi: dữ liệu đã lưu xong. Cũng không ghi nội dung thư (có mã) vào log.
+            log.error("Gửi email thất bại tới {}", e, ex);
+        }
+    }
+    private String noiDungDoiMatKhau(DoiMatKhauEvent e) {
+        return """
+               Xin chào %s,
+
+               Mật khẩu tài khoản của bạn vừa được thay đổi
+               Nếu không phải bạn thực hiện, hãy liên hệ quản trị viên ngay.
+
+               Trân trọng,
+               Lamborghini
+               """.formatted(e.hoTen());
     }
 }
 

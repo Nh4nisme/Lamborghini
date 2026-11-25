@@ -19,6 +19,9 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
     // tìm tài khoản theo email
     TaiKhoan findByEmailIgnoreCase(String email);
 
+    // tìm theo mã tài khoản
+    TaiKhoan findByMaTaiKhoan(Integer maTK);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "UPDATE tai_khoan t\n" +
             "SET t.sl_nhap_sai = t.sl_nhap_sai + 1\n" +
@@ -41,9 +44,13 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
             "\n", nativeQuery = true)
     int datLaiKhiDangNhapDung(@Param("id") Integer id);
 
+
+
     List<TaiKhoan> findAllByVaiTro(VaiTro vaiTro);
 
     Optional<TaiKhoan> findByMaTaiKhoanAndVaiTro(Integer maTaiKhoan, VaiTro vaiTro);
 
     Optional<TaiKhoan> findByEmail(String email);
+
+
 }

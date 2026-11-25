@@ -1,5 +1,7 @@
 package com.lamborghini.controller;
 
+import com.lamborghini.dto.profile.request.ChangePasswordRequest;
+import com.lamborghini.dto.profile.response.ChangePasswordResponse;
 import com.lamborghini.dto.request.ConfirmCodeRequest;
 import com.lamborghini.dto.request.RegisterRequest;
 import com.lamborghini.dto.request.SendCodeRequest;
@@ -54,5 +56,10 @@ public class AuthController {
     @PostMapping("/google")
     public LoginResponse loginWithGoogle(@RequestBody GoogleLoginRequest req) {
         return authService.loginWithGoogle(req);
+    }
+    @PutMapping("/profile/password")
+    public ChangePasswordResponse doiatKhauChoDealer(@RequestBody ChangePasswordRequest req, @AuthenticationPrincipal Jwt jwt) {
+        Integer maTK = Integer.valueOf(jwt.getSubject());
+        return authService.doiatKhauChoDealer(req, maTK);
     }
 }
