@@ -1,5 +1,6 @@
 package com.lamborghini.service;
 
+import com.lamborghini.dto.lichhen.KhachHangLichHen;
 import com.lamborghini.dto.request.RejectAppointmentRequest;
 import com.lamborghini.dto.response.*;
 import com.lamborghini.entity.LichHen;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AppointmentService {
+public class    AppointmentService {
     private final LichHenRepository lichHenRepository;
     private final ShowroomRepository showroomRepository;
     private final XeRepository xeRepository;
@@ -277,6 +278,11 @@ public class AppointmentService {
         lichHenRepository.save(lh);
         
         return getDealerAppointmentDetail(id);
+    }
+
+    //UC020: trả veef danh sách khách hàng của dealer cụ thể
+    public List<KhachHangLichHen> getDanhSachKhachHangCuaDealer(Integer maNV) {
+        return lichHenRepository.getDanhSachKhachHangCuaDealer(maNV);
     }
 
 }
