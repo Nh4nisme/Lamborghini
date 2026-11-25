@@ -6,7 +6,7 @@ public record KhachHangLichHen(
         String hoTenLienHe,
         String emailLienHe,
         String sdtLienHe,
-        Integer maXe,
+        String tenXe,
         LocalDateTime thoiGianHen
 ) {
 }
