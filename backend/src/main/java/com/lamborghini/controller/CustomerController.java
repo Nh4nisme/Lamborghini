@@ -1,6 +1,6 @@
 package com.lamborghini.controller;
 
-import com.lamborghini.dto.response.DealerCustomerDTO;
+import com.lamborghini.dto.lichhen.response.DealerCustomerDTO;
 import com.lamborghini.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

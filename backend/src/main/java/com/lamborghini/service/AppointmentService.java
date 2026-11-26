@@ -1,19 +1,19 @@
 package com.lamborghini.service;
 
-import com.lamborghini.dto.lichhen.KhachHangLichHen;
-import com.lamborghini.dto.request.RejectAppointmentRequest;
-import com.lamborghini.dto.response.*;
+import com.lamborghini.dto.lichhen.request.AppointmentRequest;
+import com.lamborghini.dto.lichhen.response.*;
+import com.lamborghini.dto.lichhen.request.RejectAppointmentRequest;
 import com.lamborghini.entity.LichHen;
 import com.lamborghini.entity.Showroom;
 import com.lamborghini.entity.TaiKhoan;
 import com.lamborghini.entity.Xe;
 import com.lamborghini.enums.TrangThaiLichHen;
-import com.lamborghini.enums.VaiTro;
 import com.lamborghini.exception.NotFoundException;
 import com.lamborghini.repository.LichHenRepository;
 import com.lamborghini.repository.ShowroomRepository;
 import com.lamborghini.repository.TaiKhoanRepository;
 import com.lamborghini.repository.XeRepository;
+import com.lamborghini.service.authentication.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

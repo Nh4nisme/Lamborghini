@@ -1,6 +1,6 @@
 package com.lamborghini.repository;
 
-import com.lamborghini.dto.lichhen.KhachHangLichHen;
+import com.lamborghini.dto.lichhen.response.KhachHangLichHen;
 import com.lamborghini.entity.LichHen;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

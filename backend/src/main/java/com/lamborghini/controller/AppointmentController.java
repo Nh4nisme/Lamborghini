@@ -1,10 +1,9 @@
 package com.lamborghini.controller;
 
-import com.lamborghini.dto.lichhen.KhachHangLichHen;
-import com.lamborghini.dto.request.RejectAppointmentRequest;
-import com.lamborghini.dto.response.*;
+import com.lamborghini.dto.lichhen.request.AppointmentRequest;
+import com.lamborghini.dto.lichhen.response.*;
+import com.lamborghini.dto.lichhen.request.RejectAppointmentRequest;
 import com.lamborghini.service.AppointmentService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,17 +2,17 @@ package com.lamborghini.controller;
 
 import com.lamborghini.dto.profile.request.ChangePasswordRequest;
 import com.lamborghini.dto.profile.response.ChangePasswordResponse;
-import com.lamborghini.dto.request.ConfirmCodeRequest;
-import com.lamborghini.dto.request.RegisterRequest;
-import com.lamborghini.dto.request.SendCodeRequest;
-import com.lamborghini.dto.response.MessageResponse;
-import com.lamborghini.dto.response.RegisterResponse;
-import com.lamborghini.dto.response.VerifyEmailResponse;
-import com.lamborghini.dto.response.login.request.GoogleLoginRequest;
-import com.lamborghini.dto.response.login.request.LoginRequest;
-import com.lamborghini.dto.response.login.response.LoginResponse;
-import com.lamborghini.service.AuthService;
-import com.lamborghini.service.EmailVerificationService;
+import com.lamborghini.dto.dangky.request.ConfirmCodeRequest;
+import com.lamborghini.dto.dangky.request.RegisterRequest;
+import com.lamborghini.dto.dangky.request.SendCodeRequest;
+import com.lamborghini.dto.global.MessageResponse;
+import com.lamborghini.dto.dangky.reponse.RegisterResponse;
+import com.lamborghini.dto.dangky.reponse.VerifyEmailResponse;
+import com.lamborghini.dto.login.request.GoogleLoginRequest;
+import com.lamborghini.dto.login.request.LoginRequest;
+import com.lamborghini.dto.login.response.LoginResponse;
+import com.lamborghini.service.authentication.AuthService;
+import com.lamborghini.service.authentication.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -26,6 +26,7 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private  final EmailVerificationService emailVerificationService;
+
 
     @PostMapping("/email-verification/send")
     public MessageResponse guiMa(@RequestBody SendCodeRequest req) {
@@ -61,5 +62,9 @@ public class AuthController {
     public ChangePasswordResponse doiatKhauChoDealer(@RequestBody ChangePasswordRequest req, @AuthenticationPrincipal Jwt jwt) {
         Integer maTK = Integer.valueOf(jwt.getSubject());
         return authService.doiatKhauChoDealer(req, maTK);
+    }
+    @PostMapping("/logout")
+    public MessageResponse dangXuat(@AuthenticationPrincipal Jwt jwt) {
+        return authService.dangXuat(jwt);
     }
 }
