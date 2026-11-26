@@ -29,4 +29,12 @@ public interface XeRepository extends JpaRepository<Xe, Integer> {
                       @Param("keyword") String keyword,
                       @Param("minPrice") BigInteger minPrice,
                       @Param("maxPrice") BigInteger maxPrice);
+    // admin search tìm tất cả xe theo keyword
+    @Query(value = "SELECT x.*\n" +
+            "FROM xe x\n" +
+            "WHERE\n" +
+            "    LOWER(x.ten_phien_ban) LIKE LOWER(CONCAT('%', :keyword, '%'))\n" +
+            "    OR CAST(x.gia_khoi_diem AS CHAR) LIKE CONCAT('%', :keyword, '%')\n" +
+            "    OR LOWER(x.trang_thai) LIKE LOWER(CONCAT('%', :keyword, '%'));", nativeQuery = true)
+    List<Xe> adminSearchXe(@Param("keyword") String keyword);
 }
