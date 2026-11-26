@@ -27,6 +27,7 @@ public class AuthController {
     private final AuthService authService;
     private  final EmailVerificationService emailVerificationService;
 
+
     @PostMapping("/email-verification/send")
     public MessageResponse guiMa(@RequestBody SendCodeRequest req) {
         return emailVerificationService.guiMaXacThuc(req.email());
@@ -61,5 +62,9 @@ public class AuthController {
     public ChangePasswordResponse doiatKhauChoDealer(@RequestBody ChangePasswordRequest req, @AuthenticationPrincipal Jwt jwt) {
         Integer maTK = Integer.valueOf(jwt.getSubject());
         return authService.doiatKhauChoDealer(req, maTK);
+    }
+    @PostMapping("/logout")
+    public MessageResponse dangXuat(@AuthenticationPrincipal Jwt jwt) {
+        return authService.dangXuat(jwt);
     }
 }

@@ -6,6 +6,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.lamborghini.dto.event.DangKyThanhCongEvent;
 import com.lamborghini.dto.event.DoiMatKhauEvent;
+import com.lamborghini.dto.global.MessageResponse;
 import com.lamborghini.dto.profile.request.ChangePasswordRequest;
 import com.lamborghini.dto.profile.response.ChangePasswordResponse;
 import com.lamborghini.dto.dangky.request.RegisterRequest;
@@ -16,21 +17,25 @@ import com.lamborghini.dto.login.response.LoginResponse;
 import com.lamborghini.dto.login.response.UserInfo;
 import com.lamborghini.entity.KhachHang;
 import com.lamborghini.entity.TaiKhoan;
+import com.lamborghini.entity.TokenBiThuHoi;
 import com.lamborghini.enums.TrangThaiTaiKhoan;
 import com.lamborghini.enums.VaiTro;
 import com.lamborghini.exception.AccountLockedException;
 import com.lamborghini.exception.FieldValidationExcrption;
 import com.lamborghini.repository.KhachHangRepository;
 import com.lamborghini.repository.TaiKhoanRepository;
+import com.lamborghini.repository.TokenBiThuHoiRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import java.time.Duration;
@@ -49,6 +54,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
     private final EmailVerificationService emailVerificationService;
+    private final TokenBiThuHoiRepository tokenBiThuHoiRepository;
 
     private String dummyHash;
     private static final int TOI_DA_SAI = 5;
@@ -256,6 +262,35 @@ public class AuthService {
         eventPublisher.publishEvent(new DoiMatKhauEvent(tk.getEmail(), tk.getHoTen()));
         return new ChangePasswordResponse("Đổi mật khẩu thành công");
 
+    }
+
+    @Transactional
+    public MessageResponse dangXuat(Jwt jwt) {
+
+        // lấy mã định danh từ JWT
+
+        String jti = jwt.getId();
+
+        if(jti == null || jti.isBlank()) {
+            throw new FieldValidationExcrption("token", "Token không hợp lệ");
+        }
+
+        // không lưu trùng token
+        if(tokenBiThuHoiRepository.existsByMaDinhDanhToken(jti)) {
+            return new MessageResponse("Mã đã được thu hồi");
+        }
+
+        TokenBiThuHoi token = new TokenBiThuHoi();
+
+        token.setMaDinhDanhToken(jti);
+
+        // chuyển instant sang LocalDateTime theo UTC
+        token.setThoiGianHetHan(
+                LocalDateTime.ofInstant(jwt.getExpiresAt(), ZoneOffset.UTC)
+        );
+
+        tokenBiThuHoiRepository.save(token);
+        return new MessageResponse("Bạn đã đăng xuất thành công");
     }
 
 }

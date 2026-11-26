@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Service
 public class JwtService {
@@ -32,6 +33,7 @@ public class JwtService {
                 .issuedAt(now)
                 .expiresAt(now.plus(expirationMinutes, ChronoUnit.MINUTES))
                 .subject(String.valueOf(tk.getMaTaiKhoan()))
+                .id(UUID.randomUUID().toString())
                 .claim("email", tk.getEmail())
                 .claim("role", tk.getVaiTro().name())     // CUSTOMER / DEALER / ADMIN
                 .build();
