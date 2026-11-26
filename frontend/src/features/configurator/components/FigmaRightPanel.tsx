@@ -9,6 +9,7 @@ import type {
 import {
   PAINT_COLORS,
   RIMS,
+  CALIPERS,
   CARBON_LOWER_OPTIONS,
   INTERIOR_TRIMS,
 } from '../data/lamborghiniData';
@@ -31,6 +32,16 @@ interface FigmaRightPanelProps {
 
 type PaintFinishFilter = 'METALLIC' | 'SOLID' | 'MATT';
 
+/** Keeps the first option per id so list keys stay unique whatever the data source returns. */
+function uniqueById<T extends { id: string }>(items: T[]): T[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
+}
+
 export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   currentStep,
   config,
@@ -40,7 +51,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   paintColors,
   rims,
   interiorTrims,
-  calipers: _calipers,
+  calipers,
 }) => {
   const isLight = theme === 'light';
   const [paintFilter, setPaintFilter] = useState<PaintFinishFilter>('METALLIC');
@@ -48,9 +59,10 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   const [isTrimOpen, setIsTrimOpen] = useState(false);
   const [selectedShowroom, setSelectedShowroom] = useState('bologna');
 
-  const availablePaintColors = paintColors ?? PAINT_COLORS
-  const availableRims = rims ?? RIMS
-  const availableInteriorTrims = interiorTrims ?? INTERIOR_TRIMS
+  const availablePaintColors = uniqueById(paintColors ?? PAINT_COLORS)
+  const availableRims = uniqueById(rims ?? RIMS)
+  const availableInteriorTrims = uniqueById(interiorTrims ?? INTERIOR_TRIMS)
+  const availableCalipers = uniqueById(calipers ?? CALIPERS)
   
   const filteredPaintColors = availablePaintColors.filter((color) => {
     if (paintFilter === 'METALLIC') return color.finish === 'shiny'
@@ -236,12 +248,64 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                             : 'hover:bg-white/5 text-neutral-200'
                         }`}
                       >
-                        <span>{rim.name}</span>
+                        <span className="flex flex-col">
+                          <span>{rim.name}</span>
+                          <span className={`text-[10px] font-normal ${config.rim.id === rim.id ? 'opacity-70' : 'text-neutral-500'}`}>
+                            {rim.finish}
+                          </span>
+                        </span>
                         {config.rim.id === rim.id && <Check className="w-3.5 h-3.5" />}
                       </button>
                     ))}
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* Section: Brake Calipers */}
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-400 font-barlow">
+                  BRAKE CALIPERS
+                </span>
+                <span className="text-[11px] font-mono text-neutral-400">
+                  {String(availableCalipers.length).padStart(2, '0')} OPTIONS
+                </span>
+              </div>
+              <div className="grid grid-cols-8 gap-2">
+                {availableCalipers.map((caliper) => {
+                  const isSelected = config.caliper.id === caliper.id
+                  return (
+                    <button
+                      key={caliper.id}
+                      type="button"
+                      onClick={() => onUpdateConfig({ caliper })}
+                      aria-label={caliper.name}
+                      aria-pressed={isSelected}
+                      title={caliper.name}
+                      className={`relative aspect-square w-full rounded-none transition-all cursor-pointer flex items-center justify-center ${
+                        isSelected
+                          ? 'ring-2 ring-lambo-primary ring-offset-2 ring-offset-black'
+                          : isLight
+                          ? 'border border-neutral-300 hover:border-neutral-500'
+                          : 'border border-neutral-800 hover:border-neutral-600'
+                      }`}
+                      style={{ backgroundColor: caliper.hex }}
+                    >
+                      {isSelected && <Check className="w-3 h-3 text-white stroke-[2.5] drop-shadow" />}
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="flex items-baseline justify-between gap-3 text-xs">
+                <span className="font-semibold">{config.caliper.name}</span>
+                <span className="font-mono text-neutral-400 shrink-0">
+                  {formatCurrency(
+                    config.currency === 'VND' ? config.caliper.priceVND : config.caliper.priceUSD,
+                    config.currency,
+                    config.language
+                  )}
+                </span>
               </div>
             </div>
 
@@ -532,6 +596,10 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
               <div className="flex justify-between">
                 <span className="text-neutral-400">Wheels</span>
                 <span className="font-bold">{config.rim.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-neutral-400">Brake Calipers</span>
+                <span className="font-bold">{config.caliper.name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-neutral-400">Exterior Trim</span>

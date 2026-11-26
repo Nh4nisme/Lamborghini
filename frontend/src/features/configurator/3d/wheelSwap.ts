@@ -296,9 +296,19 @@ export function createWheelInstance(template: WheelTemplate, wheel: DetectedWhee
   return instance;
 }
 
-/** Applies the rim finish to the template's rim-body materials. */
-export function tintWheelTemplate(template: WheelTemplate, hex: string) {
+/** Metalness/roughness for a rim finish label such as `Diamond Cut` or `Matt Bronze`. */
+export function rimSurfaceFor(finish: string): { metalness: number; roughness: number } {
+  const key = finish.toLowerCase();
+  return {
+    metalness: key.includes('diamond') ? 0.95 : 0.88,
+    roughness: key.includes('matt') ? 0.45 : 0.18,
+  };
+}
+
+/** Applies the rim colour and finish to the template's rim-body materials. */
+export function tintWheelTemplate(template: WheelTemplate, hex: string, finish = '') {
   const color = new THREE.Color(hex);
+  const surface = rimSurfaceFor(finish);
   template.object.traverse((child) => {
     if (!(child instanceof THREE.Mesh)) return;
     const materials = Array.isArray(child.material) ? child.material : [child.material];
@@ -307,8 +317,8 @@ export function tintWheelTemplate(template: WheelTemplate, hex: string) {
       if (!/jante|chrome|rim|spoke/.test(name)) return;
       if (material instanceof THREE.MeshStandardMaterial) {
         material.color.copy(color);
-        material.metalness = 0.88;
-        material.roughness = 0.18;
+        material.metalness = surface.metalness;
+        material.roughness = surface.roughness;
         material.needsUpdate = true;
       }
     });
