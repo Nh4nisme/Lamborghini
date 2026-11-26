@@ -1,7 +1,7 @@
 package com.lamborghini.controller;
 
 
-import com.lamborghini.dto.response.ModelDetailResponse;
+import com.lamborghini.dto.configuration.ModelDetailResponse;
 import com.lamborghini.entity.DongXe;
 import com.lamborghini.service.ModelService;
 import lombok.RequiredArgsConstructor;

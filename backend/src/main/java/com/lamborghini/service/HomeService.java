@@ -1,12 +1,10 @@
 package com.lamborghini.service;
 
-import com.lamborghini.dto.response.HomeResponse;
+import com.lamborghini.dto.global.HomeResponse;
 import com.lamborghini.entity.DongXe;
-import com.lamborghini.entity.Showroom;
 import com.lamborghini.entity.TinTuc;
 import com.lamborghini.entity.Xe;
 import com.lamborghini.enums.TrangThaiDongXe;
-import com.lamborghini.enums.TrangThaiShowroom;
 import com.lamborghini.enums.TrangThaiTinTuc;
 import com.lamborghini.repository.DongXeRepository;
 import com.lamborghini.repository.ShowroomRepository;
@@ -19,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.awt.print.Pageable;
 import java.math.BigInteger;
 import java.util.List;
 
