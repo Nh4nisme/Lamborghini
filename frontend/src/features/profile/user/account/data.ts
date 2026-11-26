@@ -10,15 +10,11 @@ export const COUNTRY_OPTIONS = ['Việt Nam', 'Singapore', 'Thái Lan']
 
 export const CITY_OPTIONS = ['Hồ Chí Minh', 'Hà Nội', 'Đà Nẵng']
 
-// Dữ liệu mẫu theo thiết kế Figma, chỉ dùng khi chạy dev và API chưa sẵn sàng
 export const SAMPLE_PROFILE: CustomerProfileDTO = {
     maKhachHang: 1,
     ho: 'Nguyễn',
     ten: 'Minh Anh',
     email: 'minhanh@email.com',
     soDienThoai: '+84 912 345 678',
-    quocGia: 'Việt Nam',
-    tinhThanhPho: 'Hồ Chí Minh',
-    diaChi: 'Quận 1, Hồ Chí Minh',
     nhanThongTinTiepThi: true,
 }

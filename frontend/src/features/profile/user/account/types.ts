@@ -6,8 +6,5 @@ export interface CustomerProfileDTO {
     ten: string
     email: string
     soDienThoai: string
-    quocGia: string
-    tinhThanhPho: string
-    diaChi: string
     nhanThongTinTiepThi: boolean
 }

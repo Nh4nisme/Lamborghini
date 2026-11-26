@@ -21,9 +21,6 @@ export const profileApi = {
             ten: tenParts.join(' ') || '',
             email: response.email,
             soDienThoai: response.sdt,
-            quocGia: 'Việt Nam',
-            tinhThanhPho: 'Hồ Chí Minh',
-            diaChi: 'Quận 1, Hồ Chí Minh',
             nhanThongTinTiepThi: false,
         } as CustomerProfileDTO
     },

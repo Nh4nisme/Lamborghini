@@ -1,8 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Mail } from 'lucide-react'
 import { Button } from '../../../../../components/ui/Button'
-import { Field, Input, Select } from '../../../../../components/ui/FormField'
-import { CITY_OPTIONS, COUNTRY_OPTIONS } from '../data'
+import { Field, Input } from '../../../../../components/ui/FormField'
 import { useUpdateProfile } from '../hooks'
 import type { CustomerProfileDTO } from '../types'
 
@@ -56,28 +55,6 @@ export function ProfileForm({ initialValues }: ProfileFormProps) {
                         required
                     />
                 </Field>
-
-                <Field id="quocGia" label="Quốc gia / Khu vực">
-                    <Select id="quocGia" value={form.quocGia} onChange={(e) => setField('quocGia', e.target.value)}>
-                        {COUNTRY_OPTIONS.map((option) => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
-                    </Select>
-                </Field>
-
-                <Field id="tinhThanhPho" label="Tỉnh / Thành phố">
-                    <Select id="tinhThanhPho" value={form.tinhThanhPho} onChange={(e) => setField('tinhThanhPho', e.target.value)}>
-                        {CITY_OPTIONS.map((option) => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
-                    </Select>
-                </Field>
-
-                <div className="md:col-span-2">
-                    <Field id="diaChi" label="Địa chỉ">
-                        <Input id="diaChi" value={form.diaChi} onChange={(e) => setField('diaChi', e.target.value)} />
-                    </Field>
-                </div>
             </div>
 
             <label className="flex items-center gap-3 text-sm text-lambo-secondary" style={{ fontFamily: 'Barlow, sans-serif' }}>
