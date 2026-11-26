@@ -1,6 +1,6 @@
 package com.lamborghini.controller;
 
-import com.lamborghini.dto.response.HomeResponse;
+import com.lamborghini.dto.global.HomeResponse;
 import com.lamborghini.entity.DongXe;
 import com.lamborghini.entity.TinTuc;
 import com.lamborghini.entity.Xe;

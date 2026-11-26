@@ -1,8 +1,8 @@
 package com.lamborghini.controller;
 
-import com.lamborghini.dto.request.UpdateProfileRequest;
-import com.lamborghini.dto.response.TaiKhoanResponse;
-import com.lamborghini.service.TaiKhoanService;
+import com.lamborghini.dto.profile.request.UpdateProfileRequest;
+import com.lamborghini.dto.taikhoan.reponse.TaiKhoanResponse;
+import com.lamborghini.service.authentication.TaiKhoanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,11 +1,10 @@
 package com.lamborghini.service;
 
-import com.lamborghini.dto.response.ModelDetailResponse;
+import com.lamborghini.dto.configuration.ModelDetailResponse;
 import com.lamborghini.entity.DongXe;
 import com.lamborghini.entity.PhuTungCoBan;
 import com.lamborghini.entity.Xe;
 import com.lamborghini.enums.TrangThaiDongXe;
-import com.lamborghini.exception.NotFoundException;
 import com.lamborghini.repository.DongXeRepository;
 import com.lamborghini.repository.PhuTungCoBanRepository;
 import com.lamborghini.repository.XeRepository;

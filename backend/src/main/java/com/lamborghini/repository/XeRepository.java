@@ -1,6 +1,5 @@
 package com.lamborghini.repository;
 
-import com.lamborghini.dto.response.ModelDetailResponse;
 import com.lamborghini.entity.Xe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
