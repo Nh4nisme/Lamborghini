@@ -14,17 +14,25 @@ interface DealerAppointmentRefuseConfirmationProps {
 export function DealerAppointmentRefuseConfirmation({ detail, lyDoTuChoi }: DealerAppointmentRefuseConfirmationProps) {
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState(false)
     const goBackToDetail = () => navigate(`/profile/dealer/appointment/${detail.maLichHen}`)
 
     const handleReject = async () => {
-        if (!lyDoTuChoi.trim()) return
+        if (!lyDoTuChoi.trim()) {
+            setError('Vui lòng nhập lý do từ chối')
+            return
+        }
         
         setIsSubmitting(true)
+        setError(null)
+        setSuccess(false)
         try {
             await dealerDetailApi.rejectAppointment(detail.maLichHen, lyDoTuChoi)
-            navigate('/profile/dealer/appointment')
-        } catch (error) {
-            console.error('Failed to reject appointment:', error)
+            setSuccess(true)
+            setTimeout(() => navigate('/profile/dealer/appointment'), 1500)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Không thể từ chối lịch hẹn. Vui lòng thử lại.')
         } finally {
             setIsSubmitting(false)
         }
@@ -60,7 +68,17 @@ export function DealerAppointmentRefuseConfirmation({ detail, lyDoTuChoi }: Deal
             </div>
 
             <div className="mt-6 flex flex-col gap-4 border-t border-lambo-primary pt-6">
-                <Button variant="primary" className="w-full justify-center" onClick={handleReject} disabled={isSubmitting}>
+                {error && (
+                    <div className="border border-red-800 bg-red-950/40 p-3 text-sm text-red-300">
+                        {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="border border-emerald-800 bg-emerald-950/40 p-3 text-sm text-emerald-300">
+                        Từ chối lịch hẹn thành công
+                    </div>
+                )}
+                <Button variant="primary" className="w-full justify-center" onClick={handleReject} disabled={isSubmitting || success || !lyDoTuChoi.trim()}>
                     {isSubmitting ? 'Đang xử lý...' : 'Xác nhận từ chối'}
                 </Button>
                 <Button variant="light" className="w-full justify-center" onClick={goBackToDetail} disabled={isSubmitting}>

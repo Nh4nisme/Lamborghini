@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react'
+﻿import { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { StudioScene } from '../features/configurator/3d/StudioScene'
 import { FigmaHeader } from '../features/configurator/components/FigmaHeader'
@@ -13,6 +13,11 @@ import type {
     CarConfiguration,
     CameraPreset,
     PaintColor,
+    RimOption,
+    CaliperOption,
+    InteriorTrim,
+    CarbonPackage,
+    ExhaustOption,
 } from '../features/configurator/types'
 import {
     PAINT_COLORS,
@@ -34,6 +39,195 @@ import {
     mapTuyChonToCalipers,
 } from '../features/configurator/utils/apiMappers'
 import { X, ShieldAlert } from 'lucide-react'
+
+// ---------------------------------------------------------------------------
+// EX08 - Cấu hình tạm theo phiên (sessionStorage)
+// Key: lambo_config_v1_<carId> để mỗi dòng xe có một cấu hình riêng.
+// ---------------------------------------------------------------------------
+const CONFIG_STORAGE_PREFIX = 'lambo_config_v1_'
+
+type StoredConfigKey =
+    | 'exteriorColor'
+    | 'rim'
+    | 'caliper'
+    | 'interiorTrim'
+    | 'carbonLower'
+    | 'carbonUpper'
+    | 'carbonInterior'
+    | 'exhaust'
+
+type StoredConfig = Pick<CarConfiguration, StoredConfigKey>
+
+const getConfigStorageKey = (carId: number) => `${CONFIG_STORAGE_PREFIX}${carId}`
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null
+
+const isPaintColor = (value: unknown): value is PaintColor =>
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.hex === 'string' &&
+    typeof value.finish === 'string' &&
+    typeof value.category === 'string' &&
+    typeof value.description === 'string' &&
+    typeof value.roughness === 'number' &&
+    typeof value.metalness === 'number' &&
+    typeof value.clearcoat === 'number' &&
+    typeof value.priceUSD === 'number' &&
+    typeof value.priceVND === 'number'
+
+const isRimOption = (value: unknown): value is RimOption =>
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.size === 'string' &&
+    typeof value.finish === 'string' &&
+    typeof value.hex === 'string' &&
+    typeof value.spokeColor === 'string' &&
+    typeof value.priceUSD === 'number' &&
+    typeof value.priceVND === 'number'
+
+const isCaliperOption = (value: unknown): value is CaliperOption =>
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.hex === 'string' &&
+    typeof value.priceUSD === 'number' &&
+    typeof value.priceVND === 'number'
+
+const isInteriorTrim = (value: unknown): value is InteriorTrim =>
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.primaryLeatherHex === 'string' &&
+    typeof value.secondaryLeatherHex === 'string' &&
+    typeof value.stitchingHex === 'string' &&
+    typeof value.priceUSD === 'number' &&
+    typeof value.priceVND === 'number'
+
+const isCarbonPackage = (value: unknown): value is CarbonPackage =>
+    value === 'body' || value === 'matt_carbon' || value === 'shiny_carbon'
+
+const isExhaustOption = (value: unknown): value is ExhaustOption =>
+    value === 'matt_black' || value === 'titanium' || value === 'chrome'
+
+/** Đọc cấu hình tạm đã lưu của phiên; trả về null nếu không có hoặc dữ liệu lỗi. */
+const loadStoredConfig = (carId: number): Partial<StoredConfig> | null => {
+    try {
+        if (typeof window === 'undefined') return null
+        const raw = window.sessionStorage.getItem(getConfigStorageKey(carId))
+        if (!raw) return null
+
+        const parsed: unknown = JSON.parse(raw)
+        if (!isRecord(parsed)) return null
+
+        const stored: Partial<StoredConfig> = {}
+        if (isPaintColor(parsed.exteriorColor)) stored.exteriorColor = parsed.exteriorColor
+        if (isRimOption(parsed.rim)) stored.rim = parsed.rim
+        if (isCaliperOption(parsed.caliper)) stored.caliper = parsed.caliper
+        if (isInteriorTrim(parsed.interiorTrim)) stored.interiorTrim = parsed.interiorTrim
+        if (isCarbonPackage(parsed.carbonLower)) stored.carbonLower = parsed.carbonLower
+        if (isCarbonPackage(parsed.carbonUpper)) stored.carbonUpper = parsed.carbonUpper
+        if (typeof parsed.carbonInterior === 'boolean') stored.carbonInterior = parsed.carbonInterior
+        if (isExhaustOption(parsed.exhaust)) stored.exhaust = parsed.exhaust
+
+        return Object.keys(stored).length > 0 ? stored : null
+    } catch {
+        // JSON hỏng hoặc sessionStorage bị chặn -> bỏ qua, dùng cấu hình mặc định.
+        return null
+    }
+}
+
+/** Ghi cấu hình tạm của phiên; bỏ qua lỗi quota / private mode. */
+const saveStoredConfig = (carId: number, config: CarConfiguration) => {
+    try {
+        if (typeof window === 'undefined') return
+        const payload: StoredConfig = {
+            exteriorColor: config.exteriorColor,
+            rim: config.rim,
+            caliper: config.caliper,
+            interiorTrim: config.interiorTrim,
+            carbonLower: config.carbonLower,
+            carbonUpper: config.carbonUpper,
+            carbonInterior: config.carbonInterior,
+            exhaust: config.exhaust,
+        }
+        window.sessionStorage.setItem(getConfigStorageKey(carId), JSON.stringify(payload))
+    } catch {
+        // Không ghi được thì không ảnh hưởng tới luồng cấu hình.
+    }
+}
+
+/** Xoá cấu hình tạm của dòng xe khỏi sessionStorage. */
+const clearStoredConfig = (carId: number) => {
+    try {
+        if (typeof window === 'undefined') return
+        window.sessionStorage.removeItem(getConfigStorageKey(carId))
+    } catch {
+        // Bỏ qua lỗi khi xoá.
+    }
+}
+
+// Map carId to correct GLB model
+const getModelForCarId = (id: number): { url: string; name: string } => {
+    switch (id) {
+        case 1: // Revuelto
+            return {
+                url: '/models/revuelto_30tm-v8.glb',
+                name: 'Lamborghini Revuelto (3D Studio)',
+            }
+        case 2: // Temerario
+            return {
+                url: '/models/lamborghini_sc18_draco.glb',
+                name: 'Lamborghini Temerario (3D Studio)',
+            }
+        case 3: // Huracan
+            return {
+                url: '/models/huracan_eagletm-v1.glb',
+                name: 'Lamborghini Huracan (3D Studio)',
+            }
+        case 4: // Urus
+            return {
+                url: '/models/urus_absoluttm-v5.glb',
+                name: 'Lamborghini Urus (3D Studio)',
+            }
+        default:
+            return {
+                url: '/models/revuelto_30tm-v8.glb',
+                name: 'Lamborghini Revuelto (3D Studio)',
+            }
+    }
+}
+
+/** Cấu hình mặc định của dòng xe (dùng khi chưa có hoặc vừa xoá cấu hình tạm). */
+const createDefaultConfig = (carId: number): CarConfiguration => {
+    const modelData = getModelForCarId(carId)
+    return {
+        model: 'Revuelto HPEV',
+        exteriorColor: PAINT_COLORS[0],
+        rim: RIMS[0],
+        caliper: CALIPERS[0],
+        carbonLower: 'body',
+        carbonUpper: 'body',
+        exhaust: 'matt_black',
+        spoilerPosition: 'retracted',
+        doorsOpen: false,
+        lightsOn: true,
+        engineStarted: false,
+        interiorTrim: INTERIOR_TRIMS[0],
+        contrastStitchingHex: '#ffcc00',
+        carbonInterior: false,
+        environment: 'envstudionewnight',
+        currency: 'VND',
+        language: 'VIE',
+        loungeMode: false,
+        activeTab: 'colors',
+        viewMode: 'exterior',
+        customModelUrl: modelData.url,
+        customModelName: modelData.name,
+    }
+}
 
 export default function ConfiguratorPage() {
     const { maXe } = useParams<{ maXe?: string }>()
@@ -60,63 +254,24 @@ export default function ConfiguratorPage() {
     const apiInteriorTrims = useMemo(() => mapTuyChonToInteriorTrims(rawInteriorOptions), [rawInteriorOptions])
     const apiCalipers = useMemo(() => mapTuyChonToCalipers(rawCaliperOptions), [rawCaliperOptions])
 
-    // Map carId to correct GLB model
-    const getModelForCarId = (id: number): { url: string; name: string } => {
-        switch (id) {
-            case 1: // Revuelto
-                return {
-                    url: '/models/revuelto_30tm-v8.glb',
-                    name: 'Lamborghini Revuelto (3D Studio)',
-                }
-            case 2: // Temerario
-                return {
-                    url: '/models/lamborghini_sc18_draco.glb',
-                    name: 'Lamborghini Temerario (3D Studio)',
-                }
-            case 3: // Huracan
-                return {
-                    url: '/models/huracan_eagletm-v1.glb',
-                    name: 'Lamborghini Huracan (3D Studio)',
-                }
-            case 4: // Urus
-                return {
-                    url: '/models/urus_absoluttm-v5.glb',
-                    name: 'Lamborghini Urus (3D Studio)',
-                }
-            default:
-                return {
-                    url: '/models/revuelto_30tm-v8.glb',
-                    name: 'Lamborghini Revuelto (3D Studio)',
-                }
-        }
+    // EX08: khôi phục cấu hình tạm của phiên (nếu có) ngay từ lần render đầu.
+    const [config, setConfig] = useState<CarConfiguration>(() => {
+        const base = createDefaultConfig(carId)
+        const stored = loadStoredConfig(carId)
+        return stored ? { ...base, ...stored } : base
+    })
+
+    // Khi đổi dòng xe: nạp lại cấu hình tạm tương ứng với carId mới.
+    const [activeCarId, setActiveCarId] = useState(carId)
+    if (activeCarId !== carId) {
+        setActiveCarId(carId)
+        const base = createDefaultConfig(carId)
+        const stored = loadStoredConfig(carId)
+        setConfig(stored ? { ...base, ...stored } : base)
     }
 
-    const initialModel = getModelForCarId(carId)
-
-    const [config, setConfig] = useState<CarConfiguration>(() => ({
-        model: 'Revuelto HPEV',
-        exteriorColor: PAINT_COLORS[0],
-        rim: RIMS[0],
-        caliper: CALIPERS[0],
-        carbonLower: 'body',
-        carbonUpper: 'body',
-        exhaust: 'matt_black',
-        spoilerPosition: 'retracted',
-        doorsOpen: false,
-        lightsOn: true,
-        engineStarted: false,
-        interiorTrim: INTERIOR_TRIMS[0],
-        contrastStitchingHex: '#ffcc00',
-        carbonInterior: false,
-        environment: 'envstudionewnight',
-        currency: 'VND',
-        language: 'VIE',
-        loungeMode: false,
-        activeTab: 'colors',
-        viewMode: 'exterior',
-        customModelUrl: initialModel.url,
-        customModelName: initialModel.name,
-    }))
+    // Bỏ qua lần ghi kế tiếp sau khi người dùng bấm Reset (để xoá entry trong sessionStorage).
+    const skipNextPersistRef = useRef(false)
 
     useEffect(() => {
         if (carData?.tenPhienBan) {
@@ -153,6 +308,15 @@ export default function ConfiguratorPage() {
             setConfig((prev) => ({ ...prev, caliper: apiCalipers[0] }))
         }
     }, [apiCalipers])
+
+    // EX08: lưu cấu hình tạm của phiên theo carId để reload vẫn giữ lựa chọn.
+    useEffect(() => {
+        if (skipNextPersistRef.current) {
+            skipNextPersistRef.current = false
+            return
+        }
+        saveStoredConfig(carId, config)
+    }, [config, carId])
 
     // Map active angle to Camera Preset for 3D Viewport
     const getCameraPreset = (): CameraPreset => {
@@ -210,6 +374,9 @@ export default function ConfiguratorPage() {
 
     const handleResetConfig = () => {
         playUiClick()
+        // EX08: xoá cấu hình tạm của phiên cho dòng xe này.
+        clearStoredConfig(carId)
+        skipNextPersistRef.current = true
         // Reset to the first API option, falling back to the static catalogue.
         setConfig((prev) => ({
             ...prev,
@@ -217,6 +384,9 @@ export default function ConfiguratorPage() {
             rim: apiRims[0] ?? RIMS[0],
             caliper: apiCalipers[0] ?? CALIPERS[0],
             carbonLower: 'body',
+            carbonUpper: 'body',
+            carbonInterior: false,
+            exhaust: 'matt_black',
             doorsOpen: false,
             interiorTrim: apiInteriorTrims[0] ?? INTERIOR_TRIMS[0],
         }))

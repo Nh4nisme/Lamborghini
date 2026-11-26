@@ -11,9 +11,32 @@ export default function DealerInformationPage() {
     const { data, isLoading, isError } = useDealerProfile()
     const [activeTab, setActiveTab] = useState<DealerInformationTab>('PERSONAL')
     const changePasswordMutation = useChangeDealerPassword()
+    const [passwordSuccess, setPasswordSuccess] = useState(false)
+    const [passwordError, setPasswordError] = useState<string | null>(null)
 
     const profile = data
     const hasError = isError
+
+    const handlePasswordChange = (payload: { currentPassword: string; newPassword: string }) => {
+        setPasswordSuccess(false)
+        setPasswordError(null)
+        changePasswordMutation.mutate(payload, {
+            onSuccess: () => {
+                setPasswordSuccess(true)
+                setPasswordError(null)
+            },
+            onError: (err: any) => {
+                setPasswordSuccess(false)
+                if (err?.status === 401) {
+                    setPasswordError('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.')
+                } else if (err?.message) {
+                    setPasswordError(err.message)
+                } else {
+                    setPasswordError('Không thể đổi mật khẩu. Vui lòng thử lại.')
+                }
+            },
+        })
+    }
 
     return (
         <div data-node-id="2022:5444" className="min-h-screen bg-lambo-bold-black pb-20 text-[#e5e5e5]">
@@ -39,10 +62,22 @@ export default function DealerInformationPage() {
                     )}
 
                     {!isLoading && activeTab === 'SECURITY' && (
-                        <DealerSecurityForm
-                            onSubmit={(payload) => changePasswordMutation.mutate(payload)}
-                            isSubmitting={changePasswordMutation.isPending}
-                        />
+                        <>
+                            {passwordError && (
+                                <div className="mb-6 border border-red-800 bg-red-950/40 p-4 text-sm text-red-300">
+                                    {passwordError}
+                                </div>
+                            )}
+                            {passwordSuccess && (
+                                <div className="mb-6 border border-emerald-800 bg-emerald-950/40 p-4 text-sm text-emerald-300">
+                                    Đổi mật khẩu thành công
+                                </div>
+                            )}
+                            <DealerSecurityForm
+                                onSubmit={handlePasswordChange}
+                                isSubmitting={changePasswordMutation.isPending}
+                            />
+                        </>
                     )}
 
                     {!isLoading && activeTab === 'SHOWROOM' && (

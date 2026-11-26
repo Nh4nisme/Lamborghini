@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { CalendarDays } from 'lucide-react'
 import { ScrollToTop } from '../../../../components/feedback'
 import { Button } from '../../../../components/ui/Button'
@@ -11,6 +12,7 @@ import { NextAppointmentCard } from '../../../../features/profile/user/appointme
 import { adaptAppointment, type Appointment, type AppointmentTab } from '../../../../features/profile/user/appointment/types'
 
 export default function AppointmentPage() {
+    const navigate = useNavigate()
     const { data, isLoading, isError } = useMyAppointments()
     const [activeTab, setActiveTab] = useState<AppointmentTab>('UPCOMING')
 
@@ -43,7 +45,12 @@ export default function AppointmentPage() {
 
                 <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <AppointmentTabs activeTab={activeTab} counts={counts} onChange={setActiveTab} />
-                    <Button variant="primary" icon={<CalendarDays className="h-4 w-4" />} iconPosition="left">
+                    <Button
+                        variant="primary"
+                        icon={<CalendarDays className="h-4 w-4" />}
+                        iconPosition="left"
+                        onClick={() => navigate('/showroom')}
+                    >
                         Đặt lịch hẹn
                     </Button>
                 </div>
