@@ -11,12 +11,37 @@ import {
     Sparkles,
     Check,
     Car,
+    AlertCircle,
 } from 'lucide-react'
 import { LoadingScreen } from '../components/feedback'
+import { http } from '../api/http'
 
 /* -------------------------------------------------------------------------- */
 /*  Types & Data Structures                                                   */
 /* -------------------------------------------------------------------------- */
+
+interface DongXe {
+    maDongXe: number
+    tenDongXe: string
+    danhMuc: string
+    moTa: string
+    trangThai: string
+    noiBat: boolean
+    hinhAnh: string
+}
+
+interface Xe {
+    maXe: number
+    tenPhienBan: string
+    giaKhoiDiem: number
+    dongCo: string
+    congSuat: number
+    tocDoToiDa: number
+    hinhAnh: string
+    moTa: string
+    trangThai: string
+    giaToc: number
+}
 
 interface CarSearchResult {
     id: number
@@ -34,68 +59,28 @@ interface CarSearchResult {
     modelDetailId: number
 }
 
-const CAR_CATALOG: CarSearchResult[] = [
-    {
-        id: 1,
-        slug: 'revuelto',
-        name: 'REVUELTO',
-        tag: 'V12 / PLUG-IN HYBRID',
-        description: 'The first HPEV. A new paradigm in performance and driving emotion.',
-        powerCV: '1015',
-        acceleration: '2.5 s',
-        topSpeed: '>350',
-        priceUSD: 608000,
-        engineType: 'V12 PHEV',
+function mapXeToCarSearchResult(xe: Xe): CarSearchResult {
+    const dongCoLower = xe.dongCo?.toLowerCase() || ''
+    let engineType: 'V12 PHEV' | 'V8 PHEV' | 'V10 NA' = 'V10 NA'
+    if (dongCoLower.includes('v12')) engineType = 'V12 PHEV'
+    else if (dongCoLower.includes('v8')) engineType = 'V8 PHEV'
+
+    return {
+        id: xe.maXe,
+        slug: xe.tenPhienBan.toLowerCase().replace(/\s+/g, '-'),
+        name: xe.tenPhienBan,
+        tag: xe.dongCo || 'N/A',
+        description: xe.moTa || '',
+        powerCV: xe.congSuat?.toString() || '0',
+        acceleration: xe.giaToc ? `${(xe.giaToc / 10).toFixed(1)} s` : 'N/A',
+        topSpeed: xe.tocDoToiDa?.toString() || '0',
+        priceUSD: xe.giaKhoiDiem || 0,
+        engineType,
         category: 'Supercar',
-        image: '/Images/model-detail/revuelto/exterior.webp',
-        modelDetailId: 1,
-    },
-    {
-        id: 2,
-        slug: 'urus-se',
-        name: 'URUS SE',
-        tag: 'V8 / PLUG-IN HYBRID',
-        description: 'A super SUV that balances everyday usability with uncompromising performance.',
-        powerCV: '800',
-        acceleration: '3.4 s',
-        topSpeed: '312',
-        priceUSD: 258000,
-        engineType: 'V8 PHEV',
-        category: 'Super SUV',
-        image: '/Images/model-detail/urus/exterior.jpg',
-        modelDetailId: 3,
-    },
-    {
-        id: 3,
-        slug: 'temerario',
-        name: 'TEMERARIO',
-        tag: 'V8 / TWIN-TURBO HPEV',
-        description: 'Authentic feel, unmatched V8 twin-turbo performance reaching 10,000 rpm.',
-        powerCV: '920',
-        acceleration: '2.7 s',
-        topSpeed: '343',
-        priceUSD: 357000,
-        engineType: 'V8 PHEV',
-        category: 'Supercar',
-        image: '/Images/model-detail/temerario/exterior.webp',
-        modelDetailId: 2,
-    },
-    {
-        id: 4,
-        slug: 'huracan-tecnica',
-        name: 'HURACÁN TECNICA',
-        tag: 'V10 / NATURALLY ASPIRATED',
-        description: 'Flawless bridge between past legacy and the future of pure atmospheric performance.',
-        powerCV: '640',
-        acceleration: '3.2 s',
-        topSpeed: '325',
-        priceUSD: 249000,
-        engineType: 'V10 NA',
-        category: 'Supercar',
-        image: '/Images/model-detail/huracan/exterior.webp',
-        modelDetailId: 1,
-    },
-]
+        image: xe.hinhAnh || '/placeholder.jpg',
+        modelDetailId: xe.maXe,
+    }
+}
 
 const EXPLORE_CATEGORIES = [
     {
@@ -304,6 +289,12 @@ export default function SearchPage() {
     // Loading Screen state (for initial load and reset actions)
     const [isLoading, setIsLoading] = useState(true)
 
+    // Data states
+    const [seriesList, setSeriesList] = useState<DongXe[]>([])
+    const [searchResults, setSearchResults] = useState<CarSearchResult[]>([])
+    const [isSearching, setIsSearching] = useState(false)
+    const [searchError, setSearchError] = useState<string | null>(null)
+
     // Search and Filter states
     const [keyword, setKeyword] = useState('')
     const [selectedModelFilter, setSelectedModelFilter] = useState('ALL')
@@ -317,43 +308,83 @@ export default function SearchPage() {
     const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState(false)
     const [selectedEngine, setSelectedEngine] = useState<string>('ALL')
 
-    // Initial load timer: 650ms showing LoadingScreen
+    // Initial load: fetch series list
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false)
-        }, 650)
-        return () => clearTimeout(timer)
+        const fetchSeries = async () => {
+            setIsLoading(true)
+            try {
+                const data = await http<DongXe[]>('/model/getAllDongXe')
+                setSeriesList(data)
+            } catch (error) {
+                console.error('Failed to fetch series:', error)
+                setSearchError('Không thể tải danh sách dòng xe')
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        fetchSeries()
     }, [])
 
-    // Filter computation
-    const filteredResults = CAR_CATALOG.filter((car) => {
-        // Keyword search
-        if (keyword.trim()) {
-            const query = keyword.toLowerCase().trim()
-            const matchesName = car.name.toLowerCase().includes(query)
-            const matchesTag = car.tag.toLowerCase().includes(query)
-            const matchesDesc = car.description.toLowerCase().includes(query)
-            const matchesCategory = car.category.toLowerCase().includes(query)
-            if (!matchesName && !matchesTag && !matchesDesc && !matchesCategory) return false
+    // Trigger search when filters change
+    useEffect(() => {
+        if (!isLoading && hasActiveSearch) {
+            performSearch()
         }
+    }, [selectedModelFilter, priceRange, selectedEngine, keyword])
 
-        // Model filter
-        if (selectedModelFilter !== 'ALL') {
-            if (!car.name.toLowerCase().includes(selectedModelFilter.toLowerCase())) return false
+    const performSearch = async () => {
+        setIsSearching(true)
+        setSearchError(null)
+        
+        try {
+            let allResults: CarSearchResult[] = []
+
+            if (selectedModelFilter === 'ALL') {
+                const promises = seriesList.map(async (series) => {
+                    try {
+                        const data = await http<Xe[]>(
+                            `/home/search?maDongXe=${series.maDongXe}` +
+                            (keyword ? `&keyword=${encodeURIComponent(keyword)}` : '') +
+                            (priceRange[0] > 200000 ? `&minPrice=${priceRange[0]}` : '') +
+                            (priceRange[1] < 800000 ? `&maxPrice=${priceRange[1]}` : '')
+                        )
+                        return data.map(mapXeToCarSearchResult)
+                    } catch {
+                        return []
+                    }
+                })
+                const results = await Promise.all(promises)
+                allResults = results.flat()
+            } else {
+                const selectedSeries = seriesList.find(
+                    (s) => s.tenDongXe.toLowerCase() === selectedModelFilter.toLowerCase()
+                )
+                if (selectedSeries) {
+                    const data = await http<Xe[]>(
+                        `/home/search?maDongXe=${selectedSeries.maDongXe}` +
+                        (keyword ? `&keyword=${encodeURIComponent(keyword)}` : '') +
+                        (priceRange[0] > 200000 ? `&minPrice=${priceRange[0]}` : '') +
+                        (priceRange[1] < 800000 ? `&maxPrice=${priceRange[1]}` : '')
+                    )
+                    allResults = data.map(mapXeToCarSearchResult)
+                }
+            }
+
+            // Client-side engine filter
+            if (selectedEngine !== 'ALL') {
+                allResults = allResults.filter((car) => car.engineType === selectedEngine)
+            }
+
+            setSearchResults(allResults)
+        } catch (error) {
+            console.error('Search failed:', error)
+            setSearchError(error instanceof Error ? error.message : 'Đã xảy ra lỗi khi tìm kiếm')
+        } finally {
+            setIsSearching(false)
         }
+    }
 
-        // Price range filter
-        if (car.priceUSD < priceRange[0] || car.priceUSD > priceRange[1]) {
-            return false
-        }
-
-        // Engine filter
-        if (selectedEngine !== 'ALL' && car.engineType !== selectedEngine) {
-            return false
-        }
-
-        return true
-    })
+    const filteredResults = searchResults
 
     // Whether search/filter mode is active
     const hasActiveSearch =
@@ -365,17 +396,15 @@ export default function SearchPage() {
 
     // Reset Handler: Trigger LoadingScreen for 600ms, then reset all filters
     const handleResetAll = () => {
-        setIsLoading(true)
-        setTimeout(() => {
-            setKeyword('')
-            setSelectedModelFilter('ALL')
-            setPriceRange([200000, 800000])
-            setSelectedEngine('ALL')
-            setIsModelDropdownOpen(false)
-            setIsPriceDropdownOpen(false)
-            setIsMoreFiltersOpen(false)
-            setIsLoading(false)
-        }, 550)
+        setKeyword('')
+        setSelectedModelFilter('ALL')
+        setPriceRange([200000, 800000])
+        setSelectedEngine('ALL')
+        setIsModelDropdownOpen(false)
+        setIsPriceDropdownOpen(false)
+        setIsMoreFiltersOpen(false)
+        setSearchResults([])
+        setSearchError(null)
     }
 
     const handleCategoryClick = (val: string) => {
@@ -486,22 +515,37 @@ export default function SearchPage() {
                         {/* Model Dropdown Menu */}
                         {isModelDropdownOpen && (
                             <div className="absolute left-0 right-0 top-full mt-1.5 z-30 bg-[#16171c] border border-neutral-700 shadow-2xl p-2 animate-fade-in">
-                                {['ALL', 'Revuelto', 'Urus', 'Temerario', 'Huracán'].map((m) => (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSelectedModelFilter('ALL')
+                                        setIsModelDropdownOpen(false)
+                                    }}
+                                    className={`w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xs flex items-center justify-between cursor-pointer transition-colors ${
+                                        selectedModelFilter === 'ALL'
+                                            ? 'bg-lambo-primary text-black'
+                                            : 'text-neutral-300 hover:bg-white/5'
+                                    }`}
+                                >
+                                    <span>All Models</span>
+                                    {selectedModelFilter === 'ALL' && <Check className="w-3.5 h-3.5" />}
+                                </button>
+                                {seriesList.map((series) => (
                                     <button
-                                        key={m}
+                                        key={series.maDongXe}
                                         type="button"
                                         onClick={() => {
-                                            setSelectedModelFilter(m)
+                                            setSelectedModelFilter(series.tenDongXe)
                                             setIsModelDropdownOpen(false)
                                         }}
                                         className={`w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xs flex items-center justify-between cursor-pointer transition-colors ${
-                                            selectedModelFilter === m
+                                            selectedModelFilter === series.tenDongXe
                                                 ? 'bg-lambo-primary text-black'
                                                 : 'text-neutral-300 hover:bg-white/5'
                                         }`}
                                     >
-                                        <span>{m === 'ALL' ? 'All Models' : m}</span>
-                                        {selectedModelFilter === m && <Check className="w-3.5 h-3.5" />}
+                                        <span>{series.tenDongXe}</span>
+                                        {selectedModelFilter === series.tenDongXe && <Check className="w-3.5 h-3.5" />}
                                     </button>
                                 ))}
                             </div>
@@ -666,7 +710,28 @@ export default function SearchPage() {
                             </p>
                         </div>
 
-                        {filteredResults.length > 0 ? (
+                        {isSearching ? (
+                            <div className="flex items-center justify-center p-12">
+                                <div className="w-12 h-12 border-4 border-lambo-primary border-t-transparent rounded-full animate-spin"></div>
+                            </div>
+                        ) : searchError ? (
+                            <div className="p-12 text-center rounded-xs border border-red-900/50 bg-red-950/20">
+                                <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                                <h3 className="text-lg font-bold uppercase text-red-300 mb-1">
+                                    Lỗi tìm kiếm
+                                </h3>
+                                <p className="text-xs text-red-400 mb-6">
+                                    {searchError}
+                                </p>
+                                <button
+                                    type="button"
+                                    onClick={handleResetAll}
+                                    className="px-6 py-2.5 bg-lambo-primary text-black font-extrabold uppercase text-xs tracking-wider cursor-pointer"
+                                >
+                                    RESET SEARCH
+                                </button>
+                            </div>
+                        ) : filteredResults.length > 0 ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                 {filteredResults.map((car) => (
                                     <TiltCard
@@ -681,10 +746,10 @@ export default function SearchPage() {
                             <div className="p-12 text-center rounded-xs border border-white/10 bg-lambo-dark-light">
                                 <Car className="w-12 h-12 text-neutral-600 mx-auto mb-3" />
                                 <h3 className="text-lg font-bold uppercase text-white mb-1">
-                                    No models found
+                                    Không tìm thấy xe
                                 </h3>
                                 <p className="text-xs text-neutral-400 mb-6">
-                                    Try adjusting your keyword or resetting your filter criteria.
+                                    Hãy thử điều chỉnh từ khóa hoặc bộ lọc của bạn.
                                 </p>
                                 <button
                                     type="button"
