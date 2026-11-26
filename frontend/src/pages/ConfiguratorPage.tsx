@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+﻿import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { StudioScene } from '../features/configurator/3d/StudioScene'
 import { FigmaHeader } from '../features/configurator/components/FigmaHeader'
@@ -54,10 +54,11 @@ export default function ConfiguratorPage() {
     const { data: rawInteriorOptions = [] } = useTuyChonTheoNhom(carId, 3)
     const { data: rawCaliperOptions = [] } = useTuyChonTheoNhom(carId, 4)
 
-    const apiPaintColors = mapTuyChonToPaintColors(rawPaintOptions)
-    const apiRims = mapTuyChonToRims(rawRimOptions)
-    const apiInteriorTrims = mapTuyChonToInteriorTrims(rawInteriorOptions)
-    const apiCalipers = mapTuyChonToCalipers(rawCaliperOptions)
+    // Memoised so the "pick the first API option" effects below only run when the data changes.
+    const apiPaintColors = useMemo(() => mapTuyChonToPaintColors(rawPaintOptions), [rawPaintOptions])
+    const apiRims = useMemo(() => mapTuyChonToRims(rawRimOptions), [rawRimOptions])
+    const apiInteriorTrims = useMemo(() => mapTuyChonToInteriorTrims(rawInteriorOptions), [rawInteriorOptions])
+    const apiCalipers = useMemo(() => mapTuyChonToCalipers(rawCaliperOptions), [rawCaliperOptions])
 
     // Map carId to correct GLB model
     const getModelForCarId = (id: number): { url: string; name: string } => {
@@ -209,13 +210,15 @@ export default function ConfiguratorPage() {
 
     const handleResetConfig = () => {
         playUiClick()
+        // Reset to the first API option, falling back to the static catalogue.
         setConfig((prev) => ({
             ...prev,
-            exteriorColor: PAINT_COLORS[0],
-            rim: RIMS[0],
+            exteriorColor: apiPaintColors[0] ?? PAINT_COLORS[0],
+            rim: apiRims[0] ?? RIMS[0],
+            caliper: apiCalipers[0] ?? CALIPERS[0],
             carbonLower: 'body',
             doorsOpen: false,
-            interiorTrim: INTERIOR_TRIMS[0],
+            interiorTrim: apiInteriorTrims[0] ?? INTERIOR_TRIMS[0],
         }))
         setActiveCameraAngle('SIDE')
         setCurrentStep('01 EXTERIOR')
