@@ -74,5 +74,8 @@ public class Xe {
     @JsonIgnore
     private List<LichHen> danhSachLichHen;
 
+    @OneToMany(mappedBy = "xe")
+    @JsonIgnore
+    private List<ChiTietCauHinh> danhSachChiTietCauHinh;
 
 }
