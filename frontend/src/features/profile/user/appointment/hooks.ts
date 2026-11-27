@@ -7,6 +7,13 @@ export const useMyAppointments = () =>
         queryFn: appointmentApi.getMyAppointments,
     })
 
+export const useAppointmentDetail = (id: number | null) =>
+    useQuery({
+        queryKey: ['appointment-detail', id],
+        queryFn: () => appointmentApi.getAppointmentDetail(id!),
+        enabled: id !== null,
+    })
+
 export const useCancelAppointment = () => {
     const queryClient = useQueryClient()
     return useMutation({

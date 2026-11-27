@@ -73,11 +73,13 @@ public class    AppointmentService {
 
     }
 
-    public List<AppointmentListDTO> getMyAppointments() {
+    public List<AppointmentListDTO> getMyAppointments(String emailParam) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         List<LichHen> appointments;
         if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
             appointments = lichHenRepository.findByEmailLienHe(auth.getName());
+        } else if (emailParam != null && !emailParam.isBlank()) {
+            appointments = lichHenRepository.findByEmailLienHe(emailParam.trim());
         } else {
             // Khi chưa đăng nhập (mở quyền truy cập theo yêu cầu), trả về toàn bộ lịch hẹn trong DB để kiểm tra đầy đủ dữ liệu
             appointments = lichHenRepository.findAll();
