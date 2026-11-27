@@ -431,15 +431,18 @@ export default function ConfiguratorPage() {
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [carSlug])
 
+    const modelTitle = (carData?.tenPhienBan || carSlug).toUpperCase()
+
     return (
         <div
             className={`relative w-screen h-screen overflow-hidden flex flex-col justify-between transition-colors duration-200 select-none print:w-full print:h-auto print:overflow-visible print:bg-white print:text-black ${
-                isLight ? 'bg-[#f4f4f6] text-[#111111]' : 'bg-lambo-bold-black text-[#ffffff]'
+                isLight ? 'bg-[#f4f4f6] text-[#111111]' : 'bg-[#101110] text-[#f5f5f1]'
             }`}
         >
             {/* 1. Top Header Bar */}
             <div className="print:hidden">
                 <FigmaHeader
+                    modelTitle={modelTitle}
                     currentStep={currentStep}
                     onSelectStep={(step) => {
                         playUiClick()
@@ -477,6 +480,7 @@ export default function ConfiguratorPage() {
                     <FigmaCanvasOverlays
                         theme={theme}
                         exteriorColor={config.exteriorColor}
+                        modelTitle={modelTitle}
                         viewModeLabel={
                             currentStep === '02 INTERIOR'
                                 ? 'INTERIOR COCKPIT VIEW'
@@ -517,6 +521,7 @@ export default function ConfiguratorPage() {
             {/* 3. Bottom Sticky Action Bar */}
             <div className="print:hidden">
                 <FigmaBottomBar
+                    modelTitle={modelTitle}
                     config={config}
                     currentStep={currentStep}
                     onNextStep={handleNextStep}

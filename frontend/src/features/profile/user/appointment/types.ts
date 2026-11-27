@@ -1,4 +1,11 @@
-export type AppointmentStatus = 'DA_XAC_NHAN' | 'CHO_XAC_NHAN' | 'HOAN_TAT' | 'DA_HUY'
+export type AppointmentStatus =
+    | 'DA_XAC_NHAN'
+    | 'CHO_XAC_NHAN'
+    | 'HOAN_TAT'
+    | 'HOAN_THANH'
+    | 'DA_HUY'
+    | 'HUY'
+    | 'TU_CHOI'
 
 export type AppointmentTab = 'UPCOMING' | 'COMPLETED' | 'CANCELLED'
 
@@ -31,7 +38,10 @@ const TAB_BY_STATUS: Record<AppointmentStatus, AppointmentTab> = {
     DA_XAC_NHAN: 'UPCOMING',
     CHO_XAC_NHAN: 'UPCOMING',
     HOAN_TAT: 'COMPLETED',
+    HOAN_THANH: 'COMPLETED',
     DA_HUY: 'CANCELLED',
+    HUY: 'CANCELLED',
+    TU_CHOI: 'CANCELLED',
 }
 
 export function adaptAppointment(dto: AppointmentDTO): Appointment {

@@ -2,9 +2,10 @@ import React from 'react';
 import type { CarConfiguration } from '../types';
 import { CARBON_LOWER_OPTIONS } from '../data/lamborghiniData';
 import type { ConfigStep } from './FigmaHeader';
-import { Download, ArrowRight, RotateCcw } from 'lucide-react';
+import { Download, ArrowUpRight, RotateCcw } from 'lucide-react';
 
 interface FigmaBottomBarProps {
+  modelTitle?: string;
   config: CarConfiguration;
   currentStep: ConfigStep;
   onNextStep: () => void;
@@ -14,6 +15,7 @@ interface FigmaBottomBarProps {
 }
 
 export const FigmaBottomBar: React.FC<FigmaBottomBarProps> = ({
+  modelTitle = 'REVUELTO',
   config,
   currentStep,
   onNextStep,
@@ -23,7 +25,6 @@ export const FigmaBottomBar: React.FC<FigmaBottomBarProps> = ({
 }) => {
   const isLight = theme === 'light';
 
-  // Get next step CTA label
   const getCtaLabel = (): string => {
     switch (currentStep) {
       case '01 EXTERIOR':
@@ -44,100 +45,114 @@ export const FigmaBottomBar: React.FC<FigmaBottomBarProps> = ({
 
   return (
     <footer
-      className={`h-20 w-full border-t flex items-center justify-between px-6 md:px-8 select-none z-30 transition-colors duration-200 ${
+      className={`w-full border-t flex flex-col gap-3 px-5 lg:px-8 py-4 lg:py-5 select-none z-30 transition-colors duration-200 ${
         isLight
-          ? 'bg-[#ffffff] border-[#e5e7eb] text-[#111111]'
-          : 'bg-lambo-bold-black border-[#1e2126] text-[#ffffff]'
+          ? 'bg-[#ffffff] border-[#e5e7eb] text-[#171817]'
+          : 'bg-[#101110] border-[#343831] text-[#f5f5f1]'
       }`}
     >
-      {/* Zone 1: Model Title & Disclaimer */}
-      <div className="flex flex-col min-w-0 pr-4">
-        <span
-          className={`text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] font-barlow ${
-            isLight ? 'text-neutral-500' : 'text-neutral-400'
-          }`}
-        >
-          YOUR CONFIGURATION
-        </span>
-        <span
-          className="text-base md:text-xl font-black uppercase tracking-[0.1em] leading-none my-0.5 font-barlow"
-        >
-          REVUELTO
-        </span>
-        <span
-          className={`hidden sm:inline text-[10px] truncate max-w-[280px] lg:max-w-md ${
-            isLight ? 'text-neutral-400' : 'text-neutral-500'
-          }`}
-        >
-          Illustrative vehicle preview. Colors and equipment may vary by market.
-        </span>
-      </div>
+      {/* Row 1: Configuration Summary + Primary Actions */}
+      <div className="flex items-center justify-between gap-6 w-full">
+        {/* Summary Columns */}
+        <div className="flex items-center gap-8 xl:gap-14 min-w-0">
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <span
+              className={`text-xs font-semibold uppercase tracking-[0.96px] leading-4 ${
+                isLight ? 'text-neutral-500' : 'text-[#9ea39b]'
+              }`}
+            >
+              YOUR CONFIGURATION
+            </span>
+            <span className="text-xl lg:text-[26px] font-semibold uppercase leading-8 font-barlow truncate">
+              {modelTitle}
+            </span>
+          </div>
 
-      {/* Zone 2: Fast Specification Summary Pills */}
-      <div className="hidden xl:flex items-center gap-8 text-xs font-semibold">
-        <div className="flex flex-col">
-          <span
-            className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 font-barlow"
-          >
-            PAINT
-          </span>
-          <span className="font-medium truncate max-w-[140px]">{config.exteriorColor.name}</span>
+          <div className="hidden xl:flex flex-col gap-1 min-w-[140px]">
+            <span
+              className={`text-xs font-semibold uppercase tracking-[0.96px] leading-4 ${
+                isLight ? 'text-neutral-500' : 'text-[#9ea39b]'
+              }`}
+            >
+              PAINT
+            </span>
+            <span className="text-base font-normal leading-6 truncate max-w-[180px]">
+              {config.exteriorColor.name}
+            </span>
+          </div>
+
+          <div className="hidden xl:flex flex-col gap-1 min-w-[140px]">
+            <span
+              className={`text-xs font-semibold uppercase tracking-[0.96px] leading-4 ${
+                isLight ? 'text-neutral-500' : 'text-[#9ea39b]'
+              }`}
+            >
+              WHEELS
+            </span>
+            <span className="text-base font-normal leading-6 truncate max-w-[180px]">
+              {config.rim.name}
+            </span>
+          </div>
+
+          <div className="hidden xl:flex flex-col gap-1 min-w-[140px]">
+            <span
+              className={`text-xs font-semibold uppercase tracking-[0.96px] leading-4 ${
+                isLight ? 'text-neutral-500' : 'text-[#9ea39b]'
+              }`}
+            >
+              TRIM
+            </span>
+            <span className="text-base font-normal leading-6 truncate max-w-[180px]">
+              {trimName}
+            </span>
+          </div>
         </div>
 
-        <div className="flex flex-col">
-          <span
-            className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 font-barlow"
-          >
-            WHEELS
-          </span>
-          <span className="font-medium truncate max-w-[150px]">{config.rim.name}</span>
-        </div>
-
-        <div className="flex flex-col">
-          <span
-            className="text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 font-barlow"
-          >
-            TRIM
-          </span>
-          <span className="font-medium truncate max-w-[140px]">{trimName}</span>
-        </div>
-      </div>
-
-      {/* Zone 3: Actions - SAVE, Next Step Primary CTA, RESET */}
-      <div className="flex flex-col items-end gap-1 shrink-0">
-        <div className="flex items-center gap-3">
-          {/* SAVE Button */}
+        {/* Actions: SAVE + Primary Yellow CTA */}
+        <div className="flex items-center gap-3 shrink-0">
           <button
+            type="button"
             onClick={onSave}
-            className={`flex items-center gap-2 px-4 md:px-5 py-2.5 text-xs font-bold uppercase tracking-[0.16em] border transition-all cursor-pointer ${
+            className={`h-11 lg:h-12 px-5 lg:px-6 flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.56px] border transition-colors cursor-pointer ${
               isLight
-                ? 'border-neutral-300 text-neutral-800 hover:border-black hover:bg-neutral-50'
-                : 'border-white/20 text-neutral-200 hover:border-white hover:bg-white/5'
+                ? 'bg-white border-neutral-300 text-[#171817] hover:border-black hover:bg-neutral-50'
+                : 'bg-[#101110] border-[#343831] text-[#f5f5f1] hover:border-[#9ea39b] hover:bg-[#191b19]'
             }`}
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4" />
             <span>SAVE</span>
           </button>
 
-          {/* Primary Action Button (Yellow solid CTA) */}
           <button
+            type="button"
             onClick={onNextStep}
-            className="flex items-center gap-2 px-5 md:px-6 py-2.5 text-xs font-extrabold uppercase tracking-[0.16em] bg-lambo-primary hover:bg-lambo-hover active:bg-lambo-pressed text-black shadow-md transition-all cursor-pointer active:scale-[0.98] font-barlow"
+            className="h-11 lg:h-12 px-5 lg:px-6 flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.56px] bg-[#eac500] hover:bg-[#f2cf1a] active:bg-[#d8a016] border border-[#d8a016] text-[#171817] transition-colors cursor-pointer"
           >
             <span>{getCtaLabel()}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowUpRight className="w-4 h-4" />
           </button>
         </div>
+      </div>
 
-        {/* Reset Configuration Link */}
+      {/* Row 2: Disclaimer + Reset Configuration */}
+      <div
+        className={`flex items-center justify-between gap-4 text-xs leading-4 ${
+          isLight ? 'text-neutral-500' : 'text-[#9ea39b]'
+        }`}
+      >
+        <span className="truncate">
+          Illustrative vehicle preview. Colors and equipment may vary by market.
+        </span>
+
         <button
+          type="button"
           onClick={onReset}
-          className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer mr-1 ${
-            isLight ? 'text-neutral-500 hover:text-black' : 'text-neutral-400 hover:text-white'
-          } font-barlow`}
+          className={`flex items-center gap-1.5 font-semibold uppercase tracking-[0.96px] transition-colors cursor-pointer shrink-0 ${
+            isLight ? 'text-neutral-600 hover:text-black' : 'text-[#9ea39b] hover:text-[#f5f5f1]'
+          }`}
         >
           <span>RESET CONFIGURATION</span>
-          <RotateCcw className="w-3 h-3" />
+          <RotateCcw className="w-3.5 h-3.5" />
         </button>
       </div>
     </footer>
