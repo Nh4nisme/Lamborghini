@@ -21,8 +21,13 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointments/my")
-    public List<AppointmentListDTO> getMyAppointments() {
-        return appointmentService.getMyAppointments();
+    public List<AppointmentListDTO> getMyAppointments(@RequestParam(required = false) String email) {
+        return appointmentService.getMyAppointments(email);
+    }
+
+    @GetMapping("/appointments/{id}")
+    public AppointmentDetailDTO getMyAppointmentDetail(@PathVariable Integer id) {
+        return appointmentService.getDealerAppointmentDetail(id);
     }
 
     @GetMapping("/dealer/appointments")

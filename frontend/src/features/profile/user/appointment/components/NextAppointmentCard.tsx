@@ -14,8 +14,11 @@ export function NextAppointmentCard({ appointment }: NextAppointmentCardProps) {
     const cancelMutation = useCancelAppointment()
 
     const handleCancel = () => {
-        cancelMutation.mutate(appointment.id)
-        setShowConfirm(false)
+        cancelMutation.mutate(appointment.id, {
+            onSuccess: () => {
+                setShowConfirm(false)
+            },
+        })
     }
 
     return (
@@ -36,15 +39,20 @@ export function NextAppointmentCard({ appointment }: NextAppointmentCardProps) {
                 <p className="text-base text-lambo-hover">{appointment.venue}</p>
                 <div className="flex flex-wrap gap-3">
                     {!showConfirm ? (
-                        <Button variant="light" onClick={() => setShowConfirm(true)}>
+                        <Button type="button" variant="light" onClick={() => setShowConfirm(true)}>
                             Hủy lịch
                         </Button>
                     ) : (
                         <>
-                            <Button variant="primary" onClick={handleCancel} disabled={cancelMutation.isPending}>
-                                Xác nhận hủy
+                            <Button type="button" variant="primary" onClick={handleCancel} disabled={cancelMutation.isPending}>
+                                {cancelMutation.isPending ? 'Đang hủy...' : 'Xác nhận hủy'}
                             </Button>
-                            <Button variant="light" onClick={() => setShowConfirm(false)}>
+                            <Button
+                                type="button"
+                                variant="light"
+                                onClick={() => setShowConfirm(false)}
+                                disabled={cancelMutation.isPending}
+                            >
                                 Giữ lịch
                             </Button>
                         </>

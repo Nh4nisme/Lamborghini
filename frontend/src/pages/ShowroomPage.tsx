@@ -36,8 +36,22 @@ export default function ShowroomPage() {
   // Appointment section state
   const [appointmentService, setAppointmentService] = useState('Sales consultation');
   const [appointmentDate, setAppointmentDate] = useState('');
-  const [appointmentEmail, setAppointmentEmail] = useState('');
-  const [appointmentName, setAppointmentName] = useState('');
+  const [appointmentEmail, setAppointmentEmail] = useState(() => {
+    try {
+      const raw = localStorage.getItem('user');
+      return raw ? (JSON.parse(raw) as { email?: string }).email || '' : '';
+    } catch {
+      return '';
+    }
+  });
+  const [appointmentName, setAppointmentName] = useState(() => {
+    try {
+      const raw = localStorage.getItem('user');
+      return raw ? (JSON.parse(raw) as { hoTen?: string }).hoTen || '' : '';
+    } catch {
+      return '';
+    }
+  });
   const [appointmentPhone, setAppointmentPhone] = useState('');
   const [appointmentNote, setAppointmentNote] = useState('');
   const [appointmentErrors, setAppointmentErrors] = useState<Record<string, string>>({});

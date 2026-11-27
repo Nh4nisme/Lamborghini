@@ -40,8 +40,10 @@ function getLoggedInUserId(): number | null {
 export const profileApi = {
     getProfile: async () => {
         const userId = getLoggedInUserId()
-        const endpoint = userId ? `/profile?id=${userId}` : '/profile'
-        const response = await http<TaiKhoanResponse>(endpoint, {
+        if (!userId) {
+            throw new Error('Vui lòng đăng nhập để xem thông tin cá nhân')
+        }
+        const response = await http<TaiKhoanResponse>(`/profile?id=${userId}`, {
             headers: getAuthHeaders(),
         })
         const [ho, ...tenParts] = response.hoTen.split(' ')
