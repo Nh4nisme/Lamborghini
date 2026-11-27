@@ -174,7 +174,7 @@ public class EmailService {
 
     private String noiDungLuuCauHinhEmail(LuuCauHinhEvent e) {
         return """
-            Kính gửi Quý khách %s %s,
+            Kính gửi Quý khách %s,
 
             Cảm ơn Quý khách đã quan tâm và trải nghiệm trình tùy chỉnh xe Lamborghini.
 
@@ -197,7 +197,7 @@ public class EmailService {
             Trân trọng,
             Lamborghini
             Expect the Extraordinary.
-            """.formatted(e.ho(), e.ten(), e.maChiaSe());
+            """.formatted(e.hoTen(), e.maChiaSe());
     }
 }
 
