@@ -11,6 +11,8 @@ import java.util.List;
 public interface XeRepository extends JpaRepository<Xe, Integer> {
     Xe findFirstByDongXe_MaDongXe(Integer maDongXe);
 
+    Xe findByMaXe(Integer maXe);
+
     // UC007: tìm kiếm xe theo các tiêu chí có thể null gồm dòng xe, tên phiên bản và khoảng giá tiền
     @Query(value = """
         SELECT x.*

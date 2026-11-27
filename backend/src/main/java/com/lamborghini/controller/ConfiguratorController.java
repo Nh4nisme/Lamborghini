@@ -1,15 +1,22 @@
 package com.lamborghini.controller;
 
+import com.lamborghini.dto.cauhinh.reponse.LuuCauHinhResponse;
+import com.lamborghini.dto.cauhinh.request.LuuCauHinhEmailRequest;
+import com.lamborghini.dto.cauhinh.request.LuuCauHinhRequest;
+import com.lamborghini.dto.global.MessageResponse;
+import com.lamborghini.entity.CauHinh;
 import com.lamborghini.entity.TuyChonCauHinh;
 import com.lamborghini.entity.Xe;
 import com.lamborghini.service.ConfiguratorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/configurator")
+@RequestMapping("/api/configuration")
 @RequiredArgsConstructor
 
 public class ConfiguratorController {
@@ -39,4 +46,31 @@ public class ConfiguratorController {
     ) {
         return configuratorService.getDanhSachTuyChonCuaXeTheoMaNhomTuyChon(maXe, maNhomTuyChon);
     }
+
+    //UC014: lưu bản cấu hình chính thức cho người sử dụng chức năng
+    @PostMapping("/save")
+    public LuuCauHinhResponse luuBanCauHinhXe(
+            @RequestBody LuuCauHinhRequest req,
+            @AuthenticationPrincipal Jwt jwt
+            ) {
+        Integer maTK = null;
+
+        if (jwt != null) {
+            maTK = Integer.valueOf(jwt.getSubject());
+        }
+        return configuratorService.luuBanCauHinhXe(req, maTK);
+    }
+
+    //UC014: lấy danh sách cấu hình theo tài khoản đang đăng nhập
+    @GetMapping("/my")
+    public List<CauHinh> getDanhSachCauHinhTheoMaTaiKhoan(@AuthenticationPrincipal Jwt jwt) {
+        Integer maTK = Integer.valueOf(jwt.getSubject());
+        return configuratorService.getDanhSachCauHinhTheoMaTaiKhoan(maTK);
+    }
+
+    @PostMapping("/send-share-email")
+    public MessageResponse luuBanCauHinhThongQuaEmail(@RequestBody LuuCauHinhEmailRequest req) {
+        return configuratorService.luuBanCauHinhThongQuaEmail(req);
+    }
+
 }
