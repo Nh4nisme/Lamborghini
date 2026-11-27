@@ -2,6 +2,7 @@ package com.lamborghini.service.authentication;
 
 import com.lamborghini.dto.event.DangKyThanhCongEvent;
 import com.lamborghini.dto.event.DoiMatKhauEvent;
+import com.lamborghini.dto.event.LuuCauHinhEvent;
 import com.lamborghini.dto.event.MaXacThucEmailEvent;
 import com.lamborghini.dto.lichhen.response.EmailXacNhan;
 import com.lamborghini.repository.LichHenRepository;
@@ -153,6 +154,50 @@ public class EmailService {
                Trân trọng,
                Lamborghini
                """.formatted(e.hoTen());
+    }
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void guiBanLuuCauHinh(LuuCauHinhEvent e) {
+        try {
+            SimpleMailMessage m = new SimpleMailMessage();
+            m.setFrom(from);
+            m.setTo(e.email());
+            m.setSubject("[Lamborghini] Cấu hình xe của bạn đã sẵn sàng");
+            m.setText(noiDungLuuCauHinhEmail(e));
+            mailSender.send(m);
+        } catch (Exception ex) {
+            // Không ném lỗi: dữ liệu đã lưu xong. Cũng không ghi nội dung thư (có mã) vào log.
+            log.error("Gửi email thất bại tới {}", e, ex);
+        }
+    }
+
+
+    private String noiDungLuuCauHinhEmail(LuuCauHinhEvent e) {
+        return """
+            Kính gửi Quý khách %s %s,
+
+            Cảm ơn Quý khách đã quan tâm và trải nghiệm trình tùy chỉnh xe Lamborghini.
+
+            Cấu hình xe mà Quý khách đã thiết kế hiện đã được lưu thành công.
+            Quý khách có thể sử dụng mã chia sẻ bên dưới để truy cập lại cấu hình
+            hoặc chia sẻ thiết kế của mình với người khác.
+
+            MÃ CHIA SẺ CẤU HÌNH
+
+            %s
+
+            Quý khách có thể nhập mã này tại chức năng tra cứu cấu hình
+            trên website Lamborghini để xem lại thiết kế đã lưu.
+
+            Lưu ý:
+            - Vui lòng lưu giữ mã chia sẻ để thuận tiện truy cập lại cấu hình.
+            - Bất kỳ ai có mã chia sẻ đều có thể xem cấu hình tương ứng.
+            - Không chia sẻ mã nếu Quý khách không muốn người khác truy cập cấu hình của mình.
+
+            Trân trọng,
+            Lamborghini
+            Expect the Extraordinary.
+            """.formatted(e.ho(), e.ten(), e.maChiaSe());
     }
 }
 

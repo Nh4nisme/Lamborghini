@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table( name = "tai_khoan")
@@ -56,5 +57,9 @@ public class TaiKhoan {
     @OneToOne(mappedBy = "taiKhoan")
     @JsonIgnore
     private NhanVien nhanVien;
+
+    @OneToMany(mappedBy = "taiKhoan")
+    @JsonIgnore
+    private List<CauHinh> danhSachCauHinh;
 
 }

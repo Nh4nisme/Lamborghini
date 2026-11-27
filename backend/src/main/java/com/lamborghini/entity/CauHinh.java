@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,8 +29,11 @@ public class CauHinh {
     @Column(name = "tong_gia")
     private Long tongGia;
 
-    @Column(name = "ngay_tao")
+
+    @CreationTimestamp
+    @Column(name = "ngay_tao", updatable = false)
     private LocalDateTime ngayTao;
+
 
     @Column(name = "ma_chia_se")
     private String maChiaSe;
@@ -37,8 +41,8 @@ public class CauHinh {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "ma_kh")
-    private KhachHang khachHang;
+    @JoinColumn(name = "ma_tk")
+    private TaiKhoan taiKhoan;
 
     @OneToOne(mappedBy = "cauHinh", fetch = FetchType.LAZY)
     @JsonIgnore

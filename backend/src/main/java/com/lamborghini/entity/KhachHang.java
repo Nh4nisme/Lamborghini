@@ -26,10 +26,6 @@ public class KhachHang {
     @JsonIgnore
     private TaiKhoan taiKhoan;
 
-    @OneToMany(mappedBy = "khachHang")
-    @JsonIgnore
-    private List<CauHinh> danhSachCauHinh;
-
 
     @Column(name = "dia_chi")
     private String diaChi;
