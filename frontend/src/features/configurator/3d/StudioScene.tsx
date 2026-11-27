@@ -13,6 +13,7 @@ import {
   createWheelInstance,
   detectWheels,
   disposeObject,
+  rimSurfaceFor,
   tintWheelTemplate,
   type DetectedWheel,
   type WheelTemplate,
@@ -171,7 +172,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     appliedWheelKeyRef.current = '';
   };
 
-  const wheelKeyFor = (rim: RimOption) => `${rim.id}|${rim.name}|${rim.hex}`;
+  const wheelKeyFor = (rim: RimOption) => `${rim.id}|${rim.name}|${rim.hex}|${rim.finish}`;
 
   /**
    * Fits the selected wheel-pack rim onto every detected wheel. The wheels are
@@ -193,7 +194,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
       return;
     }
 
-    tintWheelTemplate(rimTemplate, rim.hex);
+    tintWheelTemplate(rimTemplate, rim.hex, rim.finish);
 
     const group = new THREE.Group();
     group.name = 'ConfiguratorWheels';
@@ -237,10 +238,18 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
       envMapIntensity: 1.2,
     });
 
-  const isCaliperMaterial = (name: string) =>
-    name.includes('caliper') ||
-    name.includes('etrier') ||
-    (name.includes('paint') && (name.includes('brake') || name.includes('break')));
+  /**
+   * Shared caliper finish. Like the body paint it replaces the source slots, because
+   * some caliper materials are textured (SC18 palette atlas) and a tint would stay dark.
+   */
+  const createCaliperPaint = (hex: string) =>
+    new THREE.MeshStandardMaterial({
+      name: 'ConfiguratorCaliperPaint',
+      color: new THREE.Color(hex),
+      metalness: 0.35,
+      roughness: 0.32,
+      envMapIntensity: 1.1,
+    });
 
   // Reusable loader for GLB files with Draco decompression support
   const loadCustomModel = (url: string) => {
@@ -305,9 +314,9 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         model.position.y = -scaledBox.min.y + 0.005;
 
         const currentCfg = configRef.current;
-        const caliperColor = new THREE.Color(currentCfg.caliper.hex);
         const wheelColor = new THREE.Color(currentCfg.rim.hex);
         const bodyPaint = createBodyPaint(currentCfg.exteriorColor);
+        const caliperPaint = createCaliperPaint(currentCfg.caliper.hex);
         const rimMeshes: THREE.Mesh[] = [];
 
         model.traverse((child) => {
@@ -331,14 +340,16 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
               replacedPaint = true;
               return;
             }
+            if (profile.isCaliper(child, m)) {
+              materials[index] = caliperPaint;
+              replacedPaint = true;
+              return;
+            }
 
             const name = (m.name || '').toLowerCase();
             if (!(m instanceof THREE.MeshStandardMaterial)) return;
 
-            if (isCaliperMaterial(name)) {
-              caliperMaterialsRef.current.push(m);
-              m.color.copy(caliperColor);
-            } else if (name.includes('wheel') || name.includes('rim')) {
+            if (name.includes('wheel') || name.includes('rim')) {
               wheelMaterialsRef.current.push(m);
               m.color.copy(wheelColor);
             } else if (name.includes('interior')) {
@@ -355,6 +366,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         });
 
         bodyMaterialsRef.current = [bodyPaint];
+        caliperMaterialsRef.current = [caliperPaint];
 
         sceneRef.current.add(model);
         customModelGroupRef.current = model;
@@ -435,8 +447,9 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     const wheelColor = new THREE.Color(config.rim.hex);
     wheelMaterialsRef.current.forEach((mat) => {
       mat.color.copy(wheelColor);
-      mat.metalness = config.rim.id.includes('diamond') ? 0.95 : 0.88;
-      mat.roughness = config.rim.id.includes('matt') ? 0.45 : 0.18;
+      const surface = rimSurfaceFor(`${config.rim.id} ${config.rim.finish}`);
+      mat.metalness = surface.metalness;
+      mat.roughness = surface.roughness;
       mat.needsUpdate = true;
     });
 
@@ -575,7 +588,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.25;
     renderer.shadowMap.enabled = !isSoftwareGl;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // PCFSoftShadowMap was removed in three r18x
 
     container.appendChild(renderer.domElement);
 

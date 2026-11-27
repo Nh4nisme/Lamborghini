@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowUpRight,
@@ -11,15 +11,13 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import type { ShowroomStudy } from '../features/showroom/data';
-import {
-  filterShowrooms,
-  validateAppointmentForm,
-} from '../features/showroom/data';
+import { filterShowrooms } from '../features/showroom/data';
 import { ShowroomBoxMap } from '../features/showroom/components/ShowroomBoxMap';
 import { LocationCard } from '../features/showroom/components/LocationCard';
 import { useShowroom } from '../features/showroom/hooks';
 import { adaptShowroomToUI } from '../features/showroom/types';
 import { ScrollToTop } from '../components/feedback';
+import { http } from '../api/http';
 
 export default function ShowroomPage() {
   const navigate = useNavigate();
@@ -39,8 +37,13 @@ export default function ShowroomPage() {
   const [appointmentService, setAppointmentService] = useState('Sales consultation');
   const [appointmentDate, setAppointmentDate] = useState('');
   const [appointmentEmail, setAppointmentEmail] = useState('');
+  const [appointmentName, setAppointmentName] = useState('');
+  const [appointmentPhone, setAppointmentPhone] = useState('');
+  const [appointmentNote, setAppointmentNote] = useState('');
   const [appointmentErrors, setAppointmentErrors] = useState<Record<string, string>>({});
   const [appointmentSuccess, setAppointmentSuccess] = useState(false);
+  const [appointmentBookingCode, setAppointmentBookingCode] = useState('');
+  const [appointmentErrorMsg, setAppointmentErrorMsg] = useState('');
 
   // Modals state
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -112,25 +115,65 @@ export default function ShowroomPage() {
     setDetailsModalOpen(true);
   };
 
-  const handleAppointmentSubmit = (e: React.FormEvent) => {
+  const handleAppointmentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const validation = validateAppointmentForm({
-      service: appointmentService,
-      date: appointmentDate,
-      email: appointmentEmail,
-    });
+    
+    const errors: Record<string, string> = {};
+    if (!appointmentName.trim()) errors.name = 'Họ tên là bắt buộc';
+    if (!appointmentEmail.trim()) errors.email = 'Email là bắt buộc';
+    if (!appointmentPhone.trim()) errors.phone = 'Số điện thoại là bắt buộc';
+    if (!appointmentDate) errors.date = 'Ngày hẹn là bắt buộc';
+    if (!currentSelectedShowroom) errors.showroom = 'Vui lòng chọn showroom';
 
-    if (!validation.isValid) {
-      setAppointmentErrors(validation.errors);
+    if (Object.keys(errors).length > 0) {
+      setAppointmentErrors(errors);
       setAppointmentSuccess(false);
       return;
     }
 
     setAppointmentErrors({});
-    setAppointmentSuccess(true);
-    setTimeout(() => {
+    setAppointmentErrorMsg('');
+
+    try {
+      const storedCarId = sessionStorage.getItem('selectedCarId');
+      const parsedCarId = storedCarId ? parseInt(storedCarId, 10) : NaN;
+      const maXe = Number.isFinite(parsedCarId) && parsedCarId > 0 ? parsedCarId : 1;
+
+      const loaiLichHenMap: Record<string, 'TU_VAN' | 'LAI_THU'> = {
+        'Sales consultation': 'TU_VAN',
+        'Ad Personam personalization': 'TU_VAN',
+        'Aftersales & Service enquiry': 'TU_VAN',
+        'Factory Delivery Consultation': 'TU_VAN',
+        'Test drive': 'LAI_THU',
+      };
+
+      const thoiGianHen = `${appointmentDate}T09:00:00`;
+
+      const response = await http<{ maLichHen: number; maYeuCau: string; trangThai: string; thongBao: string }>('/appointment', {
+        method: 'POST',
+        body: JSON.stringify({
+          loaiLichHen: loaiLichHenMap[appointmentService] ?? 'TU_VAN',
+          hoTenLienHe: appointmentName.trim(),
+          sdtLienHe: appointmentPhone.trim(),
+          emailLienHe: appointmentEmail.trim(),
+          maShowroom: parseInt(currentSelectedShowroom.id.replace(/\D/g, ''), 10) || 1,
+          maXe,
+          thoiGianHen,
+          ghiChu: appointmentNote || appointmentService,
+        }),
+      });
+
+      setAppointmentBookingCode(response.maYeuCau);
+      setAppointmentSuccess(true);
+      
+      setTimeout(() => {
+        setAppointmentSuccess(false);
+        setAppointmentBookingCode('');
+      }, 8000);
+    } catch (error) {
+      setAppointmentErrorMsg(error instanceof Error ? error.message : 'Đã xảy ra lỗi khi đặt lịch hẹn');
       setAppointmentSuccess(false);
-    }, 5000);
+    }
   };
 
   const scrollToAppointment = () => {
@@ -483,62 +526,28 @@ export default function ShowroomPage() {
 
           {/* Form Rows */}
           <form onSubmit={handleAppointmentSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Field 1: Service of interest */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Field 1: Full name */}
               <div>
                 <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
-                  Service of interest
+                  Họ và tên
                 </label>
-                <div className="relative">
-                  <select
-                    value={appointmentService}
-                    onChange={(e) => setAppointmentService(e.target.value)}
-                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
-                  >
-                    <option value="Sales consultation">Choose a service</option>
-                    <option value="Sales consultation">Sales consultation</option>
-                    <option value="Ad Personam personalization">Ad Personam personalization</option>
-                    <option value="Aftersales & Service enquiry">Aftersales &amp; Service enquiry</option>
-                    <option value="Factory Delivery Consultation">Factory Delivery Consultation</option>
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-                {appointmentErrors.service ? (
-                  <p className="text-[10px] text-red-400 mt-1">{appointmentErrors.service}</p>
-                ) : (
-                  <p className="text-[10px] sm:text-[11px] text-[#666] mt-1.5">
-                    Sales / Personalization / Service
-                  </p>
+                <input
+                  type="text"
+                  value={appointmentName}
+                  onChange={(e) => setAppointmentName(e.target.value)}
+                  placeholder="Nguyễn Văn A"
+                  className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 text-sm focus:outline-none focus:border-lambo-primary transition-colors"
+                />
+                {appointmentErrors.name && (
+                  <p className="text-[10px] text-red-400 mt-1">{appointmentErrors.name}</p>
                 )}
               </div>
 
-              {/* Field 2: Preferred date */}
+              {/* Field 2: Email address */}
               <div>
                 <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
-                  Preferred date
-                </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={appointmentDate}
-                    onChange={(e) => setAppointmentDate(e.target.value)}
-                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
-                  />
-                  <Calendar className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                </div>
-                {appointmentErrors.date ? (
-                  <p className="text-[10px] text-red-400 mt-1">{appointmentErrors.date}</p>
-                ) : (
-                  <p className="text-[10px] sm:text-[11px] text-[#666] mt-1.5">
-                    Subject to showroom confirmation.
-                  </p>
-                )}
-              </div>
-
-              {/* Field 3: Email address */}
-              <div>
-                <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
-                  Email address
+                  Email
                 </label>
                 <div className="relative">
                   <input
@@ -550,13 +559,79 @@ export default function ShowroomPage() {
                   />
                   <Mail className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
-                {appointmentErrors.email ? (
+                {appointmentErrors.email && (
                   <p className="text-[10px] text-red-400 mt-1">{appointmentErrors.email}</p>
-                ) : (
-                  <p className="text-[10px] sm:text-[11px] text-[#666] mt-1.5">
-                    Use the contact form to continue.
-                  </p>
                 )}
+              </div>
+
+              {/* Field 3: Phone */}
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
+                  Số điện thoại
+                </label>
+                <input
+                  type="tel"
+                  value={appointmentPhone}
+                  onChange={(e) => setAppointmentPhone(e.target.value)}
+                  placeholder="0912345678"
+                  className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 text-sm focus:outline-none focus:border-lambo-primary transition-colors"
+                />
+                {appointmentErrors.phone && (
+                  <p className="text-[10px] text-red-400 mt-1">{appointmentErrors.phone}</p>
+                )}
+              </div>
+
+              {/* Field 4: Preferred date */}
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
+                  Ngày hẹn
+                </label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={appointmentDate}
+                    onChange={(e) => setAppointmentDate(e.target.value)}
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
+                  />
+                  <Calendar className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+                {appointmentErrors.date && (
+                  <p className="text-[10px] text-red-400 mt-1">{appointmentErrors.date}</p>
+                )}
+              </div>
+
+              {/* Field 5: Service of interest */}
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
+                  Dịch vụ
+                </label>
+                <div className="relative">
+                  <select
+                    value={appointmentService}
+                    onChange={(e) => setAppointmentService(e.target.value)}
+                    className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 pr-10 text-sm appearance-none focus:outline-none focus:border-lambo-primary transition-colors cursor-pointer"
+                  >
+                    <option value="Sales consultation">Sales consultation</option>
+                    <option value="Ad Personam personalization">Ad Personam personalization</option>
+                    <option value="Aftersales & Service enquiry">Aftersales &amp; Service enquiry</option>
+                    <option value="Factory Delivery Consultation">Factory Delivery Consultation</option>
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-[#777] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Field 6: Note */}
+              <div>
+                <label className="block text-[11px] uppercase tracking-[0.16em] text-[#8e826b] font-semibold mb-1.5">
+                  Ghi chú
+                </label>
+                <input
+                  type="text"
+                  value={appointmentNote}
+                  onChange={(e) => setAppointmentNote(e.target.value)}
+                  placeholder="Thông tin thêm (tùy chọn)"
+                  className="w-full bg-lambo-dark-light border border-[#2b2518] text-white px-3.5 py-3 text-sm focus:outline-none focus:border-lambo-primary transition-colors"
+                />
               </div>
             </div>
 
@@ -564,12 +639,22 @@ export default function ShowroomPage() {
             {appointmentSuccess && (
               <div className="p-4 bg-lambo-dark-light border border-lambo-primary flex items-center gap-3 animate-fadeIn">
                 <Check className="w-5 h-5 text-lambo-primary shrink-0" />
-                  <p className="text-xs text-white">
-                  Thank you. Your consultation request for{' '}
-                  <span className="text-lambo-primary font-semibold">
-                    {currentSelectedShowroom?.name}
-                  </span>{' '}
-                  ({appointmentService}) on {appointmentDate} has been recorded.
+                <p className="text-xs text-white">
+                  Đặt lịch thành công! Mã đặt lịch của bạn là{' '}
+                  <span className="text-lambo-primary font-bold font-mono">
+                    {appointmentBookingCode}
+                  </span>
+                  . Showroom sẽ liên hệ bạn sớm nhất.
+                </p>
+              </div>
+            )}
+
+            {/* Error Feedback Banner */}
+            {appointmentErrorMsg && (
+              <div className="p-4 bg-red-900/20 border border-red-700 flex items-center gap-3 animate-fadeIn">
+                <X className="w-5 h-5 text-red-400 shrink-0" />
+                <p className="text-xs text-red-300">
+                  {appointmentErrorMsg}
                 </p>
               </div>
             )}

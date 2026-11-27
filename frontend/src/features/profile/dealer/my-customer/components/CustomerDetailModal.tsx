@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { X, User, Phone, Mail, Car, Calendar, ShieldCheck } from 'lucide-react'
+import { X, User, Phone, Mail, Car, ShieldCheck } from 'lucide-react'
 import { Eyebrow } from '../../../../../components/ui/Eyebrow'
 import { http } from '../../../../../api/http'
 import type { CustomerProfileDTO } from '../../../user/account/types'
@@ -54,9 +54,6 @@ export function CustomerDetailModal({
                     ten: tenParts.join(' ') || '',
                     email: res.email,
                     soDienThoai: res.sdt,
-                    quocGia: 'Việt Nam',
-                    tinhThanhPho: 'Hồ Chí Minh',
-                    diaChi: 'Hồ Chí Minh, Việt Nam',
                     nhanThongTinTiepThi: false,
                 })
             })
@@ -174,16 +171,6 @@ export function CustomerDetailModal({
                             )}
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div className="border border-lambo-pressed bg-lambo-bold-black p-4">
-                                    <div className="flex items-center gap-2 text-xs text-lambo-hover">
-                                        <Calendar className="h-3.5 w-3.5 text-lambo-primary" />
-                                        <span>Khu vực</span>
-                                    </div>
-                                    <p className="mt-1 font-barlow text-sm text-lambo-secondary">
-                                        {data.tinhThanhPho}, {data.quocGia}
-                                    </p>
-                                </div>
-
                                 <div className="border border-lambo-pressed bg-lambo-bold-black p-4">
                                     <div className="flex items-center gap-2 text-xs text-lambo-hover">
                                         <ShieldCheck className="h-3.5 w-3.5 text-lambo-primary" />

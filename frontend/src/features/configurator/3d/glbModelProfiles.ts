@@ -16,6 +16,8 @@ export interface GlbModelProfile {
   isBody: (mesh: THREE.Mesh, material: THREE.Material) => boolean;
   /** True for a mesh that is part of an original rim and is hidden when a wheel-pack rim is fitted. */
   isRim: (mesh: THREE.Mesh, material: THREE.Material) => boolean;
+  /** True for a mesh material slot that should take the brake caliper colour. */
+  isCaliper: (mesh: THREE.Mesh, material: THREE.Material) => boolean;
   /** The rim meshes also contain the tyre, so a replacement tyre must be fitted too. */
   rimIncludesTyre: boolean;
 }
@@ -36,6 +38,12 @@ const GENERIC_PROFILE: GlbModelProfile = {
     const isOtherPart = /tire|tyre|pneu|pzeo|brake|break|disc|caliper|frein|etrier/.test(name);
     return looksLikeRim && !isOtherPart;
   },
+  isCaliper: (_mesh, material) => {
+    const name = material.name.toLowerCase();
+    // Badges are textured decals that sit on the caliper; they keep their artwork.
+    if (name.includes('badge')) return false;
+    return name.includes('caliper') || name.includes('etrier');
+  },
   rimIncludesTyre: false,
 };
 
@@ -46,6 +54,8 @@ const PROFILES: Record<string, GlbModelProfile> = {
     // Material.072 is the whole body shell; MAT_CarpaintMain only covers the rear wing accent.
     isBody: oneOf(['Material.072']),
     isRim: oneOf(['Rim_Texture', 'CRBN_JANTE', 'visse.002', 'BLEU_DETAILS.002']),
+    // One mesh holding all four calipers.
+    isCaliper: oneOf(['Material.014']),
     rimIncludesTyre: false,
   },
   'urus_absoluttm-v5.glb': {
@@ -55,6 +65,11 @@ const PROFILES: Record<string, GlbModelProfile> = {
     isRim: (mesh, material) =>
       /^<Wheel00[12]_/.test(mesh.name) &&
       ['Material', 'Material.054', 'Material.053', 'CRBN_JANTE.005', 'visse.015'].includes(material.name),
+    // This export has no solid caliper: the purple SDC brake accents (all four discs) and the
+    // front caliper shells stand in for it. `BreaksRedPaint` is a rear trim strip, not a caliper.
+    isCaliper: (mesh, material) =>
+      /^<Wheel00[12]_/.test(mesh.name) &&
+      ['SDC.002', 'SDC.003', 'CRBN_JANTE.009', 'Material.082', 'Material.081'].includes(material.name),
     rimIncludesTyre: false,
   },
   'huracan_eagletm-v1.glb': {
@@ -63,12 +78,16 @@ const PROFILES: Record<string, GlbModelProfile> = {
     isBody: oneOf(['Material.001', 'Material.005']),
     // Material.041 is also used by the rear diffuser, so match the rim meshes by name.
     isRim: (mesh) => /^Object_(13|14|16|22)$/.test(mesh.name),
+    // `Default.001` on Object_18 holds all four calipers.
+    isCaliper: (mesh) => mesh.name === 'Object_18',
     rimIncludesTyre: false,
   },
   'lamborghini_sc18_draco.glb': {
     rotationY: 0,
     isBody: oneOf(['OEMPaint']),
     isRim: oneOf(['Wheel1A']),
+    // Outer and inner caliper halves; CaliperBadgeA is only the logo decal.
+    isCaliper: oneOf(['PaletteMaterial001', 'PaletteMaterial002']),
     rimIncludesTyre: true,
   },
 };

@@ -1,17 +1,27 @@
 import { http } from '../../../../api/http'
-import type { DealerCustomerDTO, KhachHangLichHenResponse } from './types'
+import type { DealerCustomerDTO } from './types'
+
+interface DealerCustomerResponse {
+    maKhachHang: number
+    maHoSo: string
+    hoTen: string
+    email: string
+    soDienThoai: string
+    dongXeQuanTam: string
+    lanGanNhat: string
+}
 
 export const dealerCustomerApi = {
     getDealerCustomers: async (): Promise<DealerCustomerDTO[]> => {
-        const data = await http<KhachHangLichHenResponse[]>('/appointment/dealer/4/customers')
-        return data.map((item, index) => ({
-            maKhachHang: index + 1,
-            maHoSo: '',
-            hoTen: item.hoTenLienHe,
-            email: item.emailLienHe,
-            soDienThoai: item.sdtLienHe,
-            dongXeQuanTam: item.tenXe || 'Chưa chọn xe',
-            lanGanNhat: item.thoiGianHen,
+        const data = await http<DealerCustomerResponse[]>('/customer/dealer')
+        return data.map((item) => ({
+            maKhachHang: item.maKhachHang,
+            maHoSo: item.maHoSo || '',
+            hoTen: item.hoTen,
+            email: item.email,
+            soDienThoai: item.soDienThoai,
+            dongXeQuanTam: item.dongXeQuanTam || 'Chưa chọn xe',
+            lanGanNhat: item.lanGanNhat,
         }))
     },
 }

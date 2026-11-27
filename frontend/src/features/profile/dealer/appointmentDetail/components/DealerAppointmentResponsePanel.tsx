@@ -12,14 +12,19 @@ interface DealerAppointmentResponsePanelProps {
 export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResponsePanelProps) {
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [success, setSuccess] = useState(false)
 
     const handleConfirm = async () => {
         setIsSubmitting(true)
+        setError(null)
+        setSuccess(false)
         try {
             await dealerDetailApi.confirmAppointment(detail.maLichHen)
-            navigate('/profile/dealer/appointment')
-        } catch (error) {
-            console.error('Failed to confirm appointment:', error)
+            setSuccess(true)
+            setTimeout(() => navigate('/profile/dealer/appointment'), 1500)
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Không thể xác nhận lịch hẹn. Vui lòng thử lại.')
         } finally {
             setIsSubmitting(false)
         }
@@ -35,13 +40,23 @@ export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResp
             </p>
 
             <div className="mt-auto flex flex-col gap-4 pt-10">
+                {error && (
+                    <div className="border border-red-800 bg-red-950/40 p-3 text-sm text-red-300">
+                        {error}
+                    </div>
+                )}
+                {success && (
+                    <div className="border border-emerald-800 bg-emerald-950/40 p-3 text-sm text-emerald-300">
+                        Xác nhận lịch hẹn thành công
+                    </div>
+                )}
                 <Button
                     variant="primary"
                     className="w-full justify-center"
                     icon={<Check className="h-4 w-4" />}
                     iconPosition="left"
                     onClick={handleConfirm}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || success}
                 >
                     {isSubmitting ? 'Đang xử lý...' : 'Xác nhận lịch hẹn'}
                 </Button>
@@ -51,7 +66,7 @@ export function DealerAppointmentResponsePanel({ detail }: DealerAppointmentResp
                     icon={<X className="h-4 w-4" />}
                     iconPosition="left"
                     onClick={() => navigate(`/profile/dealer/appointment/${detail.maLichHen}/refuse`)}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || success}
                 >
                     Từ chối lịch hẹn
                 </Button>
