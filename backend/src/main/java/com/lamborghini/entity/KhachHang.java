@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Table( name = "khach_hang")
 @Data
@@ -23,7 +26,15 @@ public class KhachHang {
     @JsonIgnore
     private TaiKhoan taiKhoan;
 
-    // con dia chi voi ngay sinh
+    @OneToMany(mappedBy = "khachHang")
+    @JsonIgnore
+    private List<CauHinh> danhSachCauHinh;
 
+
+    @Column(name = "dia_chi")
+    private String diaChi;
+
+    @Column(name = "ngay_sinh")
+    private LocalDateTime ngaySinh;
 
 }
