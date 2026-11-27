@@ -8,6 +8,7 @@ import { useMyAppointments } from '../../../../features/profile/user/appointment
 import { AppointmentHeader } from '../../../../features/profile/user/appointment/components/AppointmentHeader'
 import { AppointmentListItem } from '../../../../features/profile/user/appointment/components/AppointmentListItem'
 import { AppointmentTabs } from '../../../../features/profile/user/appointment/components/AppointmentTabs'
+import { AppointmentDetailModal } from '../../../../features/profile/user/appointment/components/AppointmentDetailModal'
 import { NextAppointmentCard } from '../../../../features/profile/user/appointment/components/NextAppointmentCard'
 import { adaptAppointment, type Appointment, type AppointmentTab } from '../../../../features/profile/user/appointment/types'
 
@@ -15,6 +16,7 @@ export default function AppointmentPage() {
     const navigate = useNavigate()
     const { data, isLoading, isError } = useMyAppointments()
     const [activeTab, setActiveTab] = useState<AppointmentTab>('UPCOMING')
+    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 
     const appointments = useMemo<Appointment[]>(() => {
         return (data ?? []).map(adaptAppointment)
@@ -83,7 +85,11 @@ export default function AppointmentPage() {
 
                         <div className="flex flex-col gap-4">
                             {visibleAppointments.map((item) => (
-                                <AppointmentListItem key={item.id} appointment={item} />
+                                <AppointmentListItem
+                                    key={item.id}
+                                    appointment={item}
+                                    onViewDetail={setSelectedAppointment}
+                                />
                             ))}
                         </div>
                     </>
@@ -93,6 +99,11 @@ export default function AppointmentPage() {
                     Cần thay đổi kế hoạch? Vui lòng cập nhật trước lịch hẹn ít nhất 24 giờ.
                 </p>
             </div>
+
+            <AppointmentDetailModal
+                appointment={selectedAppointment}
+                onClose={() => setSelectedAppointment(null)}
+            />
 
             <ScrollToTop />
         </div>

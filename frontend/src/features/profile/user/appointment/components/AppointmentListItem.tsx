@@ -4,9 +4,10 @@ import { AppointmentStatusBadge } from './AppointmentStatusBadge'
 
 interface AppointmentListItemProps {
     appointment: Appointment
+    onViewDetail?: (appointment: Appointment) => void
 }
 
-export function AppointmentListItem({ appointment }: AppointmentListItemProps) {
+export function AppointmentListItem({ appointment, onViewDetail }: AppointmentListItemProps) {
     return (
         <article className="flex flex-wrap items-center gap-x-8 gap-y-4 border border-lambo-pressed bg-lambo-tertiary p-6">
             <div className="w-24 shrink-0 font-barlow text-sm font-medium tracking-[0.04em] text-lambo-primary">
@@ -21,7 +22,9 @@ export function AppointmentListItem({ appointment }: AppointmentListItemProps) {
             </div>
 
             <AppointmentStatusBadge status={appointment.status} />
-            <Button variant="light">Xem chi tiết</Button>
+            <Button type="button" variant="light" onClick={() => onViewDetail?.(appointment)}>
+                Xem chi tiết
+            </Button>
         </article>
     )
 }
