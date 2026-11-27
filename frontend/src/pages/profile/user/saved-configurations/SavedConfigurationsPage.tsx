@@ -2,15 +2,13 @@ import { ScrollToTop } from '../../../../components/feedback'
 import { Eyebrow } from '../../../../components/ui/Eyebrow'
 import { SectionHeading } from '../../../../components/ui/SectionHeading'
 import { SavedConfigurationCard } from '../../../../features/profile/user/saved-configurations/components/SavedConfigurationCard'
-import { SAMPLE_SAVED_CONFIGURATIONS } from '../../../../features/profile/user/saved-configurations/data'
 import { useSavedConfigurations } from '../../../../features/profile/user/saved-configurations/hooks'
 import type { SavedConfigurationDTO } from '../../../../features/profile/user/saved-configurations/types'
 
 export default function SavedConfigurationsPage() {
     const { data, isLoading, isError } = useSavedConfigurations()
 
-    const configurations: SavedConfigurationDTO[] | undefined =
-        data ?? (import.meta.env.DEV && isError ? SAMPLE_SAVED_CONFIGURATIONS : undefined)
+    const configurations: SavedConfigurationDTO[] | undefined = data
     const hasError = isError && !configurations
 
     return (
@@ -48,7 +46,7 @@ export default function SavedConfigurationsPage() {
                     {!isLoading && configurations && configurations.length > 0 && (
                         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
                             {configurations.map((configuration) => (
-                                <SavedConfigurationCard key={configuration.maLuuCauHinh} configuration={configuration} />
+                                <SavedConfigurationCard key={configuration.maCauHinh} configuration={configuration} />
                             ))}
                         </div>
                     )}

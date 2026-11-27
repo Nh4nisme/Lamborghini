@@ -1,13 +1,2 @@
-export interface SavedConfigurationDTO {
-    maLuuCauHinh: number
-    maXe: number
-    tenDongXe: string
-    maCauHinh: string
-    mauSac: string
-    tuyChon: string
-    ngayLuu: string
-    congSuatCv: number
-    tangToc0100: string
-    tocDoToiDa: string
-    hinhAnh: string
-}
+// Re-export from configurator feature so there's one source of truth.
+export type { SavedConfigurationDTO } from '../../../configurator/types'

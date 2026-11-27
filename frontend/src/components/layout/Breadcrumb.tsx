@@ -34,8 +34,8 @@ const useModelName = (id: string | undefined) => {
         queryFn: async () => {
             if (!id) return null
             try {
-                const response = await http<{ tenDongXe: string }>(`/model/${id}/modeldetail`)
-                return response.tenDongXe
+                const response = await http<{ tenDongXe?: string }>(`/model/${id}/modeldetail`)
+                return response.tenDongXe ?? null
             } catch {
                 return null
             }
@@ -52,8 +52,8 @@ const useNewsTitle = (id: string | undefined) => {
         queryFn: async () => {
             if (!id) return null
             try {
-                const response = await http<{ tieuDe: string }>(`/news/${id}`)
-                return response.tieuDe
+                const response = await http<{ tieuDe?: string }>(`/news/${id}`)
+                return response.tieuDe ?? null
             } catch {
                 return null
             }

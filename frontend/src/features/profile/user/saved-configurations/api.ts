@@ -1,6 +1,5 @@
-import { http } from '../../../../api/http'
-import type { SavedConfigurationDTO } from './types'
+import { getMyConfigurations } from '../../../configurator/api'
 
 export const savedConfigurationsApi = {
-    getSavedConfigurations: () => http<SavedConfigurationDTO[]>('/customer/saved-configurations'),
+    getSavedConfigurations: getMyConfigurations,
 }

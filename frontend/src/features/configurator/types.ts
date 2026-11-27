@@ -58,6 +58,7 @@ export interface PaintColor {
   category: ColorCategory
   hex: string
   finish: PaintFinish
+  paintGroup?: string
   priceUSD: number
   priceVND: number
   description: string
@@ -144,4 +145,31 @@ export interface CarConfiguration {
   viewMode: ViewMode
   customModelUrl?: string | null
   customModelName?: string | null
+}
+
+export interface SaveConfigRequest {
+  maXe: number
+  tenCauHinh: string
+  tongGia: number
+  danhSachMaTuyChon: number[]
+}
+
+export interface SaveConfigResponse {
+  message: string
+  maChiaSe: string
+}
+
+export interface SendShareEmailRequest {
+  email: string
+  ho: string
+  ten: string
+  maChiaSe: string
+}
+
+export interface SavedConfigurationDTO {
+  maCauHinh: number
+  tenCauHinh: string
+  tongGia: number
+  ngayTao: string
+  maChiaSe: string | null
 }

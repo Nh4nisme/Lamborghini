@@ -39,6 +39,8 @@ import {
     mapTuyChonToCalipers,
 } from '../features/configurator/utils/apiMappers'
 import { X, ShieldAlert } from 'lucide-react'
+import SaveConfigDrawer from '../features/configurator/components/SaveConfigDrawer'
+import { saveConfiguration, sendShareEmail } from '../features/configurator/api'
 
 // ---------------------------------------------------------------------------
 // EX08 - Cấu hình tạm theo phiên (sessionStorage)
@@ -241,6 +243,8 @@ export default function ConfiguratorPage() {
     const [isSummaryOpen, setIsSummaryOpen] = useState(false)
     const [isExitModalOpen, setIsExitModalOpen] = useState(false)
     const [isAudioMutedState, setIsAudioMutedState] = useState(false)
+    const [isSaveDrawerOpen, setIsSaveDrawerOpen] = useState(false)
+    const isLoggedIn = !!localStorage.getItem('accessToken')
 
     const { data: carData } = useXeConfigurator(carId)
     const { data: rawPaintOptions = [] } = useTuyChonTheoNhom(carId, 1)
@@ -394,6 +398,32 @@ export default function ConfiguratorPage() {
         setCurrentStep('01 EXTERIOR')
     }
 
+    const handleSaveAccount = async (tenCauHinh: string) => {
+        const danhSachMaTuyChon = [
+            config.exteriorColor.id,
+            config.rim.id,
+            config.caliper?.id,
+            config.interiorTrim?.id,
+        ].filter(Boolean).map((id) => parseInt(id as string)).filter((n) => !isNaN(n))
+        return saveConfiguration({ maXe: carId, tenCauHinh, tongGia: totalPriceVND, danhSachMaTuyChon })
+    }
+
+    const handleGuestSaveAndSendEmail = async (payload: { email: string; ho: string; ten: string }) => {
+        const danhSachMaTuyChon = [
+            config.exteriorColor.id,
+            config.rim.id,
+            config.caliper?.id,
+            config.interiorTrim?.id,
+        ].filter(Boolean).map((id) => parseInt(id as string)).filter((n) => !isNaN(n))
+        const saveRes = await saveConfiguration({ maXe: carId, tenCauHinh: defaultConfigName, tongGia: totalPriceVND, danhSachMaTuyChon })
+        await sendShareEmail({ email: payload.email, ho: payload.ho, ten: payload.ten, maChiaSe: saveRes.maChiaSe })
+        return { message: saveRes.message, maChiaSe: saveRes.maChiaSe }
+    }
+
+    const handleRequestLogin = () => {
+        window.dispatchEvent(new CustomEvent('open-login-modal'))
+    }
+
     const isLight = theme === 'light'
     const carSlug = carData?.tenPhienBan?.toLowerCase().includes('huracan')
         ? 'huracan'
@@ -431,7 +461,11 @@ export default function ConfiguratorPage() {
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [carSlug])
 
-    const modelTitle = (carData?.tenPhienBan || carSlug).toUpperCase()
+    const modelTitle = (carData?.tenPhienBan ?? carSlug).toUpperCase()
+
+    // compute derived price/name values after config is initialized
+    const defaultConfigName = `${modelTitle} - ${config.exteriorColor.name}`
+    const totalPriceVND = (carData?.giaKhoiDiem ?? 0) + (config.exteriorColor.priceVND ?? 0) + (config.rim.priceVND ?? 0) + (config.caliper?.priceVND ?? 0)
 
     return (
         <div
@@ -525,7 +559,7 @@ export default function ConfiguratorPage() {
                     config={config}
                     currentStep={currentStep}
                     onNextStep={handleNextStep}
-                    onSave={() => setIsSummaryOpen(true)}
+                    onSave={() => setIsSaveDrawerOpen(true)}
                     onReset={handleResetConfig}
                     theme={theme}
                 />
@@ -597,6 +631,19 @@ export default function ConfiguratorPage() {
                     </div>
                 </div>
             )}
+
+            <SaveConfigDrawer
+                isOpen={isSaveDrawerOpen}
+                onClose={() => setIsSaveDrawerOpen(false)}
+                theme={theme}
+                isLoggedIn={isLoggedIn}
+                modelTitle={modelTitle}
+                defaultConfigName={defaultConfigName}
+                totalPriceVND={totalPriceVND}
+                onSaveAccount={handleSaveAccount}
+                onGuestSaveAndSendEmail={handleGuestSaveAndSendEmail}
+                onRequestLogin={handleRequestLogin}
+            />
         </div>
     )
 }
