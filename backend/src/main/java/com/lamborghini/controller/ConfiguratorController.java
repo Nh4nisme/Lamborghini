@@ -57,6 +57,7 @@ public class ConfiguratorController {
 
         if (jwt != null) {
             maTK = Integer.valueOf(jwt.getSubject());
+
         }
         return configuratorService.luuBanCauHinhXe(req, maTK);
     }

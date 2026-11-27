@@ -82,6 +82,10 @@ public class ConfiguratorService {
 
         chiTietCauHinhRepository.save(chiTietCauHinh);
 
+        if(taiKhoan != null) {
+            eventPublisher.publishEvent(new LuuCauHinhEvent(taiKhoan.getEmail(), taiKhoan.getHoTen(), maChiaSe));
+        }
+
         return new LuuCauHinhResponse("Bạn đã lưu cấu hình thành công", maChiaSe);
 
     }
@@ -95,7 +99,8 @@ public class ConfiguratorService {
     @Transactional
     public MessageResponse luuBanCauHinhThongQuaEmail(LuuCauHinhEmailRequest req) {
 
-        eventPublisher.publishEvent(new LuuCauHinhEvent(req.email(), req.ho(), req.ten(), req.maChiaSe()));
+        String hoTen = req.ho().trim() + " " + req.ten().trim();
+        eventPublisher.publishEvent(new LuuCauHinhEvent(req.email(), hoTen, req.maChiaSe()));
         return new MessageResponse( "Mã chia sẻ cấu hình đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư đến.");
 
     }
