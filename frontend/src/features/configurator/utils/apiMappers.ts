@@ -1,4 +1,4 @@
-import type { TuyChon, PaintColor, RimOption, InteriorTrim, CaliperOption, PaintFinish } from '../types'
+import type { TuyChon, PaintColor, RimOption, InteriorTrim, CaliperOption, TireOption, PaintFinish } from '../types'
 
 /** Ratio used to convert the VND surcharge into an approximate USD price. */
 const VND_PER_USD = 25000
@@ -169,6 +169,34 @@ export function mapTuyChonToRims(items: TuyChon[]): RimOption[] {
 /**
  * Maps backend interior options into 3D-ready interior trims.
  */
+/**
+ * Main cabin colour by keyword in the option name (Italian and Vietnamese colour
+ * words). Checked in order; the first match wins.
+ */
+const INTERIOR_COLOR_KEYWORDS: Array<{ keywords: string[]; hex: string }> = [
+    { keywords: ['arancio', 'cam', 'orange'], hex: '#C2561D' },
+    { keywords: ['marrone', 'nâu', 'brown', 'elpis'], hex: '#5A3A28' },
+    { keywords: ['rosso', 'đỏ', 'red'], hex: '#8E1B1B' },
+    { keywords: ['bianco', 'trắng', 'white'], hex: '#D8D4CC' },
+    { keywords: ['giallo', 'vàng', 'yellow'], hex: '#C99A1E' },
+    { keywords: ['verde', 'xanh lá', 'green'], hex: '#3E5B3C' },
+    { keywords: ['blu', 'xanh dương', 'blue'], hex: '#1F3550' },
+    { keywords: ['nero', 'đen', 'black'], hex: '#141414' },
+]
+const DEFAULT_INTERIOR_HEX = '#1A1A1A'
+
+/** Dark colours get a slightly lighter accent; coloured cabins get black accents. */
+function interiorAccentFor(primaryHex: string): string {
+    const value = parseInt(primaryHex.slice(1), 16)
+    const luma = 0.2126 * ((value >> 16) & 255) + 0.7152 * ((value >> 8) & 255) + 0.0722 * (value & 255)
+    return luma < 40 ? '#2B2B2B' : '#151515'
+}
+
+/**
+ * Maps backend interior options into 3D-ready interior trims. The main colour
+ * comes from a `#RRGGBB` in `thuoc_tinh_phu` when present, otherwise from the
+ * colour word in the option name (e.g. `Alcantara cam` -> orange).
+ */
 export function mapTuyChonToInteriorTrims(items: TuyChon[]): InteriorTrim[] {
     return activeOptions(items).map((item) => {
         const name = item.tenTuyChon.toLowerCase()
@@ -176,13 +204,16 @@ export function mapTuyChonToInteriorTrims(items: TuyChon[]): InteriorTrim[] {
         const isDaNeroAde = name.includes('nero') && name.includes('ade')
 
         const stitchingHex = isAlcantaraCam ? '#ff6600' : isDaNeroAde ? '#ffcc00' : DEFAULT_PAINT_HEX
-        const primaryLeatherHex = isDaNeroAde ? '#121212' : '#151515'
+        const primaryLeatherHex =
+            extractHex(item.thuocTinhPhu) ??
+            INTERIOR_COLOR_KEYWORDS.find((entry) => entry.keywords.some((word) => name.includes(word)))?.hex ??
+            DEFAULT_INTERIOR_HEX
 
         return {
             id: String(item.maTuyChon),
             name: item.tenTuyChon,
             primaryLeatherHex,
-            secondaryLeatherHex: '#222222',
+            secondaryLeatherHex: interiorAccentFor(primaryLeatherHex),
             stitchingHex,
             priceUSD: toUSD(item.giaCongThem),
             priceVND: item.giaCongThem,
@@ -204,4 +235,18 @@ export function mapTuyChonToCalipers(items: TuyChon[]): CaliperOption[] {
             priceVND: item.giaCongThem,
         }
     })
+}
+
+/**
+ * Maps backend tyre options (group 6). The 3D tyre variant is picked from the
+ * option name in StudioScene, the same way rims are.
+ */
+export function mapTuyChonToTires(items: TuyChon[]): TireOption[] {
+    return activeOptions(items).map((item) => ({
+        id: String(item.maTuyChon),
+        name: item.tenTuyChon,
+        finish: item.thuocTinhPhu ? toTitleCase(item.thuocTinhPhu) : '',
+        priceUSD: toUSD(item.giaCongThem),
+        priceVND: item.giaCongThem,
+    }))
 }

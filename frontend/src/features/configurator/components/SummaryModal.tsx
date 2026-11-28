@@ -233,6 +233,16 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
             zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
             swatchHex: config.caliper.hex,
         },
+        ...(config.tire
+            ? [
+                  {
+                      label: isVN ? 'Lốp xe' : 'Tires',
+                      detail: config.tire.name,
+                      price: breakdown.tirePrice,
+                      zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+                  },
+              ]
+            : []),
     ]
 
     const optionsTotal = breakdown.totalPrice - breakdown.basePrice

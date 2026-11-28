@@ -39,7 +39,7 @@ const MODEL_SEEDS: ModelSeed[] = [
         slug: 'revuelto',
         name: 'Revuelto',
         displayName: 'Lamborghini Revuelto',
-        fileName: 'revuelto_30tm-v8.glb',
+        fileName: 'lamborghini_revuelto-v1.glb',
         aliases: ['revuelto', 'lamborghini revuelto', 'revuelto hpev'],
     },
     {
@@ -55,7 +55,7 @@ const MODEL_SEEDS: ModelSeed[] = [
         slug: 'huracan',
         name: 'Huracan',
         displayName: 'Lamborghini Huracan',
-        fileName: 'huracan_eagletm-v1.glb',
+        fileName: '2019_lamborghini_huracan-v3.glb',
         aliases: ['huracan', 'huracan st', 'huracan sto', 'huracan performante', 'lamborghini huracan', 'eagletm'],
     },
     {
@@ -63,7 +63,7 @@ const MODEL_SEEDS: ModelSeed[] = [
         slug: 'urus',
         name: 'Urus',
         displayName: 'Lamborghini Urus',
-        fileName: 'urus_absoluttm-v5.glb',
+        fileName: '2023_lamborghini_urus_performante-v2.glb',
         aliases: ['urus', 'urus se', 'lamborghini urus', 'absolut'],
     },
 ];

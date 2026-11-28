@@ -4,16 +4,28 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-import type { CarConfiguration, CameraPreset, RimOption } from '../types';
+import type { CarConfiguration, CameraPreset, RimOption, TireOption } from '../types';
 import { LamborghiniRevueltoModel } from './CarModel';
 import { getGlbModelProfile } from './glbModelProfiles';
 import {
+  applyInteriorPalette,
+  createInteriorMaterialSet,
+  disposeInteriorMaterialSet,
+  interiorMaterialFor,
+  type InteriorMaterialSet,
+  type InteriorPalette,
+} from './interiorMaterials';
+import {
+  TYRE_BORE_RATIO,
   TYRE_NODE_NAME,
+  TYRE_PACK_URL,
   buildWheelTemplate,
   createWheelInstance,
   detectWheels,
   disposeObject,
+  fitTyreToBore,
   rimSurfaceFor,
+  stripTyreLettering,
   tintWheelTemplate,
   type DetectedWheel,
   type WheelTemplate,
@@ -27,6 +39,12 @@ interface StudioSceneProps {
   onControlsInteracted?: () => void;
   onModelLoaded?: (modelName: string, objectUrl: string) => void;
 }
+
+const interiorPaletteFor = (trim: CarConfiguration['interiorTrim']): InteriorPalette => ({
+  primary: trim.primaryLeatherHex,
+  secondary: trim.secondaryLeatherHex,
+  stitching: trim.stitchingHex,
+});
 
 const CAMERA_POSITIONS: Record<CameraPreset, { pos: THREE.Vector3; target: THREE.Vector3 }> = {
   three_quarter_front: {
@@ -85,13 +103,16 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
   const bodyMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const caliperMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const wheelMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
-  const interiorMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
+  const interiorSetRef = useRef<InteriorMaterialSet | null>(null);
   const carbonMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const lightMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
 
   const wheelPackRef = useRef<THREE.Group | null>(null);
   const wheelPackPromiseRef = useRef<Promise<void> | null>(null);
   const wheelTemplatesRef = useRef(new Map<string, WheelTemplate | null>());
+  const tyrePackRef = useRef<THREE.Group | null>(null);
+  const tyrePackPromiseRef = useRef<Promise<void> | null>(null);
+  const tyreTemplatesRef = useRef(new Map<string, WheelTemplate | null>());
   const originalRimMeshesRef = useRef<THREE.Mesh[]>([]);
   const originalWheelsRef = useRef<DetectedWheel[]>([]);
   const rimIncludesTyreRef = useRef(false);
@@ -122,6 +143,22 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     return 'wheels3_1';
   };
 
+  /**
+   * Picks the tyre-pack variant for a tyre option (group 6). The pack holds four
+   * tyres (three Pirelli P Zero styles and a Yokohama ADVAN); the two non-Pirelli
+   * options share the ADVAN mesh, one of them with a plain sidewall, so all five
+   * options look different. Checked most specific first.
+   */
+  const resolveTyreVariant = (tire: TireOption): { nodeName: string; plainSidewall: boolean } => {
+    const key = `${tire.name} ${tire.id}`.toLowerCase();
+    if (key.includes('trofeo')) return { nodeName: 'Cylinder_1', plainSidewall: false };
+    if (key.includes('corsa')) return { nodeName: '<Wheel_0', plainSidewall: false };
+    if (key.includes('p zero') || key.includes('pzero')) return { nodeName: 'Circle.004_3', plainSidewall: false };
+    if (key.includes('michelin') || key.includes('cup')) return { nodeName: 'pneu ar-gauche 3_2', plainSidewall: false };
+    if (key.includes('bridgestone') || key.includes('potenza')) return { nodeName: 'pneu ar-gauche 3_2', plainSidewall: true };
+    return { nodeName: 'Circle.004_3', plainSidewall: false };
+  };
+
   const getWheelTemplate = (nodeName: string): WheelTemplate | null => {
     const cache = wheelTemplatesRef.current;
     if (!cache.has(nodeName)) {
@@ -130,34 +167,60 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     return cache.get(nodeName) ?? null;
   };
 
-  const loadWheelPack = () => {
-    if (wheelPackRef.current) return Promise.resolve();
-    if (wheelPackPromiseRef.current) return wheelPackPromiseRef.current;
+  /** Template for the selected tyre, reshaped to the shared bore so the rim keeps its size. */
+  const getTyreTemplate = (tire: TireOption): WheelTemplate | null => {
+    const pack = tyrePackRef.current;
+    if (!pack) return null;
+    const { nodeName, plainSidewall } = resolveTyreVariant(tire);
+    const key = `${nodeName}|${plainSidewall}`;
+    const cache = tyreTemplatesRef.current;
+    if (!cache.has(key)) {
+      const raw = buildWheelTemplate(pack, nodeName);
+      const fitted = raw ? fitTyreToBore(raw, TYRE_BORE_RATIO) : null;
+      if (fitted && plainSidewall) stripTyreLettering(fitted);
+      cache.set(key, fitted);
+    }
+    return cache.get(key) ?? null;
+  };
 
-    wheelPackPromiseRef.current = new Promise<void>((resolve, reject) => {
+  /** Loads a GLB scene once; concurrent callers share the same request. */
+  const loadPackOnce = (
+    url: string,
+    sceneRefToFill: React.MutableRefObject<THREE.Group | null>,
+    promiseRef: React.MutableRefObject<Promise<void> | null>
+  ): Promise<void> => {
+    if (sceneRefToFill.current) return Promise.resolve();
+    if (promiseRef.current) return promiseRef.current;
+
+    promiseRef.current = new Promise<void>((resolve, reject) => {
       const loader = new GLTFLoader();
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath('/draco/');
       loader.setDRACOLoader(dracoLoader);
 
       loader.load(
-        '/models/free__wheel_pack_lamborghini_sdc-v9.glb',
+        url,
         (gltf) => {
           dracoLoader.dispose();
-          wheelPackRef.current = gltf.scene;
+          sceneRefToFill.current = gltf.scene;
           resolve();
         },
         undefined,
         (error) => {
           dracoLoader.dispose();
-          wheelPackPromiseRef.current = null;
-          console.error('Failed to load wheel pack:', error);
+          promiseRef.current = null;
+          console.error(`Failed to load ${url}:`, error);
           reject(error);
         }
       );
     });
-    return wheelPackPromiseRef.current;
+    return promiseRef.current;
   };
+
+  const loadWheelPack = () =>
+    loadPackOnce('/models/free__wheel_pack_lamborghini_sdc-v9.glb', wheelPackRef, wheelPackPromiseRef);
+
+  const loadTyrePack = () => loadPackOnce(TYRE_PACK_URL, tyrePackRef, tyrePackPromiseRef);
 
   const setOriginalRimsVisible = (visible: boolean) => {
     originalRimMeshesRef.current.forEach((mesh) => (mesh.visible = visible));
@@ -172,7 +235,33 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     appliedWheelKeyRef.current = '';
   };
 
-  const wheelKeyFor = (rim: RimOption) => `${rim.id}|${rim.name}|${rim.hex}|${rim.finish}`;
+  const wheelKeyFor = (rim: RimOption, tire?: TireOption | null) =>
+    `${rim.id}|${rim.name}|${rim.hex}|${rim.finish}|${tire?.id ?? ''}|${tyrePackRef.current ? 1 : 0}`;
+
+  /**
+   * Picks the tyre to fit on a car whose rim meshes include the tyre. A selected
+   * tyre needs the tyre pack; until it has loaded the default pack tyre is used
+   * and the swap re-runs once it arrives.
+   */
+  const resolveFittedTyre = (tire: TireOption | null | undefined): WheelTemplate | null => {
+    if (!rimIncludesTyreRef.current) return null;
+    if (tire) {
+      if (tyrePackRef.current) {
+        const selected = getTyreTemplate(tire);
+        if (selected) return selected;
+      } else {
+        const loadSeq = loadSeqRef.current;
+        loadTyrePack()
+          .then(() => {
+            if (loadSeq !== loadSeqRef.current) return;
+            applyWheelSwap(configRef.current.rim, configRef.current.tire);
+            requestRenderRef.current();
+          })
+          .catch(() => console.warn('Tyre pack not available, using the default tyre'));
+      }
+    }
+    return getWheelTemplate(TYRE_NODE_NAME);
+  };
 
   /**
    * Fits the selected wheel-pack rim onto every detected wheel. The wheels are
@@ -180,14 +269,14 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
    * already world values, so parenting them to the scaled, offset car model
    * would apply that transform twice.
    */
-  const applyWheelSwap = (rim: RimOption) => {
+  const applyWheelSwap = (rim: RimOption, tire?: TireOption | null) => {
     const scene = sceneRef.current;
     if (!scene || !customModelGroupRef.current || !wheelPackRef.current) return;
 
     clearCustomWheels();
     const wheels = originalWheelsRef.current;
     const rimTemplate = getWheelTemplate(resolveWheelNodeName(rim));
-    const tyreTemplate = rimIncludesTyreRef.current ? getWheelTemplate(TYRE_NODE_NAME) : null;
+    const tyreTemplate = resolveFittedTyre(tire);
 
     if (!rimTemplate || wheels.length === 0 || (rimIncludesTyreRef.current && !tyreTemplate)) {
       setOriginalRimsVisible(true);
@@ -201,8 +290,9 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     wheels.forEach((wheel) => {
       if (tyreTemplate) {
         group.add(createWheelInstance(tyreTemplate, wheel, wheel.diameter));
-        // Fill the tyre bore, with a little overlap so no gap shows.
-        group.add(createWheelInstance(rimTemplate, wheel, wheel.diameter * tyreTemplate.innerRatio * 1.02));
+        // Fill the shared tyre bore, with a little overlap so no gap shows. Every
+        // fitted tyre has this bore, so the rim size never depends on the tyre.
+        group.add(createWheelInstance(rimTemplate, wheel, wheel.diameter * TYRE_BORE_RATIO * 1.02));
       } else {
         group.add(createWheelInstance(rimTemplate, wheel, wheel.diameter));
       }
@@ -211,7 +301,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     setOriginalRimsVisible(false);
     scene.add(group);
     customWheelGroupRef.current = group;
-    appliedWheelKeyRef.current = wheelKeyFor(rim);
+    appliedWheelKeyRef.current = wheelKeyFor(rim, tire);
   };
 
   /** Removes the current GLB car, its fitted wheels, and frees its GPU resources. */
@@ -223,6 +313,10 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
       customModelGroupRef.current.removeFromParent();
       disposeObject(customModelGroupRef.current);
       customModelGroupRef.current = null;
+    }
+    if (interiorSetRef.current) {
+      disposeInteriorMaterialSet(interiorSetRef.current);
+      interiorSetRef.current = null;
     }
   };
 
@@ -289,7 +383,6 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         bodyMaterialsRef.current = [];
         caliperMaterialsRef.current = [];
         wheelMaterialsRef.current = [];
-        interiorMaterialsRef.current = [];
         carbonMaterialsRef.current = [];
         lightMaterialsRef.current = [];
 
@@ -317,6 +410,8 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         const wheelColor = new THREE.Color(currentCfg.rim.hex);
         const bodyPaint = createBodyPaint(currentCfg.exteriorColor);
         const caliperPaint = createCaliperPaint(currentCfg.caliper.hex);
+        const interiorSet = createInteriorMaterialSet(interiorPaletteFor(currentCfg.interiorTrim));
+        interiorSetRef.current = interiorSet;
         const rimMeshes: THREE.Mesh[] = [];
 
         model.traverse((child) => {
@@ -345,15 +440,21 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
               replacedPaint = true;
               return;
             }
+            // Cabin slots follow the interior trim; screens, glass and logos have no role.
+            const interiorRole = profile.interiorRole(child, m);
+            if (interiorRole) {
+              materials[index] = interiorMaterialFor(interiorSet, interiorRole, m, profile.atlasKeepRects);
+              replacedPaint = true;
+              return;
+            }
 
             const name = (m.name || '').toLowerCase();
             if (!(m instanceof THREE.MeshStandardMaterial)) return;
 
-            if (name.includes('wheel') || name.includes('rim')) {
+            // Only rim slots: tyres and brake discs can carry "wheel" in their names too.
+            if (profile.isRim(child, m) && (name.includes('wheel') || name.includes('rim'))) {
               wheelMaterialsRef.current.push(m);
               m.color.copy(wheelColor);
-            } else if (name.includes('interior')) {
-              interiorMaterialsRef.current.push(m);
             } else if (name.includes('carbon')) {
               carbonMaterialsRef.current.push(m);
             } else if (name.includes('light')) {
@@ -380,7 +481,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         loadWheelPack()
           .then(() => {
             if (loadSeq !== loadSeqRef.current) return;
-            applyWheelSwap(configRef.current.rim);
+            applyWheelSwap(configRef.current.rim, configRef.current.tire);
             requestRenderRef.current();
           })
           .catch(() => {
@@ -457,16 +558,15 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     if (
       customModelGroupRef.current &&
       wheelPackRef.current &&
-      wheelKeyFor(config.rim) !== appliedWheelKeyRef.current
+      wheelKeyFor(config.rim, config.tire) !== appliedWheelKeyRef.current
     ) {
-      applyWheelSwap(config.rim);
+      applyWheelSwap(config.rim, config.tire);
     }
 
-    const interiorColor = new THREE.Color(config.interiorTrim.secondaryLeatherHex);
-    interiorMaterialsRef.current.forEach((mat) => {
-      mat.color.copy(interiorColor);
-      mat.needsUpdate = true;
-    });
+    // Uniform/colour updates only: the atlas shader reads the shared tint uniform.
+    if (interiorSetRef.current) {
+      applyInteriorPalette(interiorSetRef.current, interiorPaletteFor(config.interiorTrim));
+    }
 
     const isShinyCarbon = config.carbonLower === 'shiny_carbon';
     carbonMaterialsRef.current.forEach((mat) => {
@@ -548,6 +648,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
     if (!container) return;
     const loadSeq = loadSeqRef;
     const wheelTemplates = wheelTemplatesRef.current;
+    const tyreTemplates = tyreTemplatesRef.current;
 
     // 1. Detect Software WebGL
     const isSoftwareGl = (() => {
@@ -816,6 +917,13 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         wheelPackRef.current = null;
       }
       wheelPackPromiseRef.current = null;
+      tyreTemplates.forEach((template) => template && disposeObject(template.object));
+      tyreTemplates.clear();
+      if (tyrePackRef.current) {
+        disposeObject(tyrePackRef.current);
+        tyrePackRef.current = null;
+      }
+      tyrePackPromiseRef.current = null;
       envTexture.dispose();
       renderer.dispose();
       if (container.contains(renderer.domElement)) {
