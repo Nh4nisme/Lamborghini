@@ -1,5 +1,6 @@
 package com.lamborghini.service;
 
+import com.lamborghini.dto.cauhinh.reponse.ChiTietChiaSeResponse;
 import com.lamborghini.dto.cauhinh.reponse.LuuCauHinhResponse;
 import com.lamborghini.dto.cauhinh.request.LuuCauHinhEmailRequest;
 import com.lamborghini.dto.cauhinh.request.LuuCauHinhRequest;
@@ -13,7 +14,9 @@ import com.lamborghini.util.MaChiaSeUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
@@ -117,6 +120,36 @@ public class ConfiguratorService {
         return maChiaSe;
     }
 
+    public ChiTietChiaSeResponse getCauHinhTheoMaChiaSe(String maChiaSe) {
+        String normalizedMaChiaSe = maChiaSe.trim().toUpperCase();
+
+        CauHinh cauHinh = cauHinhRepository.findByMaChiaSe(normalizedMaChiaSe)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Mã chia sẻ không tồn tại"));
+
+        ChiTietCauHinh chiTiet = cauHinh.getChiTietCauHinh();
+
+        List<Integer> danhSachMaTuyChon;
+        try {
+            String maTuyChonJson = chiTiet.getMaTuyChon();
+            if (maTuyChonJson == null || maTuyChonJson.isBlank()) {
+                danhSachMaTuyChon = List.of();
+            } else {
+                danhSachMaTuyChon = objectMapper.readValue(maTuyChonJson, 
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, Integer.class));
+            }
+        } catch (Exception e) {
+            danhSachMaTuyChon = List.of();
+        }
+
+        return new ChiTietChiaSeResponse(
+            cauHinh.getMaCauHinh(),
+            cauHinh.getTenCauHinh(),
+            cauHinh.getTongGia(),
+            cauHinh.getMaChiaSe(),
+            chiTiet.getXe().getMaXe(),
+            danhSachMaTuyChon
+        );
+    }
 
 
 }

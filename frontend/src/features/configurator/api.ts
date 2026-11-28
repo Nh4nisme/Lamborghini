@@ -1,5 +1,5 @@
 import { http } from '../../api/http'
-import type { TuyChon, XeConfigurator, SaveConfigRequest, SaveConfigResponse, SendShareEmailRequest, SavedConfigurationDTO } from './types'
+import type { TuyChon, XeConfigurator, SaveConfigRequest, SaveConfigResponse, SendShareEmailRequest, SavedConfigurationDTO, SharedConfigurationDetail } from './types'
 
 function getAuthHeader(): Record<string, string> {
     const token = localStorage.getItem('accessToken')
@@ -36,3 +36,6 @@ export const getMyConfigurations = (): Promise<SavedConfigurationDTO[]> =>
     http<SavedConfigurationDTO[]>('/configuration/my', {
         headers: getAuthHeader(),
     })
+
+export const getConfigurationByShareCode = (maChiaSe: string): Promise<SharedConfigurationDetail> =>
+    http<SharedConfigurationDetail>(`/configuration/share/${encodeURIComponent(maChiaSe.trim())}`)

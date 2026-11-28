@@ -3,6 +3,7 @@ import {
     getDanhSachMauCuaXeTheoLoaiMau,
     getDanhSachTuyChonCuaXeTheoMaNhom,
     getXeTheoId,
+    getConfigurationByShareCode,
 } from './api'
 import { FALLBACK_COLORS } from './constants'
 
@@ -47,5 +48,14 @@ export function useTuyChonTheoNhom(maXe: number, maNhomTuyChon: number) {
             return data && data.length > 0 ? data : []
         },
         enabled: !!maXe && maXe > 0 && !!maNhomTuyChon,
+    })
+}
+
+export function useSharedConfiguration(maChiaSe: string | null) {
+    return useQuery({
+        queryKey: ['shared-configuration', maChiaSe],
+        queryFn: () => getConfigurationByShareCode(maChiaSe!),
+        enabled: !!maChiaSe && maChiaSe.trim().length > 0,
+        retry: false,
     })
 }
