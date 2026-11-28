@@ -67,7 +67,8 @@ public class ConfiguratorService {
         cauHinh.setTongGia(req.tongGia());
         cauHinh.setMaChiaSe(maChiaSe);
         cauHinh.setTaiKhoan(taiKhoan);
-
+        String moTaNgan = "Đã lưu cấu hình " + xe.getTenPhienBan();
+        cauHinh.setMoTaNgan(moTaNgan);
 
         cauHinhRepository.save(cauHinh);
 

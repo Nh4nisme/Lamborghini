@@ -26,6 +26,9 @@ public class CauHinh {
     @Column(name = "ten_cau_hinh")
     private String tenCauHinh;
 
+    @Column(name = "mo_ta_ngan")
+    private String moTaNgan;
+
     @Column(name = "tong_gia")
     private Long tongGia;
 
