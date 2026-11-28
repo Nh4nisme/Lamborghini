@@ -8,6 +8,14 @@ import type { CarConfiguration, CameraPreset, RimOption, TireOption } from '../t
 import { LamborghiniRevueltoModel } from './CarModel';
 import { getGlbModelProfile } from './glbModelProfiles';
 import {
+  applyInteriorPalette,
+  createInteriorMaterialSet,
+  disposeInteriorMaterialSet,
+  interiorMaterialFor,
+  type InteriorMaterialSet,
+  type InteriorPalette,
+} from './interiorMaterials';
+import {
   TYRE_BORE_RATIO,
   TYRE_NODE_NAME,
   TYRE_PACK_URL,
@@ -31,6 +39,12 @@ interface StudioSceneProps {
   onControlsInteracted?: () => void;
   onModelLoaded?: (modelName: string, objectUrl: string) => void;
 }
+
+const interiorPaletteFor = (trim: CarConfiguration['interiorTrim']): InteriorPalette => ({
+  primary: trim.primaryLeatherHex,
+  secondary: trim.secondaryLeatherHex,
+  stitching: trim.stitchingHex,
+});
 
 const CAMERA_POSITIONS: Record<CameraPreset, { pos: THREE.Vector3; target: THREE.Vector3 }> = {
   three_quarter_front: {
@@ -89,7 +103,7 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
   const bodyMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const caliperMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const wheelMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
-  const interiorMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
+  const interiorSetRef = useRef<InteriorMaterialSet | null>(null);
   const carbonMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
   const lightMaterialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
 
@@ -300,6 +314,10 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
       disposeObject(customModelGroupRef.current);
       customModelGroupRef.current = null;
     }
+    if (interiorSetRef.current) {
+      disposeInteriorMaterialSet(interiorSetRef.current);
+      interiorSetRef.current = null;
+    }
   };
 
   /** Shared physical paint so every car's body responds the same way to the colour picker. */
@@ -365,7 +383,6 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         bodyMaterialsRef.current = [];
         caliperMaterialsRef.current = [];
         wheelMaterialsRef.current = [];
-        interiorMaterialsRef.current = [];
         carbonMaterialsRef.current = [];
         lightMaterialsRef.current = [];
 
@@ -393,6 +410,8 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
         const wheelColor = new THREE.Color(currentCfg.rim.hex);
         const bodyPaint = createBodyPaint(currentCfg.exteriorColor);
         const caliperPaint = createCaliperPaint(currentCfg.caliper.hex);
+        const interiorSet = createInteriorMaterialSet(interiorPaletteFor(currentCfg.interiorTrim));
+        interiorSetRef.current = interiorSet;
         const rimMeshes: THREE.Mesh[] = [];
 
         model.traverse((child) => {
@@ -421,15 +440,21 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
               replacedPaint = true;
               return;
             }
+            // Cabin slots follow the interior trim; screens, glass and logos have no role.
+            const interiorRole = profile.interiorRole(child, m);
+            if (interiorRole) {
+              materials[index] = interiorMaterialFor(interiorSet, interiorRole, m, profile.atlasKeepRects);
+              replacedPaint = true;
+              return;
+            }
 
             const name = (m.name || '').toLowerCase();
             if (!(m instanceof THREE.MeshStandardMaterial)) return;
 
-            if (name.includes('wheel') || name.includes('rim')) {
+            // Only rim slots: tyres and brake discs can carry "wheel" in their names too.
+            if (profile.isRim(child, m) && (name.includes('wheel') || name.includes('rim'))) {
               wheelMaterialsRef.current.push(m);
               m.color.copy(wheelColor);
-            } else if (name.includes('interior')) {
-              interiorMaterialsRef.current.push(m);
             } else if (name.includes('carbon')) {
               carbonMaterialsRef.current.push(m);
             } else if (name.includes('light')) {
@@ -538,11 +563,10 @@ export const StudioScene: React.FC<StudioSceneProps> = ({
       applyWheelSwap(config.rim, config.tire);
     }
 
-    const interiorColor = new THREE.Color(config.interiorTrim.secondaryLeatherHex);
-    interiorMaterialsRef.current.forEach((mat) => {
-      mat.color.copy(interiorColor);
-      mat.needsUpdate = true;
-    });
+    // Uniform/colour updates only: the atlas shader reads the shared tint uniform.
+    if (interiorSetRef.current) {
+      applyInteriorPalette(interiorSetRef.current, interiorPaletteFor(config.interiorTrim));
+    }
 
     const isShinyCarbon = config.carbonLower === 'shiny_carbon';
     carbonMaterialsRef.current.forEach((mat) => {

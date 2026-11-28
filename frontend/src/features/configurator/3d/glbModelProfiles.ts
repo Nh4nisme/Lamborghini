@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { AtlasRect, InteriorRole } from './interiorMaterials';
 
 /**
  * Per-GLB knowledge the configurator needs but cannot infer from names alone.
@@ -20,9 +21,19 @@ export interface GlbModelProfile {
   isCaliper: (mesh: THREE.Mesh, material: THREE.Material) => boolean;
   /** The rim meshes also contain the tyre, so a replacement tyre must be fitted too. */
   rimIncludesTyre: boolean;
+  /** How a cabin material slot follows the interior trim; null leaves it untouched. */
+  interiorRole: (mesh: THREE.Mesh, material: THREE.Material) => InteriorRole | null;
+  /** Atlas UV boxes that look like leather but must keep their colour (e.g. a screen swatch). */
+  atlasKeepRects?: AtlasRect[];
 }
 
 const oneOf = (names: string[]) => (_mesh: THREE.Mesh, material: THREE.Material) => names.includes(material.name);
+
+/** Material names from the "Reward" exports end in `<Part>_Material`, after a long car prefix. */
+const rewardPart = (part: string) => (_mesh: THREE.Mesh, material: THREE.Material) =>
+  material.name.endsWith(`${part}_Material`);
+
+const meshNamed = (pattern: RegExp) => (mesh: THREE.Mesh) => pattern.test(mesh.name);
 
 const GENERIC_PROFILE: GlbModelProfile = {
   rotationY: 0,
@@ -45,9 +56,57 @@ const GENERIC_PROFILE: GlbModelProfile = {
     return name.includes('caliper') || name.includes('etrier');
   },
   rimIncludesTyre: false,
+  interiorRole: (_mesh, material) => (/interior/i.test(material.name) ? 'atlas' : null),
+};
+
+/** Revuelto (`lamborghini_revuelto-v1.glb`): per-wheel CarPaintBlack meshes form the rims. */
+const REVUELTO_RIM_MESH = /^Object_(559|562|577|580|583|586|589|592|641|644|647|650)$/;
+/** CarPaintBlack caliper bodies; the white `Bianco` lettering on them is left alone. */
+const REVUELTO_CALIPER_MESH = /^Object_(1132|1135|1141|1150)$/;
+
+const REVUELTO_INTERIOR: Record<string, InteriorRole> = {
+  Alcantara: 'primary',
+  AlcantaraForato: 'primary',
+  PelleNera: 'primary',
+  PelleArancio: 'secondary',
+  Cuciture_Arancio: 'stitching',
+  Cuciture_nere: 'stitching',
 };
 
 const PROFILES: Record<string, GlbModelProfile> = {
+  'lamborghini_revuelto-v1.glb': {
+    // Modelled along X with the nose at -X.
+    rotationY: Math.PI / 2,
+    isBody: oneOf(['MAT_CarpaintMain']),
+    // CarPaintBlack is also used for intakes and trim, so the rims are matched per mesh.
+    isRim: (mesh, material) =>
+      REVUELTO_RIM_MESH.test(mesh.name) ||
+      ['ext_logo_dark', 't_rims_black_shiny', 't_rims_titanium_matt', 'Rubber_base'].includes(material.name),
+    isCaliper: meshNamed(REVUELTO_CALIPER_MESH),
+    // Tyres (`Wheel_001`) are separate meshes and stay in place.
+    rimIncludesTyre: false,
+    interiorRole: (_mesh, material) => REVUELTO_INTERIOR[material.name] ?? null,
+  },
+  '2019_lamborghini_huracan-v3.glb': {
+    rotationY: 0,
+    // `Coloured` is the black roof edge, wing and window trim, not body paint.
+    isBody: rewardPart('PaintB'),
+    // `Wheel1A` is the whole wheel, tyre included.
+    isRim: (_mesh, material) => /Wheel1A/.test(material.name),
+    isCaliper: rewardPart('CallipersCalliperGloss'),
+    rimIncludesTyre: true,
+    interiorRole: (_mesh, material) => (/InteriorA_Material$|InteriorTillingA_Material$/.test(material.name) ? 'atlas' : null),
+  },
+  '2023_lamborghini_urus_performante-v2.glb': {
+    rotationY: 0,
+    isBody: rewardPart('Paint'),
+    isRim: (_mesh, material) => /Wheel1A/.test(material.name),
+    isCaliper: rewardPart('CallipersCalliperA_Zone'),
+    rimIncludesTyre: true,
+    interiorRole: (_mesh, material) => (/InteriorA_Material$/.test(material.name) ? 'atlas' : null),
+    // Infotainment screen: a flat swatch in the same grey as the leather.
+    atlasKeepRects: [[0.3066, 0.2168, 0.3555, 0.2656]],
+  },
   'revuelto_30tm-v8.glb': {
     // Modelled along X with the nose at -X.
     rotationY: Math.PI / 2,
@@ -57,6 +116,7 @@ const PROFILES: Record<string, GlbModelProfile> = {
     // One mesh holding all four calipers.
     isCaliper: oneOf(['Material.014']),
     rimIncludesTyre: false,
+    interiorRole: () => null,
   },
   'urus_absoluttm-v5.glb': {
     rotationY: 0,
@@ -71,6 +131,7 @@ const PROFILES: Record<string, GlbModelProfile> = {
       /^<Wheel00[12]_/.test(mesh.name) &&
       ['SDC.002', 'SDC.003', 'CRBN_JANTE.009', 'Material.082', 'Material.081'].includes(material.name),
     rimIncludesTyre: false,
+    interiorRole: () => null,
   },
   'huracan_eagletm-v1.glb': {
     // Nose at -Z.
@@ -81,6 +142,7 @@ const PROFILES: Record<string, GlbModelProfile> = {
     // `Default.001` on Object_18 holds all four calipers.
     isCaliper: (mesh) => mesh.name === 'Object_18',
     rimIncludesTyre: false,
+    interiorRole: () => null,
   },
   'lamborghini_sc18_draco.glb': {
     rotationY: 0,
@@ -89,6 +151,8 @@ const PROFILES: Record<string, GlbModelProfile> = {
     // Outer and inner caliper halves; CaliperBadgeA is only the logo decal.
     isCaliper: oneOf(['PaletteMaterial001', 'PaletteMaterial002']),
     rimIncludesTyre: true,
+    // InteriorColour1A shares the InteriorA atlas; both are tinted through it.
+    interiorRole: (_mesh, material) => (/^Interior(A|Colour1A)$/.test(material.name) ? 'atlas' : null),
   },
 };
 

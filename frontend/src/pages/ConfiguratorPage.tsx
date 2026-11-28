@@ -189,7 +189,7 @@ const getModelForCarId = (id: number): { url: string; name: string } => {
     switch (id) {
         case 1: // Revuelto
             return {
-                url: '/models/revuelto_30tm-v8.glb',
+                url: '/models/lamborghini_revuelto-v1.glb',
                 name: 'Lamborghini Revuelto (3D Studio)',
             }
         case 2: // Temerario
@@ -199,17 +199,17 @@ const getModelForCarId = (id: number): { url: string; name: string } => {
             }
         case 3: // Huracan
             return {
-                url: '/models/huracan_eagletm-v1.glb',
+                url: '/models/2019_lamborghini_huracan-v3.glb',
                 name: 'Lamborghini Huracan (3D Studio)',
             }
         case 4: // Urus
             return {
-                url: '/models/urus_absoluttm-v5.glb',
+                url: '/models/2023_lamborghini_urus_performante-v2.glb',
                 name: 'Lamborghini Urus (3D Studio)',
             }
         default:
             return {
-                url: '/models/revuelto_30tm-v8.glb',
+                url: '/models/lamborghini_revuelto-v1.glb',
                 name: 'Lamborghini Revuelto (3D Studio)',
             }
     }
