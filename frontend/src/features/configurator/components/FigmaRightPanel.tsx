@@ -30,8 +30,6 @@ interface FigmaRightPanelProps {
   calipers?: CaliperOption[];
 }
 
-type PaintFinishFilter = 'METALLIC' | 'SOLID' | 'MATT';
-
 /** Keeps the first option per id so list keys stay unique whatever the data source returns. */
 function uniqueById<T extends { id: string }>(items: T[]): T[] {
   const seen = new Set<string>();
@@ -54,7 +52,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   calipers,
 }) => {
   const isLight = theme === 'light';
-  const [paintFilter, setPaintFilter] = useState<PaintFinishFilter>('METALLIC');
+  const [paintFilter, setPaintFilter] = useState<string>('METALLIC');
   const [isWheelsOpen, setIsWheelsOpen] = useState(false);
   const [isTrimOpen, setIsTrimOpen] = useState(false);
   const [selectedShowroom, setSelectedShowroom] = useState('bologna');
@@ -65,17 +63,20 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   const availableCalipers = uniqueById(calipers ?? CALIPERS)
   
   const filteredPaintColors = availablePaintColors.filter((color) => {
-    if (paintFilter === 'METALLIC') return color.finish === 'shiny'
-    if (paintFilter === 'SOLID') return color.finish === 'pearl'
-    if (paintFilter === 'MATT') return color.finish === 'matt'
-    return true
+    return (color.paintGroup ?? 'METALLIC').toUpperCase() === paintFilter.toUpperCase()
   })
 
-  const metallicCount = availablePaintColors.filter((c) => c.finish === 'shiny').length
-  const solidCount = availablePaintColors.filter((c) => c.finish === 'pearl').length
-  const mattCount = availablePaintColors.filter((c) => c.finish === 'matt').length
+  // Derive filter tabs dynamically from available paint groups
+  const paintGroups: string[] = Array.from(
+    new Set(availablePaintColors.map((c) => (c.paintGroup ?? 'METALLIC').toUpperCase()))
+  )
+  const filterTabs: string[] = paintGroups.length > 0 ? paintGroups : ['METALLIC', 'SOLID', 'MATT']
 
-  const filterTabs: PaintFinishFilter[] = ['METALLIC', 'SOLID', 'MATT'];
+  // Count per group
+  const groupCounts = filterTabs.reduce<Record<string, number>>((acc, group) => {
+    acc[group] = availablePaintColors.filter((c) => (c.paintGroup ?? 'METALLIC').toUpperCase() === group).length
+    return acc
+  }, {})
 
   const showrooms = [
     { id: 'bologna', name: 'Sant\'Agata Bolognese', city: 'Bologna, Italy' },
@@ -138,7 +139,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
               >
                 {filterTabs.map((tab) => {
                   const isActive = paintFilter === tab
-                  const count = tab === 'METALLIC' ? metallicCount : tab === 'SOLID' ? solidCount : mattCount
+                  const count = groupCounts[tab] ?? 0
                   return (
                     <button
                       key={tab}

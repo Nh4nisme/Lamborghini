@@ -56,12 +56,34 @@ function resolvePaintHex(tenTuyChon: string, thuocTinhPhu: string | null): strin
     return DEFAULT_PAINT_HEX
 }
 
-/** Derives the paint finish from the supplementary attribute. */
-function resolveFinish(thuocTinhPhu: string | null): PaintFinish {
-    const value = (thuocTinhPhu ?? '').toLowerCase()
-    if (value.includes('matt')) return 'matt'
-    if (value.includes('pearl')) return 'pearl'
-    return 'shiny'
+/**
+ * Parses thuocTinhPhu (e.g. 'Metallic #FFCC00', 'Solid #111111', 'Matt #F5F5F5')
+ * and returns { paintGroup, finish, hex }.
+ */
+function parsePaintAttribute(thuocTinhPhu: string | null): { paintGroup: string; finish: PaintFinish; hex: string | null } {
+    const value = (thuocTinhPhu ?? '').trim()
+    const match = value.match(/^(\w+)\s+(#[0-9a-f]{6})\b/i)
+    
+    if (match) {
+        const prefix = match[1].toUpperCase()
+        const hex = match[2].toUpperCase()
+        let finish: PaintFinish = 'shiny'
+        
+        if (prefix === 'MATT') {
+            finish = 'matt'
+        } else if (prefix === 'SOLID' || prefix === 'PEARL') {
+            finish = 'pearl'
+        }
+        
+        return { paintGroup: prefix, finish, hex }
+    }
+    
+    const lowerValue = value.toLowerCase()
+    let finish: PaintFinish = 'shiny'
+    if (lowerValue.includes('matt')) finish = 'matt'
+    else if (lowerValue.includes('pearl')) finish = 'pearl'
+    
+    return { paintGroup: 'METALLIC', finish, hex: extractHex(thuocTinhPhu) }
 }
 
 /**
@@ -69,15 +91,16 @@ function resolveFinish(thuocTinhPhu: string | null): PaintFinish {
  */
 export function mapTuyChonToPaintColors(items: TuyChon[]): PaintColor[] {
     return activeOptions(items).map((item) => {
-        const finish = resolveFinish(item.thuocTinhPhu)
+        const { paintGroup, finish, hex: parsedHex } = parsePaintAttribute(item.thuocTinhPhu)
         const material = FINISH_MATERIAL[finish]
 
         return {
             id: String(item.maTuyChon),
             name: item.tenTuyChon,
             category: 'sportiva',
-            hex: resolvePaintHex(item.tenTuyChon, item.thuocTinhPhu),
+            hex: parsedHex ?? resolvePaintHex(item.tenTuyChon, item.thuocTinhPhu),
             finish,
+            paintGroup,
             priceUSD: toUSD(item.giaCongThem),
             priceVND: item.giaCongThem,
             description: `${item.tenTuyChon} — Lamborghini factory paint option.`,

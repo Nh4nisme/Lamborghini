@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import type { CarConfiguration } from '../types'
-import { calculatePriceBreakdown, formatCurrency, generateConfigCode } from '../utils/pricing'
+import { calculatePriceBreakdown, formatCurrency } from '../utils/pricing'
 import { playUiClick } from '../audio/engineAudio'
-import { X, Check, Copy, Printer, MapPin, Phone } from 'lucide-react'
+import { X, Printer, MapPin, Phone } from 'lucide-react'
 
 interface SummaryModalProps {
     config: CarConfiguration
@@ -25,11 +25,10 @@ const PrintArea: React.FC<{
     config: CarConfiguration
     specRows: SpecRow[]
     breakdown: ReturnType<typeof calculatePriceBreakdown>
-    configCode: string
     optionsTotal: number
     issueDate: string
     isVN: boolean
-}> = ({ config, specRows, breakdown, configCode, optionsTotal, issueDate, isVN }) => {
+}> = ({ config, specRows, breakdown, optionsTotal, issueDate, isVN }) => {
     const left = specRows.filter((_, i) => i % 2 === 0)
     const right = specRows.filter((_, i) => i % 2 !== 0)
 
@@ -81,14 +80,6 @@ const PrintArea: React.FC<{
                         <div style={{ fontSize: 9, color: '#6b7280', marginTop: 2 }}>{m.sub}</div>
                     </div>
                 ))}
-            </div>
-
-            {/* ── Config Code ── */}
-            <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', padding: '8px 12px', marginBottom: 14 }}>
-                <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#6b7280', marginBottom: 3 }}>
-                    {isVN ? 'MÃ CẤU HÌNH ĐẶC TẢ (LAMBORGHINI CODE)' : 'LAMBORGHINI CONFIGURATION CODE'}
-                </div>
-                <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, letterSpacing: '0.08em' }}>{configCode}</div>
             </div>
 
             {/* ── Spec Table Header ── */}
@@ -205,20 +196,11 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
     onClose,
 }) => {
     const navigate = useNavigate()
-    const [copied, setCopied] = useState(false)
 
     if (!isOpen) return null
 
     const breakdown = calculatePriceBreakdown(config)
-    const configCode = generateConfigCode(config)
     const isVN = config.currency === 'VND' || config.language === 'VIE'
-
-    const copyConfigCode = () => {
-        navigator.clipboard.writeText(configCode)
-        setCopied(true)
-        playUiClick()
-        setTimeout(() => setCopied(false), 2000)
-    }
 
     const printSpecSheet = () => {
         window.print()
@@ -239,43 +221,17 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
             zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
         },
         {
-            label: isVN ? 'Kẹp phanh' : 'Brake Calipers',
-            detail: config.caliper.name,
-            price: breakdown.caliperPrice,
-            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
-            swatchHex: config.caliper.hex,
-        },
-        {
-            label: isVN ? 'Gói khí động học dưới' : 'Lower Aerodynamic Package',
-            detail: config.carbonLower.replace('_', ' ').toUpperCase(),
-            price: breakdown.carbonLowerPrice,
-            zeroLabel: isVN ? 'Đã bao gồm' : 'Included',
-        },
-        {
-            label: isVN ? 'Mui & gương Carbon' : 'Upper Carbon Roof & Mirrors',
-            detail: config.carbonUpper.replace('_', ' ').toUpperCase(),
-            price: breakdown.carbonUpperPrice,
-            zeroLabel: isVN ? 'Đã bao gồm' : 'Included',
-        },
-        {
-            label: isVN ? 'Hệ thống ống xả' : 'Exhaust Tailpipes',
-            detail: config.exhaust.replace('_', ' ').toUpperCase(),
-            price: breakdown.exhaustPrice,
-            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
-        },
-        {
             label: isVN ? 'Chất liệu & đường chỉ nội thất' : 'Cockpit Leather & Stitching',
             detail: config.interiorTrim.name,
             price: breakdown.interiorTrimPrice,
             zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
         },
         {
-            label: isVN ? 'Vô lăng & táp-lô Carbon' : 'Carbon Steering & Corsa Dash',
-            detail: config.carbonInterior
-                ? (isVN ? 'Tích hợp đèn chuyển số F1' : 'F1 Shift LEDs Equipped')
-                : (isVN ? 'Tiêu chuẩn' : 'Standard'),
-            price: breakdown.carbonInteriorPrice,
-            zeroLabel: isVN ? 'Không' : 'No',
+            label: isVN ? 'Kẹp phanh' : 'Brake Calipers',
+            detail: config.caliper.name,
+            price: breakdown.caliperPrice,
+            zeroLabel: isVN ? 'Tiêu chuẩn' : 'Standard',
+            swatchHex: config.caliper.hex,
         },
     ]
 
@@ -289,7 +245,6 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                 config={config}
                 specRows={specRows}
                 breakdown={breakdown}
-                configCode={configCode}
                 optionsTotal={optionsTotal}
                 issueDate={issueDate}
                 isVN={isVN}
@@ -368,36 +323,16 @@ export const SummaryModal: React.FC<SummaryModalProps> = ({
                             </div>
                         </div>
 
-                        {/* Configuration Code Row */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 bg-[#161816] border border-[#242623]">
-                            <div>
-                                <span className="block text-[11px] uppercase font-semibold tracking-[0.18em] text-[#9ea39b]">
-                                    {isVN ? 'MÃ CẤU HÌNH ĐẶC TẢ' : 'LAMBORGHINI CONFIGURATION CODE'}
-                                </span>
-                                <span className="font-mono text-base md:text-lg font-semibold text-lambo-primary tracking-wider mt-0.5 block">
-                                    {configCode}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-2.5">
-                                <button
-                                    type="button"
-                                    onClick={copyConfigCode}
-                                    className="flex items-center justify-center gap-2 px-4 py-2 border border-[#343831] hover:border-[#6b7068] text-xs font-semibold uppercase tracking-[0.12em] text-[#f5f5f1] transition-colors cursor-pointer"
-                                >
-                                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                                    <span>{copied ? (isVN ? 'ĐÃ SAO CHÉP' : 'COPIED') : (isVN ? 'SAO CHÉP MÃ' : 'COPY CODE')}</span>
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={printSpecSheet}
-                                    className="flex items-center justify-center gap-2 px-4 py-2 border border-[#343831] hover:border-[#6b7068] text-xs font-semibold uppercase tracking-[0.12em] text-[#f5f5f1] transition-colors cursor-pointer"
-                                >
-                                    <Printer className="w-3.5 h-3.5" />
-                                    <span>{isVN ? 'IN BẢNG BÁO GIÁ' : 'PRINT SHEET'}</span>
-                                </button>
-                            </div>
+                        {/* Print Action */}
+                        <div className="flex justify-end">
+                            <button
+                                type="button"
+                                onClick={printSpecSheet}
+                                className="flex items-center justify-center gap-2 px-4 py-2 border border-[#343831] hover:border-[#6b7068] text-xs font-semibold uppercase tracking-[0.12em] text-[#f5f5f1] transition-colors cursor-pointer"
+                            >
+                                <Printer className="w-3.5 h-3.5" />
+                                <span>{isVN ? 'IN BẢNG BÁO GIÁ' : 'PRINT SHEET'}</span>
+                            </button>
                         </div>
 
                         {/* Specification Table */}
