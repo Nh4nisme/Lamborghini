@@ -32,6 +32,9 @@ public class LichHen {
     @Column(name = "ghi_chu")
     private String ghiChu;
 
+    @Column(name = "mo_ta_ngan")
+    private String moTaNgan;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "trang_thai")
     private TrangThaiLichHen trangThaiLichHen;

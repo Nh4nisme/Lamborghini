@@ -3,16 +3,11 @@ package com.lamborghini.service;
 import com.lamborghini.dto.lichhen.request.AppointmentRequest;
 import com.lamborghini.dto.lichhen.response.*;
 import com.lamborghini.dto.lichhen.request.RejectAppointmentRequest;
-import com.lamborghini.entity.LichHen;
-import com.lamborghini.entity.Showroom;
-import com.lamborghini.entity.TaiKhoan;
-import com.lamborghini.entity.Xe;
+import com.lamborghini.entity.*;
+import com.lamborghini.enums.LoaiLichHen;
 import com.lamborghini.enums.TrangThaiLichHen;
 import com.lamborghini.exception.NotFoundException;
-import com.lamborghini.repository.LichHenRepository;
-import com.lamborghini.repository.ShowroomRepository;
-import com.lamborghini.repository.TaiKhoanRepository;
-import com.lamborghini.repository.XeRepository;
+import com.lamborghini.repository.*;
 import com.lamborghini.service.authentication.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,11 +23,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class    AppointmentService {
+public class AppointmentService {
     private final LichHenRepository lichHenRepository;
     private final ShowroomRepository showroomRepository;
     private final XeRepository xeRepository;
     private final EmailService emailService;
+    private final KhachHangRepository khachHangRepository;
     private final TaiKhoanRepository taiKhoanRepository;
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
@@ -40,7 +36,7 @@ public class    AppointmentService {
     // UC008: đặt lịch lái thử hoặc tư vấn có gửi mail
 
 
-    public AppointmentResponse datLich(AppointmentRequest request) {
+    public AppointmentResponse datLich(AppointmentRequest request, Integer maTK) {
 
 
         Showroom showroom = showroomRepository.findById(request.maShowroom()).orElseThrow(() -> new NotFoundException("Không tìm thấy showroom có id là: " + request.maShowroom()));
@@ -48,6 +44,7 @@ public class    AppointmentService {
         Xe xe = xeRepository.findById(request.maXe()).orElseThrow(() -> new NotFoundException("Không tìm thấy xe có id là: " + request.maXe()));
         String tenXe = xe.getTenPhienBan();
 
+        KhachHang khachHang = khachHangRepository.findByTaiKhoan_MaTaiKhoan(maTK);
 
         String email = request.emailLienHe().trim();
 
@@ -61,10 +58,20 @@ public class    AppointmentService {
         lh.setSdtLienHe(request.sdtLienHe().trim());
         lh.setEmailLienHe(email);
         lh.setShowroom(showroom);
+        lh.setKhachHang(khachHang);
         lh.setXe(xe);
+        String moTaNgan = "";
+        if (request.loaiLichHen().equals(LoaiLichHen.LAI_THU)) {
+            moTaNgan = "Trải nghiệm " + tenXe;
+        } else if (request.loaiLichHen().equals(LoaiLichHen.TU_VAN)) {
+            moTaNgan = "Tư vấn " + tenXe;
+        } else {
+            moTaNgan = "Tư vấn & trải nghiệm " + tenXe;
+        }
+        lh.setMoTaNgan(moTaNgan);
         lichHenRepository.save(lh);
 
-        String maYeuCau = String.format("LH%06d", lh.getMaLichHen());
+        String maYeuCau = String.format("LH-%04d", lh.getMaLichHen());
 
         emailService.guiXacNhanLichHen(new EmailXacNhan(email, lh.getHoTenLienHe(), maYeuCau, request.loaiLichHen().name(), showroom.getTenShowroom(), tenXe, request.thoiGianHen()));
         return new AppointmentResponse(lh.getMaLichHen(), maYeuCau, TrangThaiLichHen.CHO_XAC_NHAN.name(),
@@ -84,14 +91,14 @@ public class    AppointmentService {
             // Khi chưa đăng nhập (mở quyền truy cập theo yêu cầu), trả về toàn bộ lịch hẹn trong DB để kiểm tra đầy đủ dữ liệu
             appointments = lichHenRepository.findAll();
         }
-        
+
         return appointments.stream().map(lh -> {
-            String maYeuCau = String.format("LH%06d", lh.getMaLichHen());
-            String tieuDe = (lh.getLoaiLichHen() != null ? lh.getLoaiLichHen().name() : "LỊCH HẸN") + 
-                            (lh.getXe() != null ? " - " + lh.getXe().getTenPhienBan() : "");
+            String maYeuCau = String.format("LH-%04d", lh.getMaLichHen());
+            String tieuDe = (lh.getLoaiLichHen() != null ? lh.getLoaiLichHen().name() : "LỊCH HẸN") +
+                    (lh.getXe() != null ? " - " + lh.getXe().getTenPhienBan() : "");
             String gioBatDau = lh.getThoiGianHen() != null ? lh.getThoiGianHen().format(TIME_FORMATTER) : "09:00";
             String gioKetThuc = lh.getThoiGianHen() != null ? lh.getThoiGianHen().plusHours(1).format(TIME_FORMATTER) : "10:00";
-            
+
             return new AppointmentListDTO(
                     lh.getMaLichHen(),
                     maYeuCau,
@@ -109,18 +116,18 @@ public class    AppointmentService {
     public List<DealerAppointmentListDTO> getDealerAppointments() {
         TaiKhoan dealer = getCurrentDealer();
         Integer maShowroom = findShowroomByDealer(dealer != null ? dealer.getMaTaiKhoan() : 4);
-        
+
         List<LichHen> appointments = lichHenRepository.findByShowroom(maShowroom);
         if (appointments.isEmpty()) {
             appointments = lichHenRepository.findAll();
         }
-        
+
         return appointments.stream().map(lh -> {
-            String maYeuCau = String.format("LH%06d", lh.getMaLichHen());
-            String tieuDe = (lh.getLoaiLichHen() != null ? lh.getLoaiLichHen().name() : "LỊCH HẸN") + 
-                            (lh.getXe() != null ? " - " + lh.getXe().getTenPhienBan() : "");
+            String maYeuCau = String.format("LH-%04d", lh.getMaLichHen());
+            String tieuDe = (lh.getLoaiLichHen() != null ? lh.getLoaiLichHen().name() : "LỊCH HẸN") +
+                    (lh.getXe() != null ? " - " + lh.getXe().getTenPhienBan() : "");
             String gioBatDau = lh.getThoiGianHen() != null ? lh.getThoiGianHen().format(TIME_FORMATTER) : "09:00";
-            
+
             return new DealerAppointmentListDTO(
                     lh.getMaLichHen(),
                     maYeuCau,
@@ -135,7 +142,7 @@ public class    AppointmentService {
 
     public AppointmentDetailDTO getDealerAppointmentDetail(Integer id) {
         TaiKhoan dealer = getCurrentDealer();
-        
+
         LichHen lh = lichHenRepository.findById(id).orElse(null);
         if (lh == null) {
             lh = lichHenRepository.findAll().stream().findFirst().orElse(null);
@@ -143,13 +150,13 @@ public class    AppointmentService {
         if (lh == null) {
             throw new NotFoundException("Không tìm thấy lịch hẹn có id là: " + id);
         }
-        
-        String maYeuCau = String.format("LH%06d", lh.getMaLichHen());
-        String tieuDe = (lh.getLoaiLichHen() != null ? lh.getLoaiLichHen().name() : "LỊCH HẸN") + 
-                        (lh.getXe() != null ? " - " + lh.getXe().getTenPhienBan() : "");
-        String khungGio = (lh.getThoiGianHen() != null ? lh.getThoiGianHen().format(TIME_FORMATTER) : "09:00") + " - " + 
-                          (lh.getThoiGianHen() != null ? lh.getThoiGianHen().plusHours(1).format(TIME_FORMATTER) : "10:00");
-        
+
+        String maYeuCau = String.format("LH-%04d", lh.getMaLichHen());
+        String tieuDe = (lh.getLoaiLichHen() != null ? lh.getLoaiLichHen().name() : "LỊCH HẸN") +
+                (lh.getXe() != null ? " - " + lh.getXe().getTenPhienBan() : "");
+        String khungGio = (lh.getThoiGianHen() != null ? lh.getThoiGianHen().format(TIME_FORMATTER) : "09:00") + " - " +
+                (lh.getThoiGianHen() != null ? lh.getThoiGianHen().plusHours(1).format(TIME_FORMATTER) : "10:00");
+
         return new AppointmentDetailDTO(
                 lh.getMaLichHen(),
                 maYeuCau,
@@ -173,14 +180,14 @@ public class    AppointmentService {
     public List<DealerCustomerDTO> getDealerCustomers() {
         TaiKhoan dealer = getCurrentDealer();
         Integer maShowroom = findShowroomByDealer(dealer != null ? dealer.getMaTaiKhoan() : 4);
-        
+
         List<LichHen> appointments = lichHenRepository.findCustomersByShowroom(maShowroom);
         if (appointments.isEmpty()) {
             appointments = lichHenRepository.findAll();
         }
-        
+
         Map<String, DealerCustomerDTO> customerMap = new LinkedHashMap<>();
-        
+
         for (LichHen lh : appointments) {
             String email = lh.getEmailLienHe();
             if (email != null && !customerMap.containsKey(email)) {
@@ -194,10 +201,10 @@ public class    AppointmentService {
                 }
 
                 String maHoSo = String.format("KH%06d", maKhachHang);
-                String dongXe = (lh.getXe() != null && lh.getXe().getDongXe() != null) 
-                        ? lh.getXe().getDongXe().getTenDongXe() 
+                String dongXe = (lh.getXe() != null && lh.getXe().getDongXe() != null)
+                        ? lh.getXe().getDongXe().getTenDongXe()
                         : (lh.getXe() != null ? lh.getXe().getTenPhienBan() : "Revuelto");
-                
+
                 customerMap.put(email, new DealerCustomerDTO(
                         maKhachHang,
                         maHoSo,
@@ -209,7 +216,7 @@ public class    AppointmentService {
                 ));
             }
         }
-        
+
         return new ArrayList<>(customerMap.values());
     }
 
@@ -231,54 +238,54 @@ public class    AppointmentService {
         String email = (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser"))
                 ? auth.getName()
                 : null;
-        
+
         LichHen lh = lichHenRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy lịch hẹn có id là: " + id));
-        
+
         if (email != null && !email.equals(lh.getEmailLienHe())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Bạn không có quyền hủy lịch hẹn này");
         }
-        
+
         if (lh.getTrangThaiLichHen() == TrangThaiLichHen.HUY || lh.getTrangThaiLichHen() == TrangThaiLichHen.TU_CHOI) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Lịch hẹn đã bị hủy hoặc từ chối");
         }
-        
+
         lh.setTrangThaiLichHen(TrangThaiLichHen.HUY);
         lichHenRepository.save(lh);
-        
+
         return getDealerAppointmentDetail(id);
     }
 
     public AppointmentDetailDTO confirmAppointment(Integer id) {
         TaiKhoan dealer = getCurrentDealer();
-        
+
         LichHen lh = lichHenRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy lịch hẹn có id là: " + id));
-        
+
         if (lh.getTrangThaiLichHen() != TrangThaiLichHen.CHO_XAC_NHAN) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chỉ có thể xác nhận lịch hẹn đang chờ xác nhận");
         }
-        
+
         lh.setTrangThaiLichHen(TrangThaiLichHen.DA_XAC_NHAN);
         lichHenRepository.save(lh);
-        
+
         return getDealerAppointmentDetail(id);
     }
 
     public AppointmentDetailDTO rejectAppointment(Integer id, RejectAppointmentRequest request) {
         TaiKhoan dealer = getCurrentDealer();
-        
+
         LichHen lh = lichHenRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy lịch hẹn có id là: " + id));
-        
+
         if (lh.getTrangThaiLichHen() != TrangThaiLichHen.CHO_XAC_NHAN) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chỉ có thể từ chối lịch hẹn đang chờ xác nhận");
         }
-        
+
         lh.setTrangThaiLichHen(TrangThaiLichHen.TU_CHOI);
         lh.setLyDoTuChoi(request.lyDoTuChoi());
         lichHenRepository.save(lh);
-        
+
         return getDealerAppointmentDetail(id);
     }
 
