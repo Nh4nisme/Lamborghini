@@ -27,4 +27,7 @@ public interface DongXeRepository extends JpaRepository<DongXe, Integer> {
             "OR LOWER(d.danh_muc) LIKE LOWER(CONCAT('%', :keyword, '%'))\n" +
             "OR LOWER(d.trang_thai) LIKE LOWER(CONCAT('%', :keyword, '%'))", nativeQuery = true)
     List<DongXe> adminSearchDongXe(@Param("keyword") String keyword);
+
+    // tìm tất cả dòng xe có trạng thái hiển thị phục vụ riêng cho chức năng AI Assistant
+    List<DongXe> findByTrangThai(TrangThaiDongXe trangThai);
 }

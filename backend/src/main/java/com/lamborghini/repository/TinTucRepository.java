@@ -12,4 +12,7 @@ public interface TinTucRepository extends JpaRepository<TinTuc, Integer> {
 
     // tìm tin tức theo trạng thái hiển thị và ngày đăng mới nhất
     List<TinTuc> findByTrangThaiOrderByNgayDangDesc(TrangThaiTinTuc trangThai, Pageable pageable);
+
+    //Tìm tin tức theo trạng thái phục vụ riêng cho chức năng AI Assistant
+    List<TinTuc> findByTrangThai(TrangThaiTinTuc trangThai);
 }

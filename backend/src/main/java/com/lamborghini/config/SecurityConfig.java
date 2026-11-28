@@ -86,12 +86,18 @@ public class SecurityConfig {
                                 "/api/appointment/**",
                                 "/api/appointments/**",
                                 "/api/dealer/appointments/**",
-                                "/api/customer/**"
+                                "/api/customer/**",
+                                "/api/ai-assistant/chat/stream"
                         ).permitAll()
                         .requestMatchers( // Công khai cho guest
                                 HttpMethod.POST,
                                 "/api/appointment",
-                                "/api/configuration/**"
+                                "/api/configuration/**",
+                                "/api/ai-assistant/chat"
+                        ).permitAll()
+                        .requestMatchers( // AI Assistant - DELETE session
+                                HttpMethod.DELETE,
+                                "/api/ai-assistant/session/**"
                         ).permitAll()
                         .requestMatchers( // Công khai tạm thời cho appointment update
                                 HttpMethod.PUT,
