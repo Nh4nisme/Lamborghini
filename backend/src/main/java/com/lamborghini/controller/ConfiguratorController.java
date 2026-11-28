@@ -1,5 +1,6 @@
 package com.lamborghini.controller;
 
+import com.lamborghini.dto.cauhinh.reponse.ChiTietChiaSeResponse;
 import com.lamborghini.dto.cauhinh.reponse.LuuCauHinhResponse;
 import com.lamborghini.dto.cauhinh.request.LuuCauHinhEmailRequest;
 import com.lamborghini.dto.cauhinh.request.LuuCauHinhRequest;
@@ -72,6 +73,11 @@ public class ConfiguratorController {
     @PostMapping("/send-share-email")
     public MessageResponse luuBanCauHinhThongQuaEmail(@RequestBody LuuCauHinhEmailRequest req) {
         return configuratorService.luuBanCauHinhThongQuaEmail(req);
+    }
+    // Nhập mã chia sẻ: Sơn thêm
+    @GetMapping("/share/{maChiaSe}")
+    public ChiTietChiaSeResponse getCauHinhTheoMaChiaSe(@PathVariable("maChiaSe") String maChiaSe) {
+        return configuratorService.getCauHinhTheoMaChiaSe(maChiaSe);
     }
 
 }
