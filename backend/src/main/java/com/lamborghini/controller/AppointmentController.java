@@ -5,6 +5,8 @@ import com.lamborghini.dto.lichhen.response.*;
 import com.lamborghini.dto.lichhen.request.RejectAppointmentRequest;
 import com.lamborghini.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,14 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @PostMapping("/appointment")
-    public AppointmentResponse datLich(@RequestBody AppointmentRequest request) {
-        return appointmentService.datLich(request);
+    public AppointmentResponse datLich(@RequestBody AppointmentRequest request, @AuthenticationPrincipal Jwt jwt) {
+        Integer maTK = null;
+
+        if(jwt != null) {
+            maTK = Integer.valueOf(jwt.getSubject());
+        }
+
+        return appointmentService.datLich(request, maTK);
     }
 
     @GetMapping("/appointments/my")

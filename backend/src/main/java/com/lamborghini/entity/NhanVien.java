@@ -24,6 +24,9 @@ public class NhanVien {
     @JsonIgnore
     private TaiKhoan taiKhoan;
 
+    @Column(name = "mo_ta_ngan")
+    private String moTaNgan;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "ma_showroom")
