@@ -185,3 +185,12 @@ export interface SavedConfigurationDTO {
   ngayTao: string
   maChiaSe: string | null
 }
+
+export interface SharedConfigurationDetail {
+  maCauHinh: number
+  tenCauHinh: string
+  tongGia: number
+  maChiaSe: string
+  maXe: number
+  danhSachMaTuyChon: number[]
+}

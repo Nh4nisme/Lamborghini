@@ -4,6 +4,7 @@ import { Chatbot } from './components/feedback'
 import HomePage from './pages/HomePage'
 import ShowroomPage from './pages/ShowroomPage'
 import ModelShowcasePage from './pages/ModelShowcasePage'
+import ConfiguratorIntroPage from './pages/ConfiguratorIntroPage'
 import ConfiguratorPage from './pages/ConfiguratorPage'
 import ModelsPage from './pages/ModelsPage'
 import AboutUsPage from "./pages/AboutUsPage.tsx";
@@ -30,7 +31,8 @@ function App() {
     if (isConfigurator) {
         return (
             <Routes>
-                <Route path="/configurator/:maXe" element={<ConfiguratorPage />} />
+                <Route path="/configurator/:maXe/edit" element={<ConfiguratorPage />} />
+                <Route path="/configurator/:maXe" element={<ConfiguratorIntroPage />} />
                 <Route path="/configurator" element={<Navigate to="/configurator/1" replace />} />
             </Routes>
         )

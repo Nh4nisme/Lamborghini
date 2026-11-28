@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useMemo, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { StudioScene } from '../features/configurator/3d/StudioScene'
 import { FigmaHeader } from '../features/configurator/components/FigmaHeader'
 import type { ConfigStep } from '../features/configurator/components/FigmaHeader'
@@ -32,7 +32,8 @@ import {
     startV12Engine,
     stopV12Engine,
 } from '../features/configurator/audio/engineAudio'
-import { useXeConfigurator, useTuyChonTheoNhom } from '../features/configurator/hooks'
+import { useXeConfigurator, useTuyChonTheoNhom, useSharedConfiguration } from '../features/configurator/hooks'
+import { applySharedOptionsToConfig } from '../features/configurator/utils/configHelpers'
 import {
     mapTuyChonToPaintColors,
     mapTuyChonToRims,
@@ -247,8 +248,10 @@ const createDefaultConfig = (carId: number): CarConfiguration => {
 
 export default function ConfiguratorPage() {
     const { maXe } = useParams<{ maXe?: string }>()
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
     const carId = Number(maXe) || 1
+    const shareCodeFromUrl = searchParams.get('code')?.trim().toUpperCase() || null
 
     // Theme state (Dark luxury by default)
     const [theme, setTheme] = useState<'light' | 'dark'>('dark')
@@ -267,6 +270,7 @@ export default function ConfiguratorPage() {
     const { data: rawCaliperOptions = [] } = useTuyChonTheoNhom(carId, 4)
     // Group 6 (Lốp xe) is only assigned to some cars; an empty answer means "no tyre choice".
     const { data: rawTireOptions = [], isSuccess: tireOptionsLoaded } = useTuyChonTheoNhom(carId, 6)
+    const { data: sharedData } = useSharedConfiguration(shareCodeFromUrl)
 
     // Memoised so the "pick the first API option" effects below only run when the data changes.
     const apiPaintColors = useMemo(() => mapTuyChonToPaintColors(rawPaintOptions), [rawPaintOptions])
@@ -340,6 +344,24 @@ export default function ConfiguratorPage() {
             return next === prev.tire ? prev : { ...prev, tire: next }
         })
     }, [apiTires, tireOptionsLoaded])
+
+    // Import shared configuration options when ?code=... is present in URL
+    useEffect(() => {
+        if (!sharedData) return
+        if (sharedData.maXe && sharedData.maXe !== carId) {
+            window.location.replace(`/configurator/${sharedData.maXe}/edit?code=${encodeURIComponent(sharedData.maChiaSe)}`)
+            return
+        }
+        setConfig((prev) =>
+            applySharedOptionsToConfig(prev, sharedData.danhSachMaTuyChon, {
+                paints: apiPaintColors,
+                rims: apiRims,
+                interiors: apiInteriorTrims,
+                calipers: apiCalipers,
+                tires: apiTires,
+            })
+        )
+    }, [sharedData, carId, apiPaintColors, apiRims, apiInteriorTrims, apiCalipers, apiTires])
 
     // EX08: lưu cấu hình tạm của phiên theo carId để reload vẫn giữ lựa chọn.
     useEffect(() => {
