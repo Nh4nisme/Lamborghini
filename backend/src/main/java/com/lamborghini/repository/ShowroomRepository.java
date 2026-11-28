@@ -10,4 +10,6 @@ public interface ShowroomRepository extends JpaRepository<Showroom, Integer> {
 
     List<Showroom> findAllByTrangThaiOrderByKhuVucAsc(TrangThaiShowroom trangThai);
 
+    //Tìm showroom theo trạng thái phục vụ riêng cho chức năng AI Assistant
+    List<Showroom> findByTrangThai(TrangThaiShowroom trangThai);
 }

@@ -1,6 +1,7 @@
 package com.lamborghini.repository;
 
 import com.lamborghini.entity.Xe;
+import com.lamborghini.enums.TrangThaiXe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +13,9 @@ public interface XeRepository extends JpaRepository<Xe, Integer> {
     Xe findFirstByDongXe_MaDongXe(Integer maDongXe);
 
     Xe findByMaXe(Integer maXe);
+
+    // tìm tất cả xe có trạng thái hiển thị phục vụ riêng cho chức năng AI Assistant
+    List<Xe> findByTrangThai(TrangThaiXe trangThai);
 
     // UC007: tìm kiếm xe theo các tiêu chí có thể null gồm dòng xe, tên phiên bản và khoảng giá tiền
     @Query(value = """

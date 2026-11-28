@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Navbar, Footer, Breadcrumb } from './components/layout'
-import { Chatbot } from './components/feedback'
+import { ChatWindow } from './features/ai-assistant/components'
 import HomePage from './pages/HomePage'
 import ShowroomPage from './pages/ShowroomPage'
 import ModelShowcasePage from './pages/ModelShowcasePage'
@@ -65,7 +65,7 @@ function App() {
                 </Routes>
             </main>
             <Footer />
-            <Chatbot />
+            <ChatWindow />
         </div>
     )
 }
