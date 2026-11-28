@@ -5,6 +5,7 @@ import type {
   RimOption,
   InteriorTrim,
   CaliperOption,
+  TireOption,
 } from '../types';
 import {
   PAINT_COLORS,
@@ -28,6 +29,8 @@ interface FigmaRightPanelProps {
   rims?: RimOption[];
   interiorTrims?: InteriorTrim[];
   calipers?: CaliperOption[];
+  /** Tyre options (group 6). The section is hidden when the car has none. */
+  tires?: TireOption[];
 }
 
 /** Keeps the first option per id so list keys stay unique whatever the data source returns. */
@@ -50,6 +53,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   rims,
   interiorTrims,
   calipers,
+  tires,
 }) => {
   const isLight = theme === 'light';
   const [paintFilter, setPaintFilter] = useState<string>('METALLIC');
@@ -61,6 +65,7 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
   const availableRims = uniqueById(rims ?? RIMS)
   const availableInteriorTrims = uniqueById(interiorTrims ?? INTERIOR_TRIMS)
   const availableCalipers = uniqueById(calipers ?? CALIPERS)
+  const availableTires = uniqueById(tires ?? [])
   
   const filteredPaintColors = availablePaintColors.filter((color) => {
     return (color.paintGroup ?? 'METALLIC').toUpperCase() === paintFilter.toUpperCase()
@@ -383,6 +388,58 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
               </div>
             </div>
 
+            {/* Section: Tyres (group 6) — only for cars that offer a tyre choice */}
+            {availableTires.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className={`text-xs font-semibold uppercase tracking-[0.96px] leading-4 ${isLight ? 'text-neutral-500' : 'text-[#9ea39b]'}`}>
+                    TIRES
+                  </span>
+                  <span className={`text-xs ${isLight ? 'text-neutral-400' : 'text-[#9ea39b]'}`}>
+                    {String(availableTires.length).padStart(2, '0')} OPTIONS
+                  </span>
+                </div>
+                <div className="space-y-1" role="radiogroup" aria-label="Tires">
+                  {availableTires.map((tire) => {
+                    const isSelected = config.tire?.id === tire.id
+                    return (
+                      <button
+                        key={tire.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        data-tire-id={tire.id}
+                        onClick={() => onUpdateConfig({ tire })}
+                        className={`w-full h-10 px-3 flex items-center justify-between gap-3 text-xs text-left border transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'border-[#eac500] font-semibold'
+                            : isLight
+                            ? 'border-neutral-300 hover:border-neutral-500'
+                            : 'border-[#343831] hover:border-[#6b7068]'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2 min-w-0">
+                          {isSelected ? (
+                            <Check className="w-3.5 h-3.5 shrink-0 text-[#eac500]" />
+                          ) : (
+                            <span className="w-3.5 h-3.5 shrink-0" />
+                          )}
+                          <span className="truncate">{tire.name}</span>
+                        </span>
+                        <span className={`shrink-0 ${isLight ? 'text-neutral-500' : 'text-[#9ea39b]'}`}>
+                          {formatCurrency(
+                            config.currency === 'VND' ? tire.priceVND : tire.priceUSD,
+                            config.currency,
+                            config.language
+                          )}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Guide / Personalization Note (Unslop: quiet bar marker, no tinted box) */}
             <div className="flex items-start gap-3 pt-2">
               <div className="w-[3px] h-9 bg-[#eac500] shrink-0" />
@@ -618,6 +675,12 @@ export const FigmaRightPanel: React.FC<FigmaRightPanelProps> = ({
                 <span className="text-neutral-400">Brake Calipers</span>
                 <span className="font-bold">{config.caliper.name}</span>
               </div>
+              {config.tire && (
+                <div className="flex justify-between">
+                  <span className="text-neutral-400">Tires</span>
+                  <span className="font-bold">{config.tire.name}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-neutral-400">Exterior Trim</span>
                 <span className="font-bold">{CARBON_LOWER_OPTIONS.find((c) => c.id === config.carbonLower)?.name || 'Nero / gloss black'}</span>

@@ -3,6 +3,15 @@ import * as THREE from 'three';
 /** Wheel-pack node used as the replacement tyre when a car's rim mesh also contains its tyre. */
 export const TYRE_NODE_NAME = 'Cylinder_6';
 
+/** Pack of selectable tyres (option group 6). */
+export const TYRE_PACK_URL = '/models/free_sport_tire_pack_-_by_sdc-v1.glb';
+
+/**
+ * Bore / outer-diameter ratio every fitted tyre is given (that of TYRE_NODE_NAME).
+ * The rim is sized from it, so swapping tyres never changes the rim.
+ */
+export const TYRE_BORE_RATIO = 0.853;
+
 /**
  * A wheel-pack part normalised to a canonical frame: centred on the origin,
  * axle along X, outer face toward +X.
@@ -244,6 +253,71 @@ export function buildWheelTemplate(pack: THREE.Object3D, nodeName: string): Whee
     diameter: Math.max(size.y, size.z),
     innerRatio: maxRadius > 0 ? minRadius / maxRadius : 0,
   };
+}
+
+/**
+ * Reshapes a tyre template so its bore is `boreRatio` of its outer diameter,
+ * keeping the outer diameter and tread. Pack tyres have different sidewall
+ * heights (bores of 0.78-0.85); without this the rim would have to change size
+ * with every tyre. Geometry is baked into the template frame and cloned, so the
+ * source pack is untouched.
+ */
+export function fitTyreToBore(template: WheelTemplate, boreRatio: number): WheelTemplate {
+  const root = new THREE.Group();
+  template.object.updateMatrixWorld(true);
+
+  let minRadius = Infinity;
+  let maxRadius = 0;
+  forEachVertex(template.object, (v) => {
+    const r = Math.hypot(v.y, v.z);
+    if (r < minRadius) minRadius = r;
+    if (r > maxRadius) maxRadius = r;
+  });
+  const targetMin = maxRadius * boreRatio;
+  const span = maxRadius - minRadius;
+
+  template.object.traverse((child) => {
+    if (!(child instanceof THREE.Mesh)) return;
+    const geometry = child.geometry.clone();
+    geometry.applyMatrix4(child.matrixWorld);
+    const position = geometry.getAttribute('position');
+    for (let i = 0; i < position.count; i++) {
+      const y = position.getY(i);
+      const z = position.getZ(i);
+      const r = Math.hypot(y, z);
+      if (r === 0 || span <= 0) continue;
+      // Map [minRadius, maxRadius] linearly onto [targetMin, maxRadius].
+      const fitted = targetMin + ((r - minRadius) / span) * (maxRadius - targetMin);
+      const k = fitted / r;
+      position.setY(i, y * k);
+      position.setZ(i, z * k);
+    }
+    position.needsUpdate = true;
+    geometry.computeBoundingBox();
+    geometry.computeBoundingSphere();
+
+    const mesh = new THREE.Mesh(geometry, child.material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    root.add(mesh);
+  });
+
+  return { object: root, width: template.width, diameter: template.diameter, innerRatio: boreRatio };
+}
+
+/** Removes printed sidewall lettering (textured materials) for a plain black sidewall. */
+export function stripTyreLettering(template: WheelTemplate) {
+  template.object.traverse((child) => {
+    if (!(child instanceof THREE.Mesh)) return;
+    const materials = Array.isArray(child.material) ? child.material : [child.material];
+    materials.forEach((material) => {
+      if (material instanceof THREE.MeshStandardMaterial && material.map) {
+        material.map = null;
+        material.color.set('#0b0b0b');
+        material.needsUpdate = true;
+      }
+    });
+  });
 }
 
 /**

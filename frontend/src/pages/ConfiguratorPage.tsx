@@ -15,6 +15,7 @@ import type {
     PaintColor,
     RimOption,
     CaliperOption,
+    TireOption,
     InteriorTrim,
     CarbonPackage,
     ExhaustOption,
@@ -37,6 +38,7 @@ import {
     mapTuyChonToRims,
     mapTuyChonToInteriorTrims,
     mapTuyChonToCalipers,
+    mapTuyChonToTires,
 } from '../features/configurator/utils/apiMappers'
 import { X, ShieldAlert } from 'lucide-react'
 import SaveConfigDrawer from '../features/configurator/components/SaveConfigDrawer'
@@ -52,6 +54,7 @@ type StoredConfigKey =
     | 'exteriorColor'
     | 'rim'
     | 'caliper'
+    | 'tire'
     | 'interiorTrim'
     | 'carbonLower'
     | 'carbonUpper'
@@ -98,6 +101,14 @@ const isCaliperOption = (value: unknown): value is CaliperOption =>
     typeof value.priceUSD === 'number' &&
     typeof value.priceVND === 'number'
 
+const isTireOption = (value: unknown): value is TireOption =>
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.finish === 'string' &&
+    typeof value.priceUSD === 'number' &&
+    typeof value.priceVND === 'number'
+
 const isInteriorTrim = (value: unknown): value is InteriorTrim =>
     isRecord(value) &&
     typeof value.id === 'string' &&
@@ -128,6 +139,7 @@ const loadStoredConfig = (carId: number): Partial<StoredConfig> | null => {
         if (isPaintColor(parsed.exteriorColor)) stored.exteriorColor = parsed.exteriorColor
         if (isRimOption(parsed.rim)) stored.rim = parsed.rim
         if (isCaliperOption(parsed.caliper)) stored.caliper = parsed.caliper
+        if (isTireOption(parsed.tire)) stored.tire = parsed.tire
         if (isInteriorTrim(parsed.interiorTrim)) stored.interiorTrim = parsed.interiorTrim
         if (isCarbonPackage(parsed.carbonLower)) stored.carbonLower = parsed.carbonLower
         if (isCarbonPackage(parsed.carbonUpper)) stored.carbonUpper = parsed.carbonUpper
@@ -149,6 +161,7 @@ const saveStoredConfig = (carId: number, config: CarConfiguration) => {
             exteriorColor: config.exteriorColor,
             rim: config.rim,
             caliper: config.caliper,
+            tire: config.tire ?? null,
             interiorTrim: config.interiorTrim,
             carbonLower: config.carbonLower,
             carbonUpper: config.carbonUpper,
@@ -210,6 +223,7 @@ const createDefaultConfig = (carId: number): CarConfiguration => {
         exteriorColor: PAINT_COLORS[0],
         rim: RIMS[0],
         caliper: CALIPERS[0],
+        tire: null,
         carbonLower: 'body',
         carbonUpper: 'body',
         exhaust: 'matt_black',
@@ -251,12 +265,15 @@ export default function ConfiguratorPage() {
     const { data: rawRimOptions = [] } = useTuyChonTheoNhom(carId, 2)
     const { data: rawInteriorOptions = [] } = useTuyChonTheoNhom(carId, 3)
     const { data: rawCaliperOptions = [] } = useTuyChonTheoNhom(carId, 4)
+    // Group 6 (Lốp xe) is only assigned to some cars; an empty answer means "no tyre choice".
+    const { data: rawTireOptions = [], isSuccess: tireOptionsLoaded } = useTuyChonTheoNhom(carId, 6)
 
     // Memoised so the "pick the first API option" effects below only run when the data changes.
     const apiPaintColors = useMemo(() => mapTuyChonToPaintColors(rawPaintOptions), [rawPaintOptions])
     const apiRims = useMemo(() => mapTuyChonToRims(rawRimOptions), [rawRimOptions])
     const apiInteriorTrims = useMemo(() => mapTuyChonToInteriorTrims(rawInteriorOptions), [rawInteriorOptions])
     const apiCalipers = useMemo(() => mapTuyChonToCalipers(rawCaliperOptions), [rawCaliperOptions])
+    const apiTires = useMemo(() => mapTuyChonToTires(rawTireOptions), [rawTireOptions])
 
     // EX08: khôi phục cấu hình tạm của phiên (nếu có) ngay từ lần render đầu.
     const [config, setConfig] = useState<CarConfiguration>(() => {
@@ -312,6 +329,17 @@ export default function ConfiguratorPage() {
             setConfig((prev) => ({ ...prev, caliper: apiCalipers[0] }))
         }
     }, [apiCalipers])
+
+    // Tyres: keep a valid API tyre selected when the car has group 6, and none when it has not
+    // (also drops a stale tyre restored from sessionStorage).
+    useEffect(() => {
+        if (!tireOptionsLoaded) return
+        setConfig((prev) => {
+            const current = prev.tire ? apiTires.find((tire) => tire.id === prev.tire?.id) : undefined
+            const next = current ?? apiTires[0] ?? null
+            return next === prev.tire ? prev : { ...prev, tire: next }
+        })
+    }, [apiTires, tireOptionsLoaded])
 
     // EX08: lưu cấu hình tạm của phiên theo carId để reload vẫn giữ lựa chọn.
     useEffect(() => {
@@ -387,6 +415,7 @@ export default function ConfiguratorPage() {
             exteriorColor: apiPaintColors[0] ?? PAINT_COLORS[0],
             rim: apiRims[0] ?? RIMS[0],
             caliper: apiCalipers[0] ?? CALIPERS[0],
+            tire: apiTires[0] ?? null,
             carbonLower: 'body',
             carbonUpper: 'body',
             carbonInterior: false,
@@ -398,23 +427,20 @@ export default function ConfiguratorPage() {
         setCurrentStep('01 EXTERIOR')
     }
 
+    /** `maTuyChon` of every DB-backed selection; static fallback ids (non-numeric) are skipped. */
+    const getSelectedOptionIds = (): number[] =>
+        [config.exteriorColor.id, config.rim.id, config.caliper?.id, config.interiorTrim?.id, config.tire?.id]
+            .filter(Boolean)
+            .map((id) => parseInt(id as string))
+            .filter((n) => !isNaN(n))
+
     const handleSaveAccount = async (tenCauHinh: string) => {
-        const danhSachMaTuyChon = [
-            config.exteriorColor.id,
-            config.rim.id,
-            config.caliper?.id,
-            config.interiorTrim?.id,
-        ].filter(Boolean).map((id) => parseInt(id as string)).filter((n) => !isNaN(n))
+        const danhSachMaTuyChon = getSelectedOptionIds()
         return saveConfiguration({ maXe: carId, tenCauHinh, tongGia: totalPriceVND, danhSachMaTuyChon })
     }
 
     const handleGuestSaveAndSendEmail = async (payload: { email: string; ho: string; ten: string }) => {
-        const danhSachMaTuyChon = [
-            config.exteriorColor.id,
-            config.rim.id,
-            config.caliper?.id,
-            config.interiorTrim?.id,
-        ].filter(Boolean).map((id) => parseInt(id as string)).filter((n) => !isNaN(n))
+        const danhSachMaTuyChon = getSelectedOptionIds()
         const saveRes = await saveConfiguration({ maXe: carId, tenCauHinh: defaultConfigName, tongGia: totalPriceVND, danhSachMaTuyChon })
         await sendShareEmail({ email: payload.email, ho: payload.ho, ten: payload.ten, maChiaSe: saveRes.maChiaSe })
         return { message: saveRes.message, maChiaSe: saveRes.maChiaSe }
@@ -465,7 +491,7 @@ export default function ConfiguratorPage() {
 
     // compute derived price/name values after config is initialized
     const defaultConfigName = `${modelTitle} - ${config.exteriorColor.name}`
-    const totalPriceVND = (carData?.giaKhoiDiem ?? 0) + (config.exteriorColor.priceVND ?? 0) + (config.rim.priceVND ?? 0) + (config.caliper?.priceVND ?? 0)
+    const totalPriceVND = (carData?.giaKhoiDiem ?? 0) + (config.exteriorColor.priceVND ?? 0) + (config.rim.priceVND ?? 0) + (config.caliper?.priceVND ?? 0) + (config.tire?.priceVND ?? 0)
 
     return (
         <div
@@ -549,6 +575,7 @@ export default function ConfiguratorPage() {
                     rims={apiRims.length > 0 ? apiRims : undefined}
                     interiorTrims={apiInteriorTrims.length > 0 ? apiInteriorTrims : undefined}
                     calipers={apiCalipers.length > 0 ? apiCalipers : undefined}
+                    tires={apiTires}
                 />
             </div>
 

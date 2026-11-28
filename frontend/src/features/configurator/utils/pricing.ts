@@ -6,6 +6,7 @@ export interface PriceBreakdown {
   exteriorColorPrice: number;
   rimPrice: number;
   caliperPrice: number;
+  tirePrice: number;
   carbonLowerPrice: number;
   carbonUpperPrice: number;
   exhaustPrice: number;
@@ -34,6 +35,7 @@ export function calculatePriceBreakdown(config: CarConfiguration): PriceBreakdow
   const exteriorColorPrice = isUSD ? config.exteriorColor.priceUSD : config.exteriorColor.priceVND;
   const rimPrice = isUSD ? config.rim.priceUSD : config.rim.priceVND;
   const caliperPrice = isUSD ? config.caliper.priceUSD : config.caliper.priceVND;
+  const tirePrice = config.tire ? (isUSD ? config.tire.priceUSD : config.tire.priceVND) : 0;
   const carbonLowerPrice = getCarbonPackagePrice(config.carbonLower, 'lower', config.currency);
   const carbonUpperPrice = getCarbonPackagePrice(config.carbonUpper, 'upper', config.currency);
   const exhaustPrice = getExhaustPrice(config.exhaust, config.currency);
@@ -45,6 +47,7 @@ export function calculatePriceBreakdown(config: CarConfiguration): PriceBreakdow
     exteriorColorPrice +
     rimPrice +
     caliperPrice +
+    tirePrice +
     carbonLowerPrice +
     carbonUpperPrice +
     exhaustPrice +
@@ -56,6 +59,7 @@ export function calculatePriceBreakdown(config: CarConfiguration): PriceBreakdow
     exteriorColorPrice,
     rimPrice,
     caliperPrice,
+    tirePrice,
     carbonLowerPrice,
     carbonUpperPrice,
     exhaustPrice,

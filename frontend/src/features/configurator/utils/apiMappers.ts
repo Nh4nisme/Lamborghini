@@ -1,4 +1,4 @@
-import type { TuyChon, PaintColor, RimOption, InteriorTrim, CaliperOption, PaintFinish } from '../types'
+import type { TuyChon, PaintColor, RimOption, InteriorTrim, CaliperOption, TireOption, PaintFinish } from '../types'
 
 /** Ratio used to convert the VND surcharge into an approximate USD price. */
 const VND_PER_USD = 25000
@@ -204,4 +204,18 @@ export function mapTuyChonToCalipers(items: TuyChon[]): CaliperOption[] {
             priceVND: item.giaCongThem,
         }
     })
+}
+
+/**
+ * Maps backend tyre options (group 6). The 3D tyre variant is picked from the
+ * option name in StudioScene, the same way rims are.
+ */
+export function mapTuyChonToTires(items: TuyChon[]): TireOption[] {
+    return activeOptions(items).map((item) => ({
+        id: String(item.maTuyChon),
+        name: item.tenTuyChon,
+        finish: item.thuocTinhPhu ? toTitleCase(item.thuocTinhPhu) : '',
+        priceUSD: toUSD(item.giaCongThem),
+        priceVND: item.giaCongThem,
+    }))
 }

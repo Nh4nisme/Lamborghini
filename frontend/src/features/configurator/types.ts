@@ -86,6 +86,16 @@ export interface CaliperOption {
   priceVND: number
 }
 
+/** Tyre option from option group 6 (`Lốp xe`). Only some cars carry this group. */
+export interface TireOption {
+  id: string
+  name: string
+  /** Free-text attribute from `thuoc_tinh_phu`, shown as-is. */
+  finish: string
+  priceUSD: number
+  priceVND: number
+}
+
 export type CarbonPackage = 'body' | 'matt_carbon' | 'shiny_carbon'
 
 export interface CarbonOption {
@@ -127,6 +137,8 @@ export interface CarConfiguration {
   exteriorColor: PaintColor
   rim: RimOption
   caliper: CaliperOption
+  /** Selected tyre; null when the car has no tyre options. */
+  tire?: TireOption | null
   carbonLower: CarbonPackage
   carbonUpper: CarbonPackage
   exhaust: ExhaustOption
